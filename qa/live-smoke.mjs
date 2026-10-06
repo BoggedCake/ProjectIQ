@@ -56,6 +56,8 @@ try{
       result.lga=await page.evaluate(()=>window.SitePivot?.app?.property?.lga||null);
       result.lot=await page.evaluate(()=>window.SitePivot?.app?.property?.lot||null);
       result.dp=await page.evaluate(()=>window.SitePivot?.app?.property?.dp||null);
+      result.area=await page.evaluate(()=>window.SitePivot?.app?.property?.area||null);
+      result.dcp=await page.evaluate(()=>window.SitePivot?.app?.property?.planning?.dcpPlans||[]);
     }catch(e){result.propertyResolved=false;result.propertyError=e.message;result.searchBox=await page.locator('#searchResults').innerText().catch(()=>null);}
   }catch(e){
     result.suggestionMs=null;
@@ -121,4 +123,4 @@ console.log(JSON.stringify(result,null,2));
 console.log('SITEPIVOT_LIVE_QA_END');
 await browser.close();
 
-if(!result.suggestionMs || result.suggestionMs>3000 || !result.propertyResolved || !result.lga || !result.zone || !result.exactNumberRegression || result.matrix?.some(x=>!x.pass) || result.multiLgaPlanning?.some(x=>!x.pass)) process.exitCode=1;
+if(!result.suggestionMs || result.suggestionMs>3000 || !result.propertyResolved || !result.lga || !result.zone || !result.lot || !result.dp || !result.exactNumberRegression || result.matrix?.some(x=>!x.pass) || result.multiLgaPlanning?.some(x=>!x.pass)) process.exitCode=1;
