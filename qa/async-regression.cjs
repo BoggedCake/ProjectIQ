@@ -50,5 +50,17 @@ function dom(fetch,url='http://localhost/'){const w=new JSDOM(html,{url,runScrip
   if(stage==='passport')assert.equal(d.getElementById('confirmBeds').value,'4');
   else assert.ok(!api.app.assessment.risks.some(r=>/height is not confirmed/.test(r.title)));
  });
+ await test('provider failures survive the real normalized planning contract',async()=>{
+  const prior=global.fetch;global.fetch=async()=>{throw Error('QA upstream failure')};delete require.cache[require.resolve('../api/_lib/sitepivot')];
+  try{const r=await require('../api/_lib/sitepivot').planningFor({point:{x:151.22,y:-33.82},lga:'TEST',lot:'1',dp:'DP0'});assert.ok(r.planning.failedKeys.includes('zone'));assert.ok(r.planning.failedKeys.includes('sepp'));assert.deepEqual(r.planning.failedSources,r.planning.failedKeys);assert.equal(r.planning.zone,null);assert.ok(Array.isArray(r.planning.sepp));assert.deepEqual(r.planning.dcpPlans,[])}finally{global.fetch=prior}
+ });
+ await test('failed parcel lookup does not discard successful planning checks',async()=>{
+  const prior=global.fetch;global.fetch=async url=>{if(String(url).includes('NSW_Land_Parcel_Property_Theme'))throw Error('QA parcel unavailable');return response({features:String(url).includes('EPI_Primary_Planning_Layers/MapServer/2/query')?[{attributes:{SYM_CODE:'R1',LAY_CLASS:'General Residential',EPI_NAME:'QA LEP'}}]:[],results:[]})};delete require.cache[require.resolve('../api/_lib/sitepivot')];
+  try{const r=await require('../api/_lib/sitepivot').planningFor({point:{x:151.22,y:-33.82},lga:'TEST',lot:'1',dp:'DP0'});assert.match(r.planning.zone,/R1/);assert.ok(r.planning.failedKeys.includes('parcel'));assert.equal(r.planning.spatialScope,'address-point');assert.equal(r.parcel.geometryResolved,false)}finally{global.fetch=prior}
+ });
+ await test('API outage leaves consumer controls unknown rather than not mapped',async()=>{
+  const w=dom(async()=>{throw Error('QA API outage')}),api=w.window.SitePivot,d=w.window.document;const p=JSON.parse(JSON.stringify(api.FIXTURES[0]));Object.assign(p,{live:true,sourceMeta:{serverApi:true,timing:{}}});Object.assign(p.planning,{loading:true,height:null,fsr:null,minLot:null});api.selectProperty(p);d.getElementById('confirmProperty').click();await api.completeLiveProperty(p,null,null,api.app.enrichSeq);
+  const s=api.consumerPropertySummary(api.app.property);assert.match(s.height,/check|available/i);assert.match(s.fsr,/check|available/i);assert.match(s.minLot,/check|available/i);w.window.close();
+ });
  process.exitCode=failures?1:0;
 })();

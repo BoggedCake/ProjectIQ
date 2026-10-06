@@ -68,15 +68,15 @@ for(const q of ['57 Griffiths Street Fairlight NSW 2094','290 King Street Newcas
  const t=Date.now();
  try{
    const p=await planningFor(id.property);
-   out.planning.push({q,pass:!!p.planning.zone&&!!p.planning.instrument&&Array.isArray(p.planning.sepp),planningMs:Date.now()-t,lga:id.lga,zone:p.planning.zone,instrument:p.planning.instrument,dcp:p.planning.dcpPlans,sepp:p.planning.sepp,area:p.parcel.area,failedKeys:p.planning.failedKeys,errors:p.planning.liveErrors});
+   const contractPass=Array.isArray(p.planning.failedKeys)&&Array.isArray(p.planning.failedSources)&&p.planning.failedKeys.every(k=>p.planning.failedSources.includes(k))&&Array.isArray(p.planning.sepp);
+   out.planning.push({q,pass:!!p.planning.zone&&!!p.planning.instrument&&contractPass,contractPass,planningMs:Date.now()-t,lga:id.lga,zone:p.planning.zone,instrument:p.planning.instrument,dcp:p.planning.dcpPlans,sepp:p.planning.sepp,area:p.parcel.area,failedKeys:p.planning.failedKeys,errors:p.planning.liveErrors});
  }catch(e){out.planning.push({q,pass:false,error:e.message})}
 }
 const suggestions=out.identity.map(x=>x.suggestionMs).filter(Number.isFinite).sort((a,b)=>a-b);
 const pct=(arr,p)=>arr.length?arr[Math.min(arr.length-1,Math.max(0,Math.ceil(arr.length*p)-1))]:null;
 out.performance={maxSuggestionMs:suggestions.at(-1)||null,medianSuggestionMs:pct(suggestions,.5),p95SuggestionMs:pct(suggestions,.95)};
 // Contract regression: failed planning sources must remain visible to the UI as Needs Review.
-const contractProbe={planning:{failedKeys:['sepp'],failedSources:['sepp']}};
-out.failureContractPass=Array.isArray(contractProbe.planning.failedKeys)&&contractProbe.planning.failedKeys.includes('sepp');
+out.failureContractPass=out.planning.length>0&&out.planning.every(x=>x.contractPass===true);
 
 out.pass=out.identity.every(x=>x.pass)&&out.exactNumberRegression&&out.planning.every(x=>x.pass)&&out.performance.p95SuggestionMs<3000&&out.failureContractPass&&out.apiContractPass;
 console.log('SITEPIVOT_SERVER_QA_START');

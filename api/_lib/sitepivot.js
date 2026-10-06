@@ -198,7 +198,8 @@ function plans(fs){return unique(fs.map(f=>first(attrs(f),['PLAN_NAME','NAME','L
 function epiNames(groups){return unique(groups.flatMap(fs=>(fs||[]).map(f=>attrs(f).EPI_NAME).filter(Boolean)))}
 
 async function planningFor(property){
-  const t=now(),parcel=await parcelFor(property);
+  const t=now();let parcel,parcelError=null;
+  try{parcel=await parcelFor(property)}catch(e){parcelError=e.message||String(e);parcel={lot:property.lot,dp:property.dp,area:null,parcels:null,geometry:null}}
   const geom=parcel.geometry||property.point,type=parcel.geometry?'esriGeometryPolygon':'esriGeometryPoint',lga=property.lga;
   if(!geom)throw new Error('No parcel geometry or property point available');
   const jobs={
@@ -226,7 +227,7 @@ async function planningFor(property){
     sepp:identify(UPSTREAM.sepp,property.point),
     localIdentify:identify(UPSTREAM.local,property.point)
   };
-  const keys=Object.keys(jobs),settled=await Promise.allSettled(Object.values(jobs)),data={},errors=[],failed=[];
+  const keys=Object.keys(jobs),settled=await Promise.allSettled(Object.values(jobs)),data={},errors=parcelError?['parcel: '+parcelError]:[],failed=parcelError?['parcel']:[];
   settled.forEach((r,i)=>{const k=keys[i];if(r.status==='fulfilled')data[k]=r.value;else{data[k]=[];failed.push(k);errors.push(k+': '+(r.reason?.message||'failed'))}});
   const missing=(k,label)=>failed.includes(k)?'Source check did not complete — Needs Review':label;
   const epis=epiNames([data.zone,data.fsr,data.height,data.lot,data.heritage,data.reservation,data.application,data.acid,data.riparian,data.biodiversity,data.wetlands,data.sensitive,data.flood,data.landslide]);
@@ -238,6 +239,7 @@ async function planningFor(property){
   return {
     parcel:{lot:parcel.lot,dp:parcel.dp,area:parcel.area,parcels:parcel.parcels,geometryResolved:!!parcel.geometry},
     planning:{
+      spatialScope:parcel.geometry?'parcel':'address-point',
       instrument:localInstrument,allEpiNames:epis,epiNames:epis,statePolicies,sepp:statePolicies,
       zone:failed.includes('zone')?null:formatZone(data.zone),
       fsr:failed.includes('fsr')?null:formatFsr(data.fsr),

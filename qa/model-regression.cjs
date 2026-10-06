@@ -35,4 +35,7 @@ test('report keeps technical policies behind progressive disclosure',(api,d)=>{
  api.selectProperty(api.FIXTURES[0]);api.app.property.planning.instrument='Manly Local Environmental Plan 2013 / State Environmental Planning Policy (Housing) 2021';api.app.goal='reno';api.computeAssessment();api.show('report');
  const details=d.querySelector('#reportContent details');assert.ok(details,'Report must retain evidence in a closed detail section');assert.equal(details.open,false);assert.match(details.textContent,/State Environmental Planning Policy/);
 });
+test('address-point planning retains controls while flagging parcel verification',api=>{
+ api.selectProperty(api.FIXTURES[0]);api.app.goal='develop';api.app.devType='duplex';api.app.property.planning.spatialScope='address-point';const a=api.computeAssessment();assert.ok(a.risks.some(r=>/Parcel boundaries/.test(r.title)));assert.ok(api.app.property.planning.zone);
+});
 process.exitCode=failures?1:0;
