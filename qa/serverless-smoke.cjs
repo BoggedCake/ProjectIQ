@@ -37,7 +37,7 @@ for(const q of ['57 Griffiths Street Fairlight NSW 2094','290 King Street Newcas
  const t=Date.now();
  try{
    const p=await planningFor(id.property);
-   out.planning.push({q,pass:!!p.planning.zone&&!!p.planning.instrument,planningMs:Date.now()-t,lga:id.lga,zone:p.planning.zone,instrument:p.planning.instrument,dcp:p.planning.dcpPlans,area:p.parcel.area,errors:p.planning.liveErrors});
+   out.planning.push({q,pass:!!p.planning.zone&&!!p.planning.instrument&&Array.isArray(p.planning.sepp),planningMs:Date.now()-t,lga:id.lga,zone:p.planning.zone,instrument:p.planning.instrument,dcp:p.planning.dcpPlans,sepp:p.planning.sepp,area:p.parcel.area,failedKeys:p.planning.failedKeys,errors:p.planning.liveErrors});
  }catch(e){out.planning.push({q,pass:false,error:e.message})}
 }
 const suggestions=out.identity.map(x=>x.suggestionMs).filter(Number.isFinite).sort((a,b)=>a-b);
