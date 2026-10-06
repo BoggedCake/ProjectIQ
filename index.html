@@ -106,7 +106,7 @@ const deep=x=>JSON.parse(JSON.stringify(x));
 const today='6 Oct 2026';
 const STATUS={verified:'Verified',indicative:'Indicative',review:'Needs Review',unavailable:'Unavailable'};
 const SOURCES=[
-{id:'identity',name:'NSW property identity / cadastre',coverage:'NSW',upstream:'ArcGIS World Geocoder + NSW Address Point Formatted + NSW Cadastre',prototype:'Fast suggestion + authoritative NSW resolution',status:'verified'},
+{id:'identity',name:'NSW property identity / cadastre',coverage:'NSW',upstream:'ArcGIS World Geocoder + NSW Address Point Formatted + NSW Land Parcel Property Theme',prototype:'Fast suggestion + authoritative NSW parcel polygon resolution',status:'verified'},
 {id:'zone',name:'EPI Land Zoning',coverage:'NSW where mapped',upstream:'NSW Planning Portal Open Data · WFS/WMS/ArcGIS REST',prototype:'Fixture adapter',status:'indicative'},
 {id:'fsr',name:'EPI Floor Space Ratio',coverage:'NSW where mapped',upstream:'NSW Planning Portal Open Data · WFS/WMS/ArcGIS REST',prototype:'Fixture adapter',status:'indicative'},
 {id:'height',name:'EPI Height of Buildings',coverage:'NSW where mapped',upstream:'NSW Planning Portal Open Data · WFS/WMS/ArcGIS REST',prototype:'Fixture adapter',status:'indicative'},
@@ -170,7 +170,7 @@ const LIVE={
  geocoder:'https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer',
  addressPoint:'https://portal.spatial.nsw.gov.au/server/rest/services/Hosted/NSW_Address_Point_Formatted/FeatureServer/0',
  lga:'https://portal.spatial.nsw.gov.au/server/rest/services/Hosted/SPAP/FeatureServer/0',
- cadastre:'https://maps.six.nsw.gov.au/arcgis/rest/services/public/NSW_Cadastre/MapServer/9',
+ cadastre:'https://portal.spatial.nsw.gov.au/server/rest/services/NSW_Land_Parcel_Property_Theme/FeatureServer/8',
  primary:'https://mapprod3.environment.nsw.gov.au/arcgis/rest/services/Planning/EPI_Primary_Planning_Layers/MapServer',
  protection:'https://mapprod3.environment.nsw.gov.au/arcgis/rest/services/Planning/Protection/MapServer',
  hazard:'https://mapprod3.environment.nsw.gov.au/arcgis/rest/services/Planning/Hazard/MapServer',
