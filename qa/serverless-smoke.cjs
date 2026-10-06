@@ -3,6 +3,16 @@ const {suggestAddress,resolveProperty,planningFor}=require('../api/_lib/sitepivo
 const addressHandler=require('../api/address/suggest');
 const propertyHandler=require('../api/property/resolve');
 const planningHandler=require('../api/planning/property');
+// Capture only the public address fields needed to diagnose exact-unit failures.
+const originalFetch=global.fetch;
+let addressProbe=null;
+global.fetch=async(...args)=>{
+ const response=await originalFetch(...args);
+ if(String(args[0]).includes('NSW_Address_Point_Formatted')){
+  try{const j=await response.clone().json();addressProbe={exceededTransferLimit:j.exceededTransferLimit,rows:(j.features||[]).map(f=>({address:f.attributes.formattedaddress,number:f.attributes.streetnumber1,unit:f.attributes.complexunitidentifier}))}}catch(e){}
+ }
+ return response;
+};
 
 function fakeRes(){
   return{
@@ -47,7 +57,7 @@ for(const q of cases){
    const t1=Date.now();
    const r=await resolveProperty(s.suggestions[0]);
    out.identity.push({q,pass:suggestionMs<3000&&!!r.property.lga&&!!r.property.lot&&!!r.property.dp,suggestionMs,resolveMs:Date.now()-t1,address:r.property.address,lga:r.property.lga,lot:r.property.lot,dp:r.property.dp,property:r.property});
- }catch(e){out.identity.push({q,pass:false,error:e.message})}
+ }catch(e){out.identity.push({q,pass:false,error:e.message,addressProbe})}
 }
 const one=out.identity.find(x=>x.q.startsWith('1 Waratah')),nine=out.identity.find(x=>x.q.startsWith('9 Waratah'));
 out.exactNumberRegression=!!one&&!!nine&&one.pass&&nine.pass&&/^1\s/i.test(one.address)&&/^9\s/i.test(nine.address)&&one.address!==nine.address;
