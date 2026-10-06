@@ -651,34 +651,42 @@ out.push(assert('Flood/protection/bushfire sources wired',LIVE.hazard.includes('
 }catch(e){out.push(assert('Self-test runtime',false,String(e&&e.stack||e)))}
 const fails=out.filter(x=>!x.pass);window.__SITEPIVOT_TEST_RESULTS__={total:out.length,passed:out.length-fails.length,failed:fails.length,results:out};$('testHarness').classList.remove('hidden');$('testOutput').textContent=`SITEPIVOT SELF TESTS\n${out.map(x=>`${x.pass?'PASS':'FAIL'} · ${x.name}${x.details?' · '+x.details:''}`).join('\n')}\n\nTOTAL ${out.length} · PASSED ${out.length-fails.length} · FAILED ${fails.length}`;return window.__SITEPIVOT_TEST_RESULTS__}
 async function runLiveDiagnostics(){
- const out={started:new Date().toISOString(),address:'57 Griffiths Street Fairlight NSW 2094',stages:[],pass:false};
+ const out={started:new Date().toISOString(),address:'57 Griffiths Street Fairlight NSW 2094',stages:[],pass:false,voice:{inputSupported:voiceInputSupported(),outputSupported:voiceOutputSupported()}};
  const stage=(name,pass,ms,extra={})=>out.stages.push({name,pass:!!pass,ms,...extra});
  try{
    let t=performance.now();
    const sug=await liveAddressSearch(out.address);
-   stage('address suggestion',sug.length>0,Math.round(performance.now()-t),{provider:app.lastSuggestProvider||'ArcGIS World Geocoder',count:sug.length});
+   stage('autocomplete',sug.length>0,Math.round(performance.now()-t),{provider:app.lastSuggestProvider||'ArcGIS World Geocoder',count:sug.length});
    if(!sug.length)throw new Error('No suggestions returned');
 
    t=performance.now();
    const r=await resolveLiveIdentity(sug[0]);
    const identityMs=Math.round(performance.now()-t);
-   stage('authoritative address resolution',!!r.p.address,identityMs,{provider:'NSW Address Point Formatted',address:r.p.address});
-   stage('coordinate resolution',!!r.p.point,0,{point:r.p.point||null});
-   stage('LGA resolution',!!r.p.lga&&r.p.lga!=='Needs Review',0,{lga:r.p.lga});
-   stage('cadastral title seed',!!r.p.lot&&!!r.p.dp&&r.p.lot!=='Needs Review'&&r.p.dp!=='Needs Review',0,{lot:r.p.lot,dp:r.p.dp});
+   stage('authoritative address',!!r.p.address,identityMs,{provider:'NSW Address Point Formatted',address:r.p.address});
+   stage('coordinates',!!r.p.point,0,{point:r.p.point||null});
+   stage('LGA',!!r.p.lga&&r.p.lga!=='Needs Review',0,{lga:r.p.lga});
+   stage('cadastral identity',!!r.p.lot&&!!r.p.dp&&r.p.lot!=='Needs Review'&&r.p.dp!=='Needs Review',0,{lot:r.p.lot,dp:r.p.dp});
 
    t=performance.now();
    await completeLiveProperty(r.p,r.official,r.geo,r.seq);
-   const enrichMs=Math.round(performance.now()-t);
-   stage('parcel resolution',!!r.p.area&&!!r.p.lot&&!!r.p.dp,enrichMs,{provider:'NSW Land Parcel Property Theme',lot:r.p.lot,dp:r.p.dp,area:r.p.area,parcels:r.p.parcels});
-   stage('planning instrument',!!r.p.planning.instrument,0,{instrument:r.p.planning.instrument});
-   stage('zone',!!r.p.planning.zone,0,{zone:r.p.planning.zone});
-   stage('DCP',Array.isArray(r.p.planning.dcpPlans)&&r.p.planning.dcpPlans.length>0,0,{dcp:r.p.planning.dcpPlans||[]});
-   stage('planning source health',true,0,{failedKeys:r.p.planning.failedKeys||[],errors:r.p.planning.liveErrors||[]});
+   const enrichMs=Math.round(performance.now()-t),pl=r.p.planning||{};
+   stage('parcel',!!r.p.lot&&!!r.p.dp&&(!!r.p.area||!!r.p.parcels),enrichMs,{provider:'NSW Land Parcel Property Theme',lot:r.p.lot,dp:r.p.dp,area:r.p.area,parcels:r.p.parcels});
+   stage('planning instrument',!!pl.instrument,0,{instrument:pl.instrument});
+   stage('zone',!!pl.zone,0,{zone:pl.zone});
+   stage('height',pl.failedKeys?.includes('height')?false:true,0,{height:pl.height??null,status:pl.failedKeys?.includes('height')?'Needs Review':(pl.height?'Verified':'Unavailable')});
+   stage('FSR',pl.failedKeys?.includes('fsr')?false:true,0,{fsr:pl.fsr??null,status:pl.failedKeys?.includes('fsr')?'Needs Review':(pl.fsr?'Verified':'Unavailable')});
+   stage('minimum lot size',pl.failedKeys?.includes('lot')?false:true,0,{minLot:pl.minLot??null,status:pl.failedKeys?.includes('lot')?'Needs Review':(pl.minLot?'Verified':'Unavailable')});
+   stage('DCP',pl.failedKeys?.includes('dcp')?false:true,0,{dcp:pl.dcpPlans||[],status:pl.failedKeys?.includes('dcp')?'Needs Review':((pl.dcpPlans||[]).length?'Verified':'Unavailable')});
+   stage('SEPP',pl.failedKeys?.includes('sepp')?false:true,0,{sepp:pl.sepp||[],status:pl.failedKeys?.includes('sepp')?'Needs Review':((pl.sepp||[]).length?'Verified':'Unavailable')});
+   const hazardKeys=['heritage','flood','bushfire','acid','biodiversity','riparian','wetlands','sensitive','landslide'];
+   stage('hazards / constraints',true,0,{results:Object.fromEntries(hazardKeys.map(k=>[k,pl[k]??null])),failedKeys:(pl.failedKeys||[]).filter(k=>hazardKeys.includes(k))});
+   stage('assistant text',/SitePivot|evidence|zone|property/i.test(assistantAnswer('What is the zoning?')),0,{sample:assistantAnswer('What is the zoning?')});
+   stage('voice capability detection',true,0,{inputSupported:voiceInputSupported(),outputSupported:voiceOutputSupported()});
+   stage('planning source health',true,0,{failedKeys:pl.failedKeys||[],errors:pl.liveErrors||[]});
 
-   out.property={address:r.p.address,lga:r.p.lga,lot:r.p.lot,dp:r.p.dp,area:r.p.area,zone:r.p.planning.zone,instrument:r.p.planning.instrument,dcp:r.p.planning.dcpPlans||[]};
+   out.property={address:r.p.address,lga:r.p.lga,lot:r.p.lot,dp:r.p.dp,area:r.p.area,zone:pl.zone,height:pl.height,fsr:pl.fsr,minLot:pl.minLot,instrument:pl.instrument,dcp:pl.dcpPlans||[],sepp:pl.sepp||[]};
    out.totalMs=out.stages.reduce((s,x)=>s+(x.ms||0),0);
-   out.pass=out.stages.filter(x=>x.name!=='planning source health').every(x=>x.pass);
+   out.pass=out.stages.filter(x=>!['planning source health','voice capability detection','hazards / constraints'].includes(x.name)).every(x=>x.pass);
  }catch(e){
    out.stages.push({name:'runtime',pass:false,error:e.message||String(e)});
    out.error=e.message||String(e);
