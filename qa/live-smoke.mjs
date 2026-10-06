@@ -132,10 +132,10 @@ try{
       // Exercise the actual deployed founder path through real controls, not show().
       const propertyId=await page.evaluate(()=>SitePivot.app.property.id);
       await page.locator('#passportPathways [data-goal="reno"]').click();
-      await page.locator('#scopeArea').fill('65');
+      await page.locator('#scopeArea').evaluate(el=>el.closest('details').open=true);await page.locator('#scopeArea').fill('65');
       await page.locator('#runAssessment').click();
       await page.locator('#view-assessment.active').waitFor();
-      for(const control of await page.locator('#assessmentTabs [data-tab]').all()){
+      await page.locator('#assessmentDetail > summary').click();for(const control of await page.locator('#assessmentTabs [data-tab]').all()){
         if(await control.isVisible())await control.click();
       }
       await page.locator('#toRoadmap').click();

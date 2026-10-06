@@ -4,7 +4,7 @@ const http=require('node:http');
 const fs=require('node:fs');
 const assert=require('node:assert/strict');
 const html=fs.readFileSync(require('node:path').join(__dirname,'../index.html'));
-const server=http.createServer((req,res)=>{res.setHeader('Content-Type','text/html');res.end(html)});
+const server=http.createServer((req,res)=>{if(req.url.split('?')[0]==='/commercial-engine.js'){res.setHeader('Content-Type','application/javascript');res.end(fs.readFileSync(require('node:path').join(__dirname,'../commercial-engine.js')));return}res.setHeader('Content-Type','text/html');res.end(html)});
 const results=[];
 async function main(){
  await new Promise(r=>server.listen(0,'127.0.0.1',r));
@@ -24,8 +24,8 @@ async function main(){
  async function report(page){
   if(await page.locator('#view-unsure.active').count())await page.locator('#unsureRecommend').click();
   await page.locator('#view-scope.active').waitFor();
-  await page.locator('#runAssessment').click();await page.locator('#view-assessment.active').waitFor();
-  assert.ok(await page.locator('#assessmentContent').count()||await page.locator('#assessmentTabs').isVisible());
+  if(await page.locator('[data-room="bedroom"]').count())await page.locator('[data-room="bedroom"]').check();await page.locator('#runAssessment').click();await page.locator('#view-assessment.active').waitFor();
+  assert.ok(await page.locator('#consumerResult').isVisible());await page.locator('#assessmentDetail > summary').click();assert.ok(await page.locator('#assessmentTabs').isVisible());
   for(const t of await page.locator('#assessmentTabs [data-tab]').all())if(await t.isVisible()){await t.click();assert.ok(await page.locator('#tab-'+await t.getAttribute('data-tab')+'.active').isVisible())}
   await page.locator('#toRoadmap').click();await page.locator('#view-roadmap.active').waitFor();
   assert.ok((await page.locator('#roadmapList').innerText()).length>20);
@@ -89,6 +89,25 @@ async function main(){
   const p=await open({viewport:{width:390,height:844},isMobile:true,hasTouch:true});await fixture(p);
   await p.locator('#passportPathways [data-goal="develop"]').tap();await p.locator('#developGrid [data-dev="duplex"]').tap();await report(p);
   assert.ok(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));await p.close();
+ });
+
+ await test('structured early voice intake confirms rooms then completes the entire journey',async()=>{
+  const p=await browser.newPage();p.errors=[];p.on('pageerror',e=>p.errors.push(e.message));
+  await p.addInitScript(()=>{window.SpeechRecognition=class{start(){this.onstart?.();const r=[{transcript:'An extra bedroom and bathroom, budget eight hundred thousand'}];r.isFinal=true;this.onresult?.({resultIndex:0,results:[r]});this.onend?.()}stop(){}abort(){}}});
+  await p.route('**/api/intent/extract',r=>r.fulfill({json:{status:'confirmation',profile:{goal:'extend',rooms:{bedroom:1,bathroom:1},budget:800000,quality:'premium',basementPreference:'none',compareMove:false,uncertainties:['planning']}}}));
+  await p.goto(base+'/?fixtures=1');await fixture(p);await p.locator('#intentMic').click();assert.match(await p.locator('#intentInput').inputValue(),/extra bedroom/);await p.locator('#interpretIntent').click();await p.locator('#confirmIntent').waitFor();assert.match(await p.locator('#intentConfirmation').innerText(),/It sounds like you want/);await p.locator('#confirmIntent').click();assert.equal(await p.evaluate(()=>SitePivot.app.scope.area),24);assert.equal(await p.locator('#scopeBudget').inputValue(),'$800,000');await report(p);await p.close();
+ });
+ await test('optional move comparison and currency editing complete report and reset',async()=>{
+  const p=await open();await fixture(p);await p.locator('#passportPathways [data-goal="reno"]').click();assert.equal(await p.locator('#targetPurchase').count(),0);await p.locator('[data-room="bedroom"]').check();await p.locator('#compareMove').check();await p.locator('#targetPurchase').fill('2500000');await p.locator('#scopeBudget').fill('1250000');assert.equal(await p.locator('#scopeBudget').inputValue(),'$1,250,000');await p.locator('#scopeBudget').press('Home');await p.locator('#scopeBudget').press('ArrowRight');await p.locator('#scopeBudget').press('Delete');assert.equal(await p.locator('#scopeBudget').inputValue(),'$250,000');assert.equal(await p.evaluate(()=>SitePivot.app.scope.budget),250000);await p.locator('#runAssessment').click();assert.match(await p.locator('#consumerResult').innerText(),/Approximate extra capital required to move/);await p.locator('#toRoadmap').click();await p.locator('#toReport').click();await p.locator('#restartBtn').click();assert.equal(await p.evaluate(()=>SitePivot.app.scope.moveEnabled),false);await p.close();
+ });
+ for(const [config,mid]of [['two-storey',2992000],['two-storey-basement',3520000],['three-level-basement',3652000]])await test('full delivered development journey '+config,async()=>{
+  const p=await open();await fixture(p);await p.locator('#passportPathways [data-goal="develop"]').click();await p.locator('#developGrid [data-dev="duplex"]').click();await p.locator('#scopeConfiguration').selectOption(config);assert.equal(await p.evaluate(()=>SitePivot.projectCost().mid),mid);await report(p);await p.close();
+ });
+ await test('custom configuration never presents a fabricated construction cost',async()=>{
+  const p=await open();await fixture(p);await p.locator('#passportPathways [data-goal="develop"]').click();await p.locator('#developGrid [data-dev="duplex"]').click();await p.locator('#scopeConfiguration').selectOption('custom');assert.equal(await p.evaluate(()=>SitePivot.projectCost().status),'review');await p.locator('#customRate').fill('6800');assert.equal(await p.evaluate(()=>SitePivot.projectCost().mid),2992000);await report(p);await p.close();
+ });
+ await test('unavailable structured interpretation preserves manual journey without invented intent',async()=>{
+  const p=await open();await p.route('**/api/intent/extract',r=>r.fulfill({json:{status:'review',profile:null,reason:'Automatic interpretation is not connected yet.'}}));await fixture(p);await p.locator('#intentInput').fill('Do not build a duplex. Maybe an office.');await p.locator('#interpretIntent').click();await p.locator('#intentGoal').waitFor();assert.doesNotMatch(await p.locator('#intentConfirmation').innerText(),/It sounds like you want/);await p.locator('#intentGoal').selectOption('extend');await p.locator('#confirmIntent').click();assert.equal(await p.evaluate(()=>SitePivot.app.goal),'extend');await report(p);await p.close();
  });
  await browser.close();server.close();
  fs.writeFileSync(process.env.QA_OUTPUT||'/tmp/sitepivot-journey-results.json',JSON.stringify({base,results,pass:results.every(r=>r.pass)},null,2));

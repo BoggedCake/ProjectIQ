@@ -6,7 +6,8 @@ async function until(fn){for(let i=0;i<100;i++){if(fn())return;await tick()}thro
 const response=j=>({ok:true,json:async()=>j});
 let failures=0;const opened=[];
 async function test(name,fn){try{await fn();console.log('PASS '+name)}catch(e){failures++;console.error('FAIL '+name+': '+e.message)}finally{for(const w of opened.splice(0))w.window.close()}}
-function dom(fetch,url='http://localhost/'){const w=new JSDOM(html,{url,runScripts:'dangerously',virtualConsole:new VirtualConsole(),beforeParse(w){w.scrollTo=()=>{};w.fetch=fetch;w.AbortController=AbortController}});opened.push(w);return w}
+function dom(fetch,url='http://localhost/'){const w=new JSDOM(html,{url,runScripts:'dangerously',virtualConsole:new VirtualConsole(),beforeParse(w){w.eval(fs.readFileSync(path.join(__dirname,'../commercial-engine.js'),'utf8'));w.scrollTo=()=>{};w.fetch=fetch;w.AbortController=AbortController}});opened.push(w);return w}
+const suiteTimeout=setTimeout(()=>{console.error('FAIL async suite did not finish');process.exit(1)},30000);
 (async()=>{
  await test('start over ignores a pending identity response',async()=>{
   let release;const w=dom(async url=>String(url).includes('/suggest')?response({suggestions:[{text:'57 Griffiths Street Fairlight NSW 2094'}]}):new Promise(r=>release=r));
@@ -41,7 +42,7 @@ function dom(fetch,url='http://localhost/'){const w=new JSDOM(html,{url,runScrip
   else{const prior=global.fetch;global.fetch=fetch;delete require.cache[require.resolve('../api/_lib/sitepivot')];try{const r=await require('../api/_lib/sitepivot').resolveProperty({text:'2 Dixon Street, Unit 84, Sydney NSW 2000',magicKey:'qa-pagination'});assert.equal(r.property.unit,'84')}finally{global.fetch=prior}}
  });
  for(const stage of ['passport','report'])await test('late planning preserves '+(stage==='passport'?'dwelling draft':'assessment consistency'),async()=>{
-  let release;const w=dom(()=>new Promise(r=>release=r)),api=w.window.SitePivot,d=w.window.document;
+  let release;const w=dom(url=>String(url).includes('/api/market/')?Promise.resolve(response({status:'review',soldComparables:[],completedProductComparables:[],currentListings:[]})):new Promise(r=>release=r)),api=w.window.SitePivot,d=w.window.document;
   const p=JSON.parse(JSON.stringify(api.FIXTURES[0]));Object.assign(p,{live:true,beds:null,baths:null,parking:null,dwellingProfile:null,sourceMeta:{serverApi:true,timing:{}}});Object.assign(p.planning,{loading:true,height:null,fsr:null});
   api.selectProperty(p);d.getElementById('confirmProperty').click();const pending=api.completeLiveProperty(p,null,null,api.app.enrichSeq);await until(()=>release);
   if(stage==='passport')d.getElementById('confirmBeds').value='4';
@@ -62,5 +63,5 @@ function dom(fetch,url='http://localhost/'){const w=new JSDOM(html,{url,runScrip
   const w=dom(async()=>{throw Error('QA API outage')}),api=w.window.SitePivot,d=w.window.document;const p=JSON.parse(JSON.stringify(api.FIXTURES[0]));Object.assign(p,{live:true,sourceMeta:{serverApi:true,timing:{}}});Object.assign(p.planning,{loading:true,height:null,fsr:null,minLot:null});api.selectProperty(p);d.getElementById('confirmProperty').click();await api.completeLiveProperty(p,null,null,api.app.enrichSeq);
   const s=api.consumerPropertySummary(api.app.property);assert.match(s.height,/check|available/i);assert.match(s.fsr,/check|available/i);assert.match(s.minLot,/check|available/i);w.window.close();
  });
- process.exitCode=failures?1:0;
+ clearTimeout(suiteTimeout);console.log('ASYNC_SUITE_COMPLETED');process.exitCode=failures?1:0;
 })();

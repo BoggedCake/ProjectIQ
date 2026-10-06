@@ -6,6 +6,7 @@ on:
     paths:
       - 'api/**'
       - 'index.html'
+      - 'commercial-engine.js'
       - 'qa/**'
       - 'package*.json'
       - '.github/workflows/sitepivot-server-qa.yml'

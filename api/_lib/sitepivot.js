@@ -1,5 +1,7 @@
 'use strict';
 
+const {councilEvidence}=require('./council');
+const {frontage}=require('../../commercial-engine');
 const UPSTREAM={
   geocoder:'https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer',
   address:'https://portal.spatial.nsw.gov.au/server/rest/services/Hosted/NSW_Address_Point_Formatted/FeatureServer/0',
@@ -227,6 +229,8 @@ async function planningFor(property){
     sepp:identify(UPSTREAM.sepp,property.point),
     localIdentify:identify(UPSTREAM.local,property.point)
   };
+  const councilPromise=councilEvidence(property,parcel.geometry,arcQuery);
+  const frontagePromise=parcel.geometry?arcQuery(UPSTREAM.cadastre.replace('/8',''),1,{where:'1=1',geometry:JSON.stringify(parcel.geometry),geometryType:'esriGeometryPolygon',inSR:4283,spatialRel:'esriSpatialRelIntersects',distance:30,units:'esriSRUnit_Meter',outFields:'*',returnGeometry:'true',outSR:4283,resultRecordCount:100},3500).then(j=>frontage(parcel.geometry,(j.features||[]).map(f=>({id:String(f.attributes?.roadnameoid||f.attributes?.objectid||''),name:f.attributes?.roadname||'',paths:f.geometry?.paths||[]})),property.streetName||'')).catch(()=>({status:'review',reason:'Official road geometry unavailable.'})):Promise.resolve({status:'review',reason:'Parcel geometry unavailable.'});
   const keys=Object.keys(jobs),settled=await Promise.allSettled(Object.values(jobs)),data={},errors=parcelError?['parcel: '+parcelError]:[],failed=parcelError?['parcel']:[];
   settled.forEach((r,i)=>{const k=keys[i];if(r.status==='fulfilled')data[k]=r.value;else{data[k]=[];failed.push(k);errors.push(k+': '+(r.reason?.message||'failed'))}});
   const missing=(k,label)=>failed.includes(k)?'Source check did not complete — Needs Review':label;
@@ -236,10 +240,11 @@ async function planningFor(property){
     ...epis.filter(x=>/^State Environmental Planning Policy/i.test(x)),
     ...(data.sepp||[]).map(r=>r.attributes?.EPI_NAME||r.attributes?.['EPI Name']||r.layerName).filter(Boolean)
   ]);
+  const [council,frontageEvidence]=await Promise.all([councilPromise,frontagePromise]);
   return {
-    parcel:{lot:parcel.lot,dp:parcel.dp,area:parcel.area,parcels:parcel.parcels,geometryResolved:!!parcel.geometry},
+    parcel:{frontage:frontageEvidence,lot:parcel.lot,dp:parcel.dp,area:parcel.area,parcels:parcel.parcels,geometryResolved:!!parcel.geometry},
     planning:{
-      spatialScope:parcel.geometry?'parcel':'address-point',
+      councilEvidence:council,spatialScope:parcel.geometry?'parcel':'address-point',
       instrument:localInstrument,allEpiNames:epis,epiNames:epis,statePolicies,sepp:statePolicies,
       zone:failed.includes('zone')?null:formatZone(data.zone),
       fsr:failed.includes('fsr')?null:formatFsr(data.fsr),
