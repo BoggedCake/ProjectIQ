@@ -55,15 +55,66 @@ try{
       const planStart=Date.now();
       try{await page.waitForFunction(()=>window.SitePivot?.app?.property?.planning?.loading===false,{timeout:9000});result.planningMs=Date.now()-planStart;}catch(e){result.planningTimeout=e.message;}
       result.passport=await page.locator('#planningFacts').innerText();
+      result.consumerUx={
+        detailedPlanningClosed:!(await page.locator('#planningDetails').evaluate(el=>el.open)),
+        planningMetricCount:await page.locator('#passportMetrics .consumerMetric').count(),
+        mattersCount:await page.locator('#consumerMatters .matterItem').count(),
+        pathwayCount:await page.locator('#passportPathways .pathwayCard').count(),
+        dwellingConfirmationVisible:await page.locator('#dwellingConfirm .confirmationBox').count()
+      };
+      result.consumerUx.pass=result.consumerUx.detailedPlanningClosed&&result.consumerUx.planningMetricCount===4&&result.consumerUx.pathwayCount===5;
+
+      result.pathways=[];
+      const pathwayCases=[
+        ['reno','scope'],
+        ['extend','scope'],
+        ['storey','scope'],
+        ['develop','develop'],
+        ['unsure','unsure']
+      ];
+      for(const [goal,dest] of pathwayCases){
+        await page.evaluate(()=>window.SitePivot.show('passport'));
+        const btn=page.locator('#passportPathways [data-goal="'+goal+'"]');
+        const exists=await btn.count();
+        let active=false,error=null;
+        if(exists){
+          try{
+            await btn.click();
+            await page.waitForSelector('#view-'+dest+'.active',{timeout:2000});
+            active=true;
+          }catch(e){error=e.message}
+        }
+        result.pathways.push({goal,dest,exists:!!exists,active,error,pass:!!exists&&active});
+      }
+      await page.evaluate(()=>window.SitePivot.show('passport'));
+
+      result.developmentChoices=[];
+      await page.locator('#passportPathways [data-goal="develop"]').click();
+      await page.waitForSelector('#view-develop.active',{timeout:2000});
+      for(const dev of ['duplex','townhouse','apartment','multisite','unsure']){
+        await page.evaluate(()=>window.SitePivot.show('develop'));
+        const btn=page.locator('#developGrid [data-dev="'+dev+'"]');
+        let pass=false,dest=dev==='unsure'?'unsure':'scope',error=null;
+        try{
+          await btn.click();
+          await page.waitForSelector('#view-'+dest+'.active',{timeout:2000});
+          pass=true;
+        }catch(e){error=e.message}
+        result.developmentChoices.push({dev,dest,pass,error});
+      }
+      await page.evaluate(()=>window.SitePivot.show('passport'));
 
       result.assistant=await page.evaluate(()=>{
         const api=window.SitePivot;
         const zoning=api?.assistantAnswer?.('What is the zoning?')||'';
         const review=api?.assistantAnswer?.('What still needs review?')||'';
+        const speech=api?.assistantSpeechAnswer?.('What is the zoning?',zoning)||'';
         return{
           textAvailable:typeof api?.assistantAnswer==='function',
           zoning,
           review,
+          speech,
+          speechClean:!/Verified|Evidence state|Source:|6 Oct 2026/i.test(speech),
           voiceInputSupported:!!api?.voiceInputSupported?.(),
           voiceOutputSupported:!!api?.voiceOutputSupported?.()
         };
@@ -131,9 +182,11 @@ try{
       width:await mobile.evaluate(()=>innerWidth),
       scrollWidth:await mobile.evaluate(()=>document.documentElement.scrollWidth),
       fixtureToolsHidden:await mobile.locator('#fixtureTools').evaluate(el=>el.classList.contains('hidden')),
-      assistantExists:await mobile.locator('#assistantSection').count()
+      assistantExists:await mobile.locator('#assistantSection').count(),
+      planningDetailsExists:await mobile.locator('#planningDetails').count(),
+      pathwayCount:await mobile.locator('#passportPathways').count()
     };
-    result.mobile.pass=result.mobile.scrollWidth<=result.mobile.width&&result.mobile.fixtureToolsHidden&&result.mobile.assistantExists===1;
+    result.mobile.pass=result.mobile.scrollWidth<=result.mobile.width&&result.mobile.fixtureToolsHidden&&result.mobile.assistantExists===1&&result.mobile.planningDetailsExists===1&&result.mobile.pathwayCount===1;
   }catch(e){result.mobile={pass:false,error:e.message}}
   await mobile.close();
 
@@ -147,4 +200,4 @@ console.log(JSON.stringify(result,null,2));
 console.log('SITEPIVOT_LIVE_QA_END');
 await browser.close();
 
-if(!result.suggestionMs || result.suggestionMs>3000 || !result.propertyResolved || !result.lga || !result.lot || !result.dp || !result.exactNumberRegression || result.matrix?.some(x=>!x.pass) || !result.fixtureToolsHidden || result.keyboardActiveSuggestion!==1 || !result.assistant?.textAvailable || (result.assistantRendered||0)<3 || !result.mobile?.pass) process.exitCode=1;
+if(!result.suggestionMs || result.suggestionMs>3000 || !result.propertyResolved || !result.lga || !result.lot || !result.dp || !result.exactNumberRegression || result.matrix?.some(x=>!x.pass) || !result.fixtureToolsHidden || result.keyboardActiveSuggestion!==1 || !result.consumerUx?.pass || result.pathways?.some(x=>!x.pass) || result.developmentChoices?.some(x=>!x.pass) || !result.assistant?.textAvailable || !result.assistant?.speechClean || (result.assistantRendered||0)<3 || !result.mobile?.pass) process.exitCode=1;
