@@ -5,6 +5,9 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
+concurrency:
+  group: sitepivot-consumer-regression
+  cancel-in-progress: true
 jobs:
   consumer-journey:
     runs-on: ubuntu-latest
@@ -16,6 +19,7 @@ jobs:
           node-version: '24'
       - run: npm install --no-save playwright@1.62.1 jsdom@30.1.2
       - run: node qa/model-regression.cjs
+      - run: node qa/async-regression.cjs
       - run: npx playwright install --with-deps chromium
       - run: node qa/journey.cjs
         env:

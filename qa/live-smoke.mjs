@@ -1,6 +1,6 @@
 import { chromium } from 'playwright';
 
-const URL='https://boggedcake.github.io/ProjectIQ/?qa='+Date.now();
+const URL=(process.env.SITEPIVOT_URL||'https://boggedcake.github.io/ProjectIQ/')+'?qa='+(process.env.SITEPIVOT_BUILD||Date.now());
 const address='57 Griffiths Street, Fairlight NSW 2094';
 const browser=await chromium.launch({headless:true});
 const page=await browser.newPage();
@@ -129,6 +129,25 @@ try{
       result.dp=await page.evaluate(()=>window.SitePivot?.app?.property?.dp||null);
       result.area=await page.evaluate(()=>window.SitePivot?.app?.property?.area||null);
       result.dcp=await page.evaluate(()=>window.SitePivot?.app?.property?.planning?.dcpPlans||[]);
+      // Exercise the actual deployed founder path through real controls, not show().
+      const propertyId=await page.evaluate(()=>SitePivot.app.property.id);
+      await page.locator('#passportPathways [data-goal="reno"]').click();
+      await page.locator('#scopeArea').fill('65');
+      await page.locator('#runAssessment').click();
+      await page.locator('#view-assessment.active').waitFor();
+      for(const control of await page.locator('#assessmentTabs [data-tab]').all()){
+        if(await control.isVisible())await control.click();
+      }
+      await page.locator('#toRoadmap').click();
+      await page.locator('#view-roadmap.active').waitFor();
+      const roadmap=await page.locator('#roadmapList').innerText();
+      await page.locator('#toReport').click();
+      await page.locator('#view-report.active').waitFor();
+      const report=await page.locator('#reportContent').innerText();
+      const sameProperty=await page.evaluate(id=>SitePivot.app.property.id===id,propertyId);
+      await page.locator('#restartBtn').click();
+      await page.locator('#view-landing.active').waitFor();
+      result.founderJourney={pass:roadmap.length>20&&report.length>100&&sameProperty,roadmapRendered:roadmap.length>20,reportRendered:report.length>100,propertyPreserved:sameProperty,startOver:true};
     }catch(e){result.propertyResolved=false;result.propertyError=e.message;result.searchBox=await page.locator('#searchResults').innerText().catch(()=>null);}
   }catch(e){
     result.suggestionMs=null;
@@ -200,4 +219,4 @@ console.log(JSON.stringify(result,null,2));
 console.log('SITEPIVOT_LIVE_QA_END');
 await browser.close();
 
-if(!result.suggestionMs || result.suggestionMs>3000 || !result.propertyResolved || !result.lga || !result.lot || !result.dp || !result.exactNumberRegression || result.matrix?.some(x=>!x.pass) || !result.fixtureToolsHidden || result.keyboardActiveSuggestion!==1 || !result.consumerUx?.pass || result.pathways?.some(x=>!x.pass) || result.developmentChoices?.some(x=>!x.pass) || !result.assistant?.textAvailable || !result.assistant?.speechClean || (result.assistantRendered||0)<3 || !result.mobile?.pass) process.exitCode=1;
+if(!result.suggestionMs || result.suggestionMs>3000 || !result.propertyResolved || !result.lga || !result.lot || !result.dp || !result.zone || !result.dcp?.length || !result.founderJourney?.pass || !result.exactNumberRegression || result.matrix?.some(x=>!x.pass) || !result.fixtureToolsHidden || result.keyboardActiveSuggestion!==1 || !result.consumerUx?.pass || result.pathways?.some(x=>!x.pass) || result.developmentChoices?.some(x=>!x.pass) || !result.assistant?.textAvailable || !result.assistant?.speechClean || (result.assistantRendered||0)<3 || !result.mobile?.pass || consoleErrors.some(e=>e.startsWith('PAGEERROR '))) process.exitCode=1;

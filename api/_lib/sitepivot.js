@@ -63,18 +63,21 @@ async function arcQuery(base,id,params={},timeout=6000){
 function parsedAddress(s){
   const raw=String(s||'').toUpperCase().replace(/,|\bAUSTRALIA\b|\bAUS\b/g,' ').replace(/NEW SOUTH WALES/g,'NSW').replace(/\s+/g,' ').trim();
   const unit=raw.match(/^\s*(?:UNIT\s*)?([A-Z0-9-]+)\s*\/\s*(\d+[A-Z]?)/);
-  const number=unit?unit[2]:(raw.match(/\b(\d+[A-Z]?)\b/)||[])[1]||'';
+  const namedUnit=raw.match(/\b(?:UNIT|APARTMENT|APT|FLAT)\s+([A-Z0-9-]+)\b/);
+  const streetRaw=namedUnit?raw.replace(namedUnit[0],''):raw;
+  const number=unit?unit[2]:(streetRaw.match(/\b(\d+[A-Z]?)\b/)||[])[1]||'';
   const postcode=(raw.match(/\b(2\d{3})\b/)||[])[1]||'';
-  return {raw,unit:unit?unit[1]:'',number,postcode};
+  return {raw,unit:unit?unit[1]:namedUnit?.[1]||'',number,postcode};
 }
 function addressScore(a,input){
   const q=parsedAddress(input),cand=String(a.formattedaddress||'').toUpperCase(),p=parsedAddress(cand);
+  if(a.streetnumber1!=null&&String(a.streetnumber1).trim())p.number=String(a.streetnumber1).toUpperCase().trim();
   let score=0;
   if(q.number&&p.number===q.number)score+=100;else if(q.number&&p.number!==q.number)score-=200;
   if(q.postcode&&p.postcode===q.postcode)score+=30;else if(q.postcode&&p.postcode&&q.postcode!==p.postcode)score-=50;
   const tokens=q.raw.split(' ').filter(x=>x.length>2&&!['NSW','NEW','SOUTH','WALES'].includes(x));
   for(const t of tokens)if(cand.includes(t))score+=4;
-  if(q.unit){if(String(a.complexunitidentifier||'').toUpperCase()===q.unit)score+=80;else if(a.complexunitidentifier)score-=30}
+  if(q.unit){if(String(a.complexunitidentifier||p.unit||'').toUpperCase()===q.unit)score+=80;else score-=200}
   return score;
 }
 async function suggestAddress(q){
