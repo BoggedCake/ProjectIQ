@@ -240,15 +240,18 @@ async function lgaForPoint(point,fallback){
  const a=attrs((j.features||[])[0]);return a.lganame||a.councilnam||'Needs Review'
 }
 function areaSqm(a){const n=+a.planlotarea||0,u=String(a.planlotareaunits||'').toUpperCase();if(!n)return 0;if(/HA|HECT/.test(u))return n*10000;if(/M|SQM|M2|MET/.test(u)||!u)return n;return n}
-async function parcelForPoint(point,cadastralId=''){
- const common={where:'1=1',geometry:`${point.x},${point.y}`,geometryType:'esriGeometryPoint',inSR:4283,spatialRel:'esriSpatialRelIntersects',outFields:'cadid,lotnumber,planlabel,planlotarea,planlotareaunits,lotidstring,classsubtype',returnGeometry:'true',outSR:4283};
+async function parcelForPoint(point,cadastralId='',cadid=null){
+ const fields='cadid,lotnumber,planlabel,planlotarea,planlotareaunits,lotidstring,classsubtype';
  let fs=[],proximity=false,errors=[];
- try{const j=await arcJSON(LIVE.cadastre+'/query',{...common,resultRecordCount:20},4500);fs=(j.features||[]).filter(f=>f.geometry&&f.geometry.rings)}catch(e){errors.push('point: '+e.message)}
+ if(Number.isFinite(+cadid)){
+   try{const j=await arcJSON(LIVE.cadastre+'/query',{where:'cadid = '+Number(cadid),outFields:fields,returnGeometry:'true',outSR:4283,resultRecordCount:20},3000);fs=(j.features||[]).filter(f=>f.geometry&&f.geometry.rings)}catch(e){errors.push('cadid: '+e.message)}
+ }
  if(!fs.length&&cadastralId){
-   try{const safe=String(cadastralId).replace(/'/g,"''");const j=await arcJSON(LIVE.cadastre+'/query',{where:"lotidstring = '"+safe+"'",outFields:'cadid,lotnumber,planlabel,planlotarea,planlotareaunits,lotidstring,classsubtype',returnGeometry:'true',outSR:4283,resultRecordCount:20},4500);fs=(j.features||[]).filter(f=>f.geometry&&f.geometry.rings)}catch(e){errors.push('id: '+e.message)}
+   try{const safe=String(cadastralId).replace(/'/g,"''");const j=await arcJSON(LIVE.cadastre+'/query',{where:"lotidstring = '"+safe+"'",outFields:fields,returnGeometry:'true',outSR:4283,resultRecordCount:20},3000);fs=(j.features||[]).filter(f=>f.geometry&&f.geometry.rings)}catch(e){errors.push('id: '+e.message)}
  }
  if(!fs.length){
-   try{const j=await arcJSON(LIVE.cadastre+'/query',{...common,distance:20,units:'esriSRUnit_Meter',resultRecordCount:20},4500);fs=(j.features||[]).filter(f=>f.geometry&&f.geometry.rings);proximity=!!fs.length}catch(e){errors.push('nearby: '+e.message)}
+   const common={where:'1=1',geometry:`${point.x},${point.y}`,geometryType:'esriGeometryPoint',inSR:4283,spatialRel:'esriSpatialRelIntersects',outFields:fields,returnGeometry:'true',outSR:4283,resultRecordCount:20};
+   try{const j=await arcJSON(LIVE.cadastre+'/query',common,3000);fs=(j.features||[]).filter(f=>f.geometry&&f.geometry.rings)}catch(e){errors.push('point: '+e.message)}
  }
  if(!fs.length)return{features:[],geometry:null,proximity,errors};
  const rings=fs.flatMap(f=>f.geometry.rings||[]);return{features:fs,geometry:{rings,spatialReference:{wkid:4283}},proximity,errors}
@@ -315,7 +318,7 @@ async function completeLiveProperty(p,official,geo,seq){
  const a=attrs(official),point=official.geometry||geo.location;
  try{
    const tParcel=performance.now();
-   const parcel=await Promise.race([parcelForPoint(point,a.cadastralidentifier||a.pl_ptlotsecpn||''),new Promise(resolve=>setTimeout(()=>resolve({features:[],geometry:null,proximity:false,errors:['parcel timeout']}),2600))]);
+   const parcel=await Promise.race([parcelForPoint(point,a.cadastralidentifier||a.pl_ptlotsecpn||'',a.lot_cadid),new Promise(resolve=>setTimeout(()=>resolve({features:[],geometry:null,proximity:false,errors:['parcel timeout']}),2600))]);
    p.sourceMeta.timing.parcelMs=Math.round(performance.now()-tParcel);
    if(parcel.features?.length){const pt=parseTitleFromLots(parcel);p.title=pt.title;p.lot=pt.lot;p.dp=pt.dp;p.area=pt.area;p.parcels=pt.parcels;p.parcelGeometry=parcel.geometry;p.parcelProximity=parcel.proximity}
    const tPlan=performance.now(),planning=await pullPlanning(point,parcel,p.lga);p.sourceMeta.timing.planningMs=Math.round(performance.now()-tPlan);
