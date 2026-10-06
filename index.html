@@ -860,7 +860,7 @@ $('assistantSend').onclick=submitAssistant;
 $('assistantMic').onclick=startVoiceInput;
 $('assistantVoiceReply').onclick=toggleVoiceReply;
 $('assistantInput').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();submitAssistant()}});
-$('[data-assistant-prompt]').forEach(b=>b.addEventListener('click',()=>{$('assistantInput').value=b.dataset.assistantPrompt;submitAssistant()}));
+$$('[data-assistant-prompt]').forEach(b=>b.addEventListener('click',()=>{$('assistantInput').value=b.dataset.assistantPrompt;submitAssistant()}));
 if(voiceOutputSupported()){try{window.speechSynthesis.addEventListener?.('voiceschanged',refreshPreferredVoice);refreshPreferredVoice()}catch(e){}}
 updateVoiceControls();
 const qaFixtures=new URLSearchParams(location.search).get('fixtures')==='1';$('fixtureTools').classList.toggle('hidden',!qaFixtures);$('sampleGrid').innerHTML=qaFixtures?[FIXTURES[2],FIXTURES[3],FIXTURES[5],FIXTURES[6],FIXTURES[9],FIXTURES[10]].map(f=>`<button class="sample" data-sample="${f.id}"><strong>${esc(f.suburb)}</strong><br>${esc(f.address.split(',')[0])}</button>`).join(''):'';
