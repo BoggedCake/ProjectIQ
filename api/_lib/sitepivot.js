@@ -258,7 +258,7 @@ async function planningFor(property){
       urbanRelease:failed.includes('urbanRelease')?[]:rowLabels(data.urbanRelease),
       localTriggers:failed.includes('localIdentify')?[]:unique((data.localIdentify||[]).map(r=>[r.layerName,r.attributes?.LAY_CLASS||r.attributes?.Class].filter(Boolean).join(' · '))),
       splitZone:unique(data.zone.map(f=>formatZone([f]))).length>1,
-      liveErrors:errors,failedSources:failed,checkedAt:new Date().toISOString()
+      liveErrors:errors,failedKeys:failed,failedSources:failed,checkedAt:new Date().toISOString()
     },
     timingMs:now()-t,
     providers:['NSW Land Parcel Property Theme','NSW Planning Portal EPI Primary Planning Layers','NSW Planning Portal Protection/Hazard','NSW Bush Fire Prone Land','NSW Planning Portal Development Control']
