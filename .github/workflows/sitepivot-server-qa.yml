@@ -5,7 +5,7 @@ on:
     branches: [sitepivot-concept]
     paths:
       - 'api/**'
-      - 'qa/serverless-smoke.js'
+      - 'qa/serverless-smoke.cjs'
       - '.github/workflows/sitepivot-server-qa.yml'
   workflow_dispatch:
 
@@ -22,4 +22,4 @@ jobs:
         with:
           node-version: '20'
       - name: Test NSW address, identity and planning providers server-side
-        run: node qa/serverless-smoke.js
+        run: node qa/serverless-smoke.cjs
