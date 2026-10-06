@@ -249,6 +249,12 @@ async function parcelForPoint(point,cadastralId='',cadid=null){
  }
  if(!fs.length&&cadastralId){
    try{const safe=String(cadastralId).replace(/'/g,"''");const j=await arcJSON(LIVE.cadastre+'/query',{where:"lotidstring = '"+safe+"'",outFields:fields,returnGeometry:'true',outSR:4283,resultRecordCount:20},3000);fs=(j.features||[]).filter(f=>f.geometry&&f.geometry.rings)}catch(e){errors.push('id: '+e.message)}
+   if(!fs.length){
+     try{
+       const cid=String(cadastralId),m=cid.match(/^([^/]*)\/[^/]*\/(.+)$/);
+       if(m){const lot=String(m[1]).replace(/'/g,"''"),plan=String(m[2]).replace(/'/g,"''");const j=await arcJSON(LIVE.cadastre+'/query',{where:"lotnumber = '"+lot+"' AND planlabel = '"+plan+"'",outFields:fields,returnGeometry:'true',outSR:4283,resultRecordCount:20},3000);fs=(j.features||[]).filter(f=>f.geometry&&f.geometry.rings)}
+     }catch(e){errors.push('lotplan: '+e.message)}
+   }
  }
  if(!fs.length){
    const common={where:'1=1',geometry:`${point.x},${point.y}`,geometryType:'esriGeometryPoint',inSR:4283,spatialRel:'esriSpatialRelIntersects',outFields:fields,returnGeometry:'true',outSR:4283,resultRecordCount:20};
