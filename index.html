@@ -237,13 +237,18 @@ async function lgaForPoint(point,fallback){
  const a=attrs((j.features||[])[0]);return a.lganame||a.councilnam||'Needs Review'
 }
 function areaSqm(a){const n=+a.planlotarea||0,u=String(a.planlotareaunits||'').toUpperCase();if(!n)return 0;if(/HA|HECT/.test(u))return n*10000;if(/M|SQM|M2|MET/.test(u)||!u)return n;return n}
-async function parcelForPoint(point){
- const common={where:'1=1',geometry:JSON.stringify(point),geometryType:'esriGeometryPoint',inSR:4283,spatialRel:'esriSpatialRelIntersects',outFields:'cadid,lotnumber,planlabel,planlotarea,planlotareaunits,lotidstring,classsubtype',returnGeometry:'true',outSR:4283,resultRecordCount:20};
- let j=await arcJSON(LIVE.cadastre+'/query',common);
- let fs=(j.features||[]).filter(f=>f.geometry&&f.geometry.rings);let proximity=false;
- if(!fs.length){j=await arcJSON(LIVE.cadastre+'/query',{...common,distance:25,units:'esriSRUnit_Meter'});fs=(j.features||[]).filter(f=>f.geometry&&f.geometry.rings);proximity=true}
- if(!fs.length)return{features:[],geometry:null,proximity};
- const rings=fs.flatMap(f=>f.geometry.rings||[]);return{features:fs,geometry:{rings,spatialReference:{wkid:4283}},proximity}
+async function parcelForPoint(point,cadastralId=''){
+ const common={where:'1=1',geometry:`${point.x},${point.y}`,geometryType:'esriGeometryPoint',inSR:4283,spatialRel:'esriSpatialRelIntersects',outFields:'cadid,lotnumber,planlabel,planlotarea,planlotareaunits,lotidstring,classsubtype',returnGeometry:'true',outSR:4283};
+ let fs=[],proximity=false,errors=[];
+ try{const j=await arcJSON(LIVE.cadastre+'/query',{...common,resultRecordCount:20},4500);fs=(j.features||[]).filter(f=>f.geometry&&f.geometry.rings)}catch(e){errors.push('point: '+e.message)}
+ if(!fs.length&&cadastralId){
+   try{const safe=String(cadastralId).replace(/'/g,"''");const j=await arcJSON(LIVE.cadastre+'/query',{where:"lotidstring = '"+safe+"'",outFields:'cadid,lotnumber,planlabel,planlotarea,planlotareaunits,lotidstring,classsubtype',returnGeometry:'true',outSR:4283,resultRecordCount:20},4500);fs=(j.features||[]).filter(f=>f.geometry&&f.geometry.rings)}catch(e){errors.push('id: '+e.message)}
+ }
+ if(!fs.length){
+   try{const j=await arcJSON(LIVE.cadastre+'/query',{...common,distance:20,units:'esriSRUnit_Meter',resultRecordCount:20},4500);fs=(j.features||[]).filter(f=>f.geometry&&f.geometry.rings);proximity=!!fs.length}catch(e){errors.push('nearby: '+e.message)}
+ }
+ if(!fs.length)return{features:[],geometry:null,proximity,errors};
+ const rings=fs.flatMap(f=>f.geometry.rings||[]);return{features:fs,geometry:{rings,spatialReference:{wkid:4283}},proximity,errors}
 }
 async function spatialLayer(base,id,geom,type,lga,outFields='*',count=50){
  const q={where:'1=1',geometry:JSON.stringify(geom),geometryType:type,inSR:4283,spatialRel:'esriSpatialRelIntersects',outFields,returnGeometry:'false',resultRecordCount:count};
@@ -289,16 +294,17 @@ async function pullPlanning(point,parcel,lga){
  }
 }
 function parseTitleFromLots(lots){const fs=lots?.features||[];return{lot:uniq(fs.map(f=>attrs(f).lotnumber)).join(' + ')||'Needs Review',dp:uniq(fs.map(f=>attrs(f).planlabel)).join(' + ')||'Needs Review',area:fs.reduce((s,f)=>s+areaSqm(attrs(f)),0)||null,parcels:fs.length||null,title:fs.some(f=>/STRATA/i.test(String(attrs(f).lotidstring||'')))?'Strata / cadastral':'Torrens / cadastral'}}
+function isStrataFromAddress(a){return !!a.complexunitidentifier||/STRATA|UNIT/i.test(String(a.ss_addresspointtype||'')+' '+String(a.ss_classsubtype||''))}
 async function enrichLiveAddress(item){
  const seq=++app.enrichSeq,started=performance.now();setLiveStatus('Resolving the selected NSW property…','info');
  const geo=await geocoderCandidate(item);if(seq!==app.enrichSeq)throw new Error('Stale property request');
  const official=await authoritativeAddressForCandidate(geo,item.text||'');if(seq!==app.enrichSeq)throw new Error('Stale property request');
  const a=attrs(official),point=official.geometry||geo.location,lga=a.lganame||await lgaForPoint(point,null);
- const tParcel=performance.now(),parcel=await parcelForPoint(point),parcelMs=Math.round(performance.now()-tParcel),title=parseTitleFromLots(parcel);
+ const tParcel=performance.now(),parcel=await parcelForPoint(point,a.cadastralidentifier||a.pl_ptlotsecpn||''),parcelMs=Math.round(performance.now()-tParcel);let title=parseTitleFromLots(parcel);if(!parcel.features.length&&(a.cadastralidentifier||a.pl_ptlotsecpn)){const cid=String(a.cadastralidentifier||a.pl_ptlotsecpn);const m=cid.match(/^([^/]*)\/[^/]*\/(.+)$/);title={lot:m?.[1]||cid,dp:m?.[2]||'Needs Review',area:null,parcels:1,title:isStrataFromAddress(a)?'Strata / cadastral':'Torrens / cadastral'}};
  setLiveStatus('Property matched in '+lga+'. Loading planning controls…','info');
  const tPlan=performance.now(),planning=await pullPlanning(point,parcel,lga),planningMs=Math.round(performance.now()-tPlan);
  if(seq!==app.enrichSeq)throw new Error('Stale property request');
- const canonical=a.formattedaddress||item.text||'NSW property',suburb=a.localityname||geo.attributes?.City||'NSW',postcode=String(a.postcode||geo.attributes?.Postal||''),isStrata=!!a.complexunitidentifier||/STRATA|UNIT/i.test(String(a.ss_addresspointtype||'')+' '+String(a.ss_classsubtype||''));
+ const canonical=a.formattedaddress||item.text||'NSW property',suburb=a.localityname||geo.attributes?.City||'NSW',postcode=String(a.postcode||geo.attributes?.Postal||''),isStrata=isStrataFromAddress(a);
  const p={id:'live-'+(a.objectid||a.ap_gurasid||Date.now()),address:canonical,suburb,region:lga,lga,postcode,propertyType:isStrata?'apartment':'house',title:title.title,lot:title.lot,dp:title.dp,area:title.area,frontage:null,beds:null,baths:null,parking:null,parcels:title.parcels,identityStatus:'verified',live:true,generic:false,point,parcelGeometry:parcel.geometry,parcelProximity:parcel.proximity,planning,opportunities:['Improve / renovation pathway','Extension or additional-level screening','Development pathway based on verified planning evidence'],costRegion:1,currentComps:[],completed:{reno:[],extend:[],storey:[],duplex:[],townhouse:[],apartment:[],multisite:[]},active:[],sourceMeta:{address:'ArcGIS fast suggestion + NSW Address Point Formatted authoritative match',addressObjectId:a.objectid||null,cadastralIdentifier:a.cadastralidentifier||a.pl_ptlotsecpn||null,cadastre:'NSW Cadastre',planning:'NSW Planning Portal spatial services',checkedAt:new Date().toISOString(),timing:{suggestMs:app.lastSuggestMs||null,parcelMs,planningMs,totalMs:Math.round(performance.now()-started)}}};
  if(planning.zone&&/R[1-4]|MU1|E1|B\d/i.test(planning.zone))p.opportunities.unshift('Planning-led development opportunity screening');return p
 }
@@ -397,7 +403,7 @@ out.push(assert('Flood/protection/bushfire sources wired',LIVE.hazard.includes('
 
 }catch(e){out.push(assert('Self-test runtime',false,String(e&&e.stack||e)))}
 const fails=out.filter(x=>!x.pass);window.__SITEPIVOT_TEST_RESULTS__={total:out.length,passed:out.length-fails.length,failed:fails.length,results:out};$('testHarness').classList.remove('hidden');$('testOutput').textContent=`SITEPIVOT SELF TESTS\n${out.map(x=>`${x.pass?'PASS':'FAIL'} · ${x.name}${x.details?' · '+x.details:''}`).join('\n')}\n\nTOTAL ${out.length} · PASSED ${out.length-fails.length} · FAILED ${fails.length}`;return window.__SITEPIVOT_TEST_RESULTS__}
-async function runLiveDiagnostics(){const out=[];try{let t=performance.now();const sug=await liveAddressSearch('57 Griffiths Street Fairlight NSW');out.push({name:'autocomplete',pass:sug.length>0,ms:Math.round(performance.now()-t),provider:'ArcGIS World Geocoder',count:sug.length});if(!sug.length)throw new Error('No suggestions');t=performance.now();const geo=await geocoderCandidate(sug[0]);out.push({name:'geocoder resolve',pass:!!geo.location,ms:Math.round(performance.now()-t),provider:'ArcGIS World Geocoder'});t=performance.now();const official=await authoritativeAddressForCandidate(geo,sug[0].text);out.push({name:'NSW address identity',pass:!!attrs(official).formattedaddress,ms:Math.round(performance.now()-t),provider:'NSW Address Point Formatted',address:attrs(official).formattedaddress,lga:attrs(official).lganame});t=performance.now();const parcel=await parcelForPoint(official.geometry||geo.location);out.push({name:'cadastre',pass:parcel.features.length>0,ms:Math.round(performance.now()-t),provider:'NSW Cadastre',parcels:parcel.features.length});const lga=attrs(official).lganame||await lgaForPoint(official.geometry||geo.location,null);t=performance.now();const planning=await pullPlanning(official.geometry||geo.location,parcel,lga);out.push({name:'planning',pass:!!planning.zone,ms:Math.round(performance.now()-t),provider:'NSW Planning Portal',zone:planning.zone,instrument:planning.instrument,dcp:planning.dcpPlans});}catch(e){out.push({name:'runtime',pass:false,error:e.message})}window.__SITEPIVOT_LIVE_DIAGNOSTICS__=out;return out}
+async function runLiveDiagnostics(){const out=[];try{let t=performance.now();const sug=await liveAddressSearch('57 Griffiths Street Fairlight NSW');out.push({name:'autocomplete',pass:sug.length>0,ms:Math.round(performance.now()-t),provider:'ArcGIS World Geocoder',count:sug.length});if(!sug.length)throw new Error('No suggestions');t=performance.now();const geo=await geocoderCandidate(sug[0]);out.push({name:'geocoder resolve',pass:!!geo.location,ms:Math.round(performance.now()-t),provider:'ArcGIS World Geocoder'});t=performance.now();const official=await authoritativeAddressForCandidate(geo,sug[0].text);out.push({name:'NSW address identity',pass:!!attrs(official).formattedaddress,ms:Math.round(performance.now()-t),provider:'NSW Address Point Formatted',address:attrs(official).formattedaddress,lga:attrs(official).lganame});t=performance.now();const parcel=await parcelForPoint(official.geometry||geo.location,attrs(official).cadastralidentifier||attrs(official).pl_ptlotsecpn||'');out.push({name:'cadastre',pass:parcel.features.length>0,ms:Math.round(performance.now()-t),provider:'NSW Cadastre',parcels:parcel.features.length});const lga=attrs(official).lganame||await lgaForPoint(official.geometry||geo.location,null);t=performance.now();const planning=await pullPlanning(official.geometry||geo.location,parcel,lga);out.push({name:'planning',pass:!!planning.zone,ms:Math.round(performance.now()-t),provider:'NSW Planning Portal',zone:planning.zone,instrument:planning.instrument,dcp:planning.dcpPlans});}catch(e){out.push({name:'runtime',pass:false,error:e.message})}window.__SITEPIVOT_LIVE_DIAGNOSTICS__=out;return out}
 window.SitePivot={FIXTURES,SOURCES,GOALS,DEV,LIVE,app,findMatches,liveAddressSearch,enrichLiveAddress,selectProperty,computeAssessment,projectCost,currentMarket,completedMarket,marketRange,compScore,runSelfTests,runLiveDiagnostics,reset};bind();renderSources();
 if(new URLSearchParams(location.search).get('autotest')==='1'){setTimeout(()=>runSelfTests(),50)}
 })();
