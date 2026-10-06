@@ -8,9 +8,11 @@
 <style>
 :root{--ink:#17201c;--muted:#66706a;--line:#dfe5e1;--paper:#f6f8f6;--card:#fff;--accent:#1f5f49;--accent2:#dfeee7;--warn:#8a5a12;--warnbg:#fff5de;--bad:#8b3030;--badbg:#fff0f0;--good:#276047;--goodbg:#eaf6f0;--info:#355d82;--infobg:#eef5fb;--shadow:0 12px 34px rgba(25,48,38,.08);--radius:20px;--max:1180px}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:var(--paper);line-height:1.45}.appShell{min-height:100vh}.topbar{position:sticky;top:0;z-index:20;background:rgba(246,248,246,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}.topInner{max-width:var(--max);margin:auto;padding:14px 20px;display:flex;align-items:center;gap:16px}.brand{font-weight:850;letter-spacing:-.04em;font-size:25px}.brand span{color:var(--accent)}.stage{font-size:12px;color:var(--muted);background:#fff;border:1px solid var(--line);padding:6px 9px;border-radius:999px}.spacer{flex:1}.ghostBtn,.primaryBtn,.secondaryBtn,.miniBtn{appearance:none;border:0;border-radius:12px;font-weight:750;cursor:pointer;transition:.15s ease;font:inherit}.ghostBtn{background:transparent;color:var(--ink);padding:9px 10px}.primaryBtn{background:var(--accent);color:#fff;padding:13px 18px;box-shadow:0 6px 16px rgba(31,95,73,.15)}.primaryBtn:hover{transform:translateY(-1px)}.secondaryBtn{background:#fff;border:1px solid var(--line);color:var(--ink);padding:12px 16px}.miniBtn{background:#fff;border:1px solid var(--line);padding:8px 10px;font-size:13px}.primaryBtn:disabled,.secondaryBtn:disabled{opacity:.45;cursor:not-allowed}.container{max-width:var(--max);margin:auto;padding:26px 20px 70px}.view{display:none}.view.active{display:block}.hero{display:grid;grid-template-columns:1.2fr .8fr;gap:36px;align-items:start;padding:56px 0 28px}.eyebrow{font-size:13px;text-transform:uppercase;letter-spacing:.14em;font-weight:800;color:var(--accent)}h1{font-size:clamp(42px,7vw,78px);line-height:.96;letter-spacing:-.055em;margin:12px 0 20px;max-width:900px}h2{font-size:clamp(28px,4vw,44px);letter-spacing:-.04em;line-height:1.05;margin:8px 0 14px}h3{font-size:21px;letter-spacing:-.02em;margin:0 0 8px}p{margin:0 0 12px}.lede{font-size:20px;color:#455049;max-width:780px}.trustStrip{display:flex;flex-wrap:wrap;gap:8px;margin:20px 0}.pill{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:#fff;border-radius:999px;padding:7px 10px;font-size:12px;font-weight:750}.pill.verified{background:var(--goodbg);color:var(--good);border-color:#cde7d9}.pill.indicative{background:var(--infobg);color:var(--info);border-color:#d5e5f1}.pill.review{background:var(--warnbg);color:var(--warn);border-color:#f0deb5}.pill.unavailable{background:#f1f1f1;color:#666}.panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px}.heroPanel{position:sticky;top:92px}.field{margin:14px 0}.field label{display:block;font-weight:800;font-size:14px;margin:0 0 7px}.hint{font-size:12px;color:var(--muted)}input,select,textarea{width:100%;padding:13px 14px;border:1px solid #cfd7d2;border-radius:12px;background:#fff;color:var(--ink);font:inherit;outline:none}input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(31,95,73,.12)}textarea{min-height:110px;resize:vertical}.searchResults{margin-top:9px;border:1px solid var(--line);border-radius:12px;background:#fff;overflow:hidden;display:none}.searchResults.open{display:block}.searchResult{display:block;width:100%;text-align:left;padding:12px 14px;border:0;border-bottom:1px solid var(--line);background:#fff;cursor:pointer}.searchResult:last-child{border-bottom:0}.searchResult:hover{background:#f8faf8}.demoTag{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--warn);font-weight:850}.sampleGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:10px}.sample{font-size:12px;border:1px solid var(--line);background:#fff;border-radius:10px;padding:9px;text-align:left;cursor:pointer}.steps{display:flex;gap:8px;align-items:center;margin:4px 0 22px;overflow:auto;padding-bottom:2px}.step{font-size:12px;color:var(--muted);white-space:nowrap}.step.current{color:var(--accent);font-weight:850}.step:after{content:"›";margin-left:8px;color:#aaa}.step:last-child:after{display:none}.pageHead{display:flex;gap:16px;align-items:flex-start;justify-content:space-between;margin:22px 0}.pageHead .copy{max-width:760px}.notice{border-radius:14px;padding:13px 15px;margin:12px 0;border:1px solid}.notice.info{background:var(--infobg);border-color:#d9e6f0}.notice.warn{background:var(--warnbg);border-color:#edddb8}.notice.good{background:var(--goodbg);border-color:#d0e7dc}.notice.bad{background:var(--badbg);border-color:#efcece}.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.metric{padding:16px;border:1px solid var(--line);border-radius:15px;background:#fff}.metric .label{font-size:12px;color:var(--muted);font-weight:750}.metric .value{font-size:22px;font-weight:850;letter-spacing:-.03em;margin-top:3px}.metric .sub{font-size:12px;color:var(--muted);margin-top:4px}.section{margin:22px 0}.sectionTitle{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}.factList{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.fact{border:1px solid var(--line);border-radius:14px;padding:13px;background:#fff}.factTop{display:flex;justify-content:space-between;gap:8px}.factName{font-size:12px;color:var(--muted);font-weight:750}.factValue{font-weight:850}.factMeta{font-size:11px;color:var(--muted);margin-top:5px}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}.goalGrid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}.goalCard{border:1px solid var(--line);background:#fff;border-radius:18px;padding:18px;text-align:left;cursor:pointer;min-height:170px}.goalCard:hover,.goalCard.selected{border-color:var(--accent);box-shadow:0 0 0 3px rgba(31,95,73,.1)}.goalIcon{font-size:26px}.goalTitle{font-size:17px;font-weight:850;margin:12px 0 6px}.goalDesc{font-size:13px;color:var(--muted)}.scopeGrid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.segmented{display:flex;gap:8px;flex-wrap:wrap}.segmented button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:9px 12px;cursor:pointer;font-weight:750}.segmented button.active{background:var(--accent);color:#fff;border-color:var(--accent)}.tabs{display:flex;gap:8px;overflow:auto;margin:18px 0 14px}.tab{border:1px solid var(--line);background:#fff;border-radius:999px;padding:9px 12px;cursor:pointer;white-space:nowrap;font-weight:750}.tab.active{background:var(--ink);color:#fff}.tabPanel{display:none}.tabPanel.active{display:block}.score{font-size:12px;font-weight:850;padding:4px 7px;border-radius:999px;background:#eef3ef}.compareTable{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff}.compareTable th,.compareTable td{text-align:left;padding:11px;border-bottom:1px solid var(--line);font-size:13px;vertical-align:top}.compareTable tr:last-child td{border-bottom:0}.compareTable th{background:#f4f7f5;font-size:12px;color:var(--muted)}.bar{height:9px;background:#edf0ee;border-radius:999px;overflow:hidden}.bar span{height:100%;background:var(--accent);display:block}.risk{display:flex;gap:12px;padding:13px;border:1px solid var(--line);border-radius:14px;background:#fff;margin-bottom:8px}.riskRank{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:#f1f4f2;font-weight:850;flex:0 0 auto}.roadmap{position:relative;padding-left:16px}.roadStep{display:grid;grid-template-columns:34px 1fr;gap:12px;padding:0 0 20px}.roadNo{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:#fff;font-weight:850}.roadStep:not(:last-child):before{content:"";position:absolute;left:32px;margin-top:34px;height:28px;border-left:2px solid #d5ddd8}.sourceRow{display:grid;grid-template-columns:1.2fr .9fr .8fr .8fr;gap:10px;border-bottom:1px solid var(--line);padding:10px 0;font-size:12px}.sourceRow.header{font-weight:850;color:var(--muted)}.modal{position:fixed;inset:0;background:rgba(15,22,18,.55);display:none;place-items:center;padding:20px;z-index:50}.modal.open{display:grid}.modalCard{max-width:1000px;width:100%;max-height:85vh;overflow:auto;background:#fff;border-radius:20px;padding:22px}.right{margin-left:auto}.small{font-size:12px;color:var(--muted)}.divider{border:0;border-top:1px solid var(--line);margin:18px 0}.kicker{font-weight:850;color:var(--accent)}.money{font-variant-numeric:tabular-nums}.footerNote{font-size:11px;color:var(--muted);margin-top:24px}.hidden{display:none!important}.testOutput{white-space:pre-wrap;background:#111;color:#eee;padding:16px;border-radius:12px;font:12px ui-monospace,monospace;margin-top:16px}
+.assistantPanel{box-shadow:none}.assistantMessages{display:flex;flex-direction:column;gap:10px;max-height:360px;overflow:auto;padding:4px 2px 12px;scrollbar-gutter:stable}.assistantMessage{max-width:88%;padding:11px 13px;border-radius:14px;white-space:pre-wrap}.assistantMessage.user{align-self:flex-end;background:var(--accent);color:#fff}.assistantMessage.assistant{align-self:flex-start;background:var(--paper);border:1px solid var(--line)}.assistantComposer{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end}.assistantComposer textarea{min-height:72px;margin:0}.assistantControls{display:flex;gap:8px;flex-wrap:wrap}.voiceBtn.listening{outline:3px solid rgba(31,95,73,.18);background:var(--accent2);color:var(--accent)}.voiceStatus{margin-top:8px}.assistantPrivacy{margin-top:8px}
 @media(max-width:980px){.hero{grid-template-columns:1fr}.heroPanel{position:static}.goalGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.grid4{grid-template-columns:repeat(2,minmax(0,1fr))}.grid3{grid-template-columns:1fr 1fr}.sourceRow{grid-template-columns:1fr 1fr}.sourceRow.header{display:none}}
 @media(max-width:680px){.topInner{padding:12px 14px}.brand{font-size:22px}.stage{display:none}.container{padding:18px 14px 54px}.hero{padding-top:28px}.lede{font-size:18px}.grid2,.grid3,.grid4,.scopeGrid,.factList{grid-template-columns:1fr}.goalGrid{grid-template-columns:1fr}.goalCard{min-height:auto}.pageHead{display:block}.pageHead .actions{margin-top:12px}.metric .value{font-size:20px}.compareTable{display:block;overflow:auto}.sampleGrid{grid-template-columns:1fr}.sourceRow{grid-template-columns:1fr}}
-@media print{.topbar,.tabs,.actions,.ghostBtn,.primaryBtn,.secondaryBtn,.demoTag{display:none!important}.view{display:none!important}.view.active{display:block!important}.container{max-width:none;padding:0}.panel{box-shadow:none}.tabPanel{display:block!important;break-inside:avoid}.notice{break-inside:avoid}}
+@media(max-width:680px){.assistantComposer{grid-template-columns:1fr}.assistantControls{justify-content:stretch}.assistantControls button{flex:1}.assistantMessage{max-width:96%}}
+@media print{#assistantSection,.topbar,.tabs,.actions,.ghostBtn,.primaryBtn,.secondaryBtn,.demoTag{display:none!important}.view{display:none!important}.view.active{display:block!important}.container{max-width:none;padding:0}.panel{box-shadow:none}.tabPanel{display:block!important;break-inside:avoid}.notice{break-inside:avoid}}
 </style>
 </head>
 <body>
@@ -45,6 +47,18 @@
   <div id="passportBanner"></div><div class="grid4" id="passportMetrics"></div>
   <div class="section"><div class="sectionTitle"><h3>Planning snapshot</h3><span class="small">What applies · why it matters · what still needs checking</span></div><div class="factList" id="planningFacts"></div></div>
   <div class="section"><div class="sectionTitle"><h3>Potential directions worth exploring</h3></div><div class="grid3" id="opportunityCards"></div></div>
+  <div class="section" id="assistantSection">
+    <div class="panel assistantPanel">
+      <div class="sectionTitle"><div><h3>Ask SitePivot</h3><div class="small">Ask about this property's verified planning evidence, constraints, options or your current assessment.</div></div><button class="miniBtn" id="assistantVoiceReply" type="button" aria-pressed="false">Voice replies: off</button></div>
+      <div id="assistantMessages" class="assistantMessages" role="log" aria-live="polite" aria-label="SitePivot conversation"></div>
+      <div class="assistantComposer">
+        <div><label class="hidden" for="assistantInput">Ask SitePivot about this property</label><textarea id="assistantInput" placeholder="e.g. What is the zoning? Can I explore a duplex? What still needs review?"></textarea></div>
+        <div class="assistantControls"><button class="secondaryBtn voiceBtn" id="assistantMic" type="button" aria-label="Start voice input" aria-pressed="false">🎙 Speak</button><button class="primaryBtn" id="assistantSend" type="button">Ask</button></div>
+      </div>
+      <div id="assistantVoiceStatus" class="small voiceStatus" aria-live="polite"></div>
+      <div class="small assistantPrivacy">Voice uses your browser's speech service when available. SitePivot does not store microphone audio or persist this conversation in saved test projects.</div>
+    </div>
+  </div>
   <div class="actions"><button class="secondaryBtn" data-back="property">Back</button><button class="primaryBtn" data-next="goal">What are you thinking?</button></div>
 </section>
 <section class="view" id="view-goal">
@@ -165,6 +179,7 @@ const DEV=[{id:'duplex',title:'Duplex / dual occupancy',desc:'Two dwellings or a
 
 const app={view:'landing',property:null,goal:null,devType:null,scope:{area:80,quality:'premium',complexity:'normal',budget:800000,targetPurchase:2500000,dwellings:2,gfa:440},assessment:null,savedAt:null};
 app.liveSuggestions=[];app.lookupSeq=0;app.enrichSeq=0;app.liveStatus='idle';app.lastLiveError=null;
+const assistantState={propertyId:null,messages:[],recognition:null,listening:false,voiceReply:false,lastTranscript:'',lastError:null};
 
 const LIVE={
  geocoder:'https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer',
@@ -379,10 +394,10 @@ async function completeLiveProperty(p,official,geo,seq){
 }
 function statusPill(s){return`<span class="pill ${s}">${STATUS[s]||s}</span>`}
 function show(name){app.view=name;$$('.view').forEach(v=>v.classList.toggle('active',v.id===`view-${name}`));window.scrollTo(0,0);if(name==='passport')renderPassport();if(name==='goal')renderGoals();if(name==='develop')renderDevelop();if(name==='scope')renderScope();if(name==='assessment')renderAssessment();if(name==='roadmap')renderRoadmap();if(name==='report')renderReport()}
-function reset(full=true){app.property=null;app.goal=null;app.devType=null;app.scope={area:80,quality:'premium',complexity:'normal',budget:800000,targetPurchase:2500000,dwellings:2,gfa:440};app.assessment=null;$('addressSearch').value='';$('searchResults').classList.remove('open');show('landing')}
+function reset(full=true){app.property=null;app.goal=null;app.devType=null;app.scope={area:80,quality:'premium',complexity:'normal',budget:800000,targetPurchase:2500000,dwellings:2,gfa:440};app.assessment=null;resetAssistant(null);$('addressSearch').value='';$('searchResults').classList.remove('open');show('landing')}
 function findMatches(q){q=(q||'').toLowerCase().replace(/,/g,' ').replace(/\s+/g,' ').trim();if(!q)return[];return FIXTURES.filter(f=>f.address.toLowerCase().replace(/,/g,' ').includes(q)||(`${f.suburb} ${f.postcode}`).toLowerCase().includes(q)).slice(0,8)}
 function genericProperty(address){return{id:'generic-'+Date.now(),address:address||'Unverified NSW property',suburb:'Unverified',region:'NSW',lga:'Needs Review',postcode:'',propertyType:'house',title:'Needs Review',lot:'—',dp:'—',area:null,frontage:null,beds:null,baths:null,parking:null,parcels:null,identityStatus:'review',generic:true,live:false,planning:{zone:null,fsr:null,height:null,minLot:null,heritage:'Needs Review',flood:'Needs Review',bushfire:'Needs Review',acid:'Needs Review',biodiversity:'Needs Review',riparian:'Needs Review',wetlands:'Needs Review',sensitive:'Needs Review',landslide:'Needs Review',reservation:'Needs Review',application:'Needs Review',dcpPlans:[],contributionPlans:[],sepp:[],localTriggers:[],splitZone:false,localDcp:'Needs Review',instrument:'Authoritative NSW property/planning lookup did not complete'},opportunities:['Improve / renovation pathway','Extension pathway','Development pathway after property identity and planning evidence are verified'],costRegion:1,currentComps:[],completed:{reno:[],extend:[],storey:[],duplex:[],townhouse:[],apartment:[],multisite:[]},active:[]}}
-function selectProperty(p){app.property=deep(p);app.goal=null;app.devType=null;app.assessment=null;app.scope={area:80,quality:'premium',complexity:'normal',budget:800000,targetPurchase:2500000,dwellings:2,gfa:440};renderIdentity();show('property')}
+function selectProperty(p){app.property=deep(p);app.goal=null;app.devType=null;app.assessment=null;app.scope={area:80,quality:'premium',complexity:'normal',budget:800000,targetPurchase:2500000,dwellings:2,gfa:440};resetAssistant(app.property.id);renderIdentity();show('property')}
 async function selectLiveSuggestion(item){
  try{
    const {p,official,geo,seq}=await resolveLiveIdentity(item);setSearchMessage('',false);$('addressSearch').value=p.address;selectProperty(p);
@@ -414,7 +429,143 @@ fact('Applicable LGA DCP',dcp,live&&!failed.has('dcp')&&pl.dcpPlans?.length?'ver
 fact('Contribution plan',cp,live&&!failed.has('contribution')&&pl.contributionPlans?.length?'verified':'review','dcp','LGA-based contribution plan identity where published in the Planning Portal.'),
 fact('SEPP / state-policy spatial triggers',sepp,live&&!failed.has('sepp')&&pl.sepp?.length?'verified':'review','sepp','Spatial triggers are surfaced; textual SEPP eligibility criteria still require rule evaluation.'),
 fact('Additional local provisions / maps',local,live&&!failed.has('localIdentify')&&pl.localTriggers?.length?'verified':'review','dcp','Property-point local provision layers returned by the Planning Portal.')];}
-function renderPassport(){const p=app.property;if(!p)return;const pl=p.planning||{};$('passportAddress').textContent=p.address;const err=(pl.liveErrors||[]).length;const msg=p.live?(pl.loading?'<div class="notice info"><strong>Property verified in '+esc(p.lga)+'.</strong> Planning controls are loading in the background…</div>':'<div class="notice '+(err?'warn':'good')+'"><strong>Live NSW evidence loaded for '+esc(p.lga)+'.</strong> Address, parcel, EPI layers and LGA planning-plan records were queried for this property.'+(err?'<br><span class="small">'+esc(err)+' source group(s) did not respond and remain Needs Review.</span>':'')+'</div>'):p.generic?'<div class="notice warn"><strong>Statewide fallback mode:</strong> no automated planning conclusion is shown until property identity and sources are verified.</div>':'<div class="notice info"><strong>Fixture evidence:</strong> test data only.</div>';$('passportBanner').innerHTML=msg;$('passportMetrics').innerHTML=[['Site area',p.area?`${num(p.area)} m²`:'Unknown'],['Zone',pl.loading?'Checking…':(pl.zone||'Unknown')],['Height',pl.loading?'Checking…':(pl.height||'Unknown')],['FSR',pl.loading?'Checking…':(pl.fsr||'Unknown')]].map(x=>`<div class="metric"><div class="label">${esc(x[0])}</div><div class="value">${esc(x[1])}</div></div>`).join('');$('planningFacts').innerHTML=planningFactRows(p).map(renderFact).join('');$('opportunityCards').innerHTML=p.opportunities.map((x,i)=>`<div class="panel" style="box-shadow:none"><div class="kicker">Direction ${i+1}</div><h3>${esc(x)}</h3><p class="small">Screening direction only. Eligibility is tested against evidence in the selected scenario.</p></div>`).join('')}
+function resetAssistant(propertyId=null){
+ if(assistantState.recognition){try{assistantState.recognition.abort()}catch(e){}}
+ if('speechSynthesis' in window){try{window.speechSynthesis.cancel()}catch(e){}}
+ assistantState.propertyId=propertyId;assistantState.messages=[];assistantState.recognition=null;assistantState.listening=false;assistantState.voiceReply=false;assistantState.lastTranscript='';assistantState.lastError=null;
+ renderAssistant();
+}
+function assistantEvidence(name){
+ const rows=app.property?planningFactRows(app.property):[];
+ return rows.find(x=>x.name===name)||null;
+}
+function assistantDescribe(name){
+ const f=assistantEvidence(name);
+ if(!f)return name+': unavailable.';
+ return name+': '+f.value+'. Evidence state: '+(STATUS[f.status]||f.status)+'.';
+}
+function assistantNeedsReview(){
+ if(!app.property)return[];
+ return planningFactRows(app.property).filter(f=>f.status==='review').map(f=>f.name);
+}
+function assistantAnswer(question){
+ const p=app.property,q=String(question||'').trim(),l=q.toLowerCase();
+ if(!q)return'Ask a question about the current property.';
+ if(!p)return'Select and confirm a property first so I can answer from its SitePivot evidence.';
+ const pl=p.planning||{};
+ const loading=!!pl.loading;
+ if(/address|which property|property is this/.test(l))return 'This conversation is scoped to '+p.address+'. LGA: '+p.lga+'. Lot / plan: '+p.lot+' / '+p.dp+'.';
+ if(/lga|council/.test(l))return 'The resolved local government area is '+p.lga+'. '+(p.live?'This came from the live NSW property identity workflow.':'This is '+(p.generic?'not yet verified.':'prototype fixture evidence.'));
+ if(/lot|\bdp\b|\bsp\b|title|parcel/.test(l))return 'Cadastral identity: '+p.lot+' / '+p.dp+'. '+(p.area?('Site area: '+num(p.area)+' m². '):'Site area still needs review. ')+(p.parcels?('Resolved parcel count: '+p.parcels+'.'):'');
+ if(/site area|land area|how big|size of (the )?(land|site)/.test(l))return p.area?'The resolved site area is approximately '+num(p.area)+' m².':'Site area is not currently verified for this property.';
+ if(/zone|zoning/.test(l))return loading?'Zoning is still loading from the planning providers.':assistantDescribe('Land zone');
+ if(/floor space|\bfsr\b/.test(l))return loading?'Floor space ratio is still loading.':assistantDescribe('Floor space ratio');
+ if(/height/.test(l))return loading?'Height controls are still loading.':assistantDescribe('Height of buildings');
+ if(/minimum lot|min lot|subdivision lot/.test(l))return loading?'Minimum lot size is still loading.':assistantDescribe('Minimum lot size');
+ if(/heritage/.test(l))return loading?'Heritage mapping is still loading.':assistantDescribe('Heritage');
+ if(/flood/.test(l))return loading?'Flood evidence is still loading.':assistantDescribe('Flood planning')+' Council flood studies can contain more detailed controls than statewide EPI mapping.';
+ if(/bush ?fire|fire prone/.test(l))return loading?'Bush fire mapping is still loading.':assistantDescribe('Bush fire prone land');
+ if(/acid sulfate/.test(l))return loading?'Acid sulfate soil mapping is still loading.':assistantDescribe('Acid sulfate soils');
+ if(/biodiversity|environment|wetland|riparian|watercourse|creek|landslide/.test(l)){
+   if(loading)return'Environmental and hazard layers are still loading.';
+   return [assistantDescribe('Environmental / biodiversity'),assistantDescribe('Riparian / watercourse'),assistantDescribe('Wetlands'),assistantDescribe('Landslide / geotechnical')].join(' ');
+ }
+ if(/dcp|development control plan/.test(l))return loading?'The applicable DCP record is still loading.':assistantDescribe('Applicable LGA DCP')+' DCP identity does not mean every clause has been automatically interpreted.';
+ if(/contribution/.test(l))return loading?'Contribution-plan data is still loading.':assistantDescribe('Contribution plan');
+ if(/sepp|state environmental/.test(l))return loading?'SEPP spatial triggers are still loading.':assistantDescribe('SEPP / state-policy spatial triggers');
+ if(/needs review|still need|unknown|not verified|uncertain|check next/.test(l)){
+   const items=assistantNeedsReview();return items.length?'The current Needs Review items are: '+items.join(', ')+'. SitePivot keeps these unresolved rather than treating a failed or incomplete source as a negative result.':'There are no planning facts currently marked Needs Review in the Property Passport, although development eligibility can still require professional verification.';
+ }
+ if(/risk|constraint|problem|red flag/.test(l)){
+   const rows=planningFactRows(p),risks=rows.filter(f=>f.status==='review'||(f.status==='verified'&&!/^No mapped|^No NSW/i.test(String(f.value))));
+   return risks.length?'The main evidence items to pay attention to are: '+risks.slice(0,8).map(f=>f.name+' — '+f.value+' ('+(STATUS[f.status]||f.status)+')').join('; ')+'.':'No material mapped constraint has been surfaced in the current evidence, but that is not the same as development approval.';
+ }
+ if(/duplex|dual occupancy|subdiv|develop|development|build (two|2)|can i build|allowed to build|approval/.test(l)){
+   const zone=assistantEvidence('Land zone'),lot=assistantEvidence('Minimum lot size'),dcp=assistantEvidence('Applicable LGA DCP');
+   return 'SitePivot cannot confirm approval from mapped controls alone. Current screening evidence: '+(zone?('zone '+zone.value+' ('+(STATUS[zone.status]||zone.status)+')'):'zone unavailable')+', '+(lot?('minimum lot size '+lot.value+' ('+(STATUS[lot.status]||lot.status)+')'):'minimum lot size unavailable')+', and '+(dcp?('DCP '+dcp.value+' ('+(STATUS[dcp.status]||dcp.status)+')'):'DCP unavailable')+'. Use the development pathway to test a scenario, then verify unresolved local controls before relying on the result.';
+ }
+ if(/what can i do|options|opportunit|potential|worth exploring/.test(l))return 'The current screening directions are: '+(p.opportunities||[]).join('; ')+'. These are directions to investigate, not approvals.';
+ if(/cost|budget|how much/.test(l)){
+   const a=app.assessment;if(a?.cost?.mid)return 'Your current SitePivot assessment shows an indicative project cost range of '+money(a.cost.low)+' to '+money(a.cost.high)+', with a midpoint of '+money(a.cost.mid)+'. This is modelling, not a builder quote.';
+   return'No project cost assessment has been run for this property yet. Choose a direction and enter a scope to create an indicative cost range.';
+ }
+ if(/value|worth|market/.test(l)){
+   const a=app.assessment;if(a?.current?.mid)return 'The current market model midpoint is '+money(a.current.mid)+'. '+(a.completed?.mid?('The completed-product evidence midpoint for the selected scenario is '+money(a.completed.mid)+'. '):'')+'These figures depend on the available comparable evidence and are not a valuation.';
+   return'No current assessment value is available in this conversation yet. SitePivot does not manufacture a value from project cost alone.';
+ }
+ if(/feasib|profit|margin/.test(l)){
+   const a=app.assessment;if(a?.feas&&a.feas.status!=='review')return 'The current feasibility model shows an estimated profit of '+money(a.feas.profit)+' and margin of '+num(a.feas.margin)+'%. Review the full feasibility tab for site opportunity cost, finance, selling costs and tax/GST sensitivity.';
+   return'No sufficiently supported feasibility is available yet. Run a development assessment first; weak evidence remains Needs Review.';
+ }
+ if(/next step|what should i do/.test(l)){
+   if(app.assessment?.next?.who)return 'The current recommended first action is '+app.assessment.next.who+'. '+(app.assessment.next.why||'');
+   const review=assistantNeedsReview();return review.length?'Before relying on a development conclusion, prioritise verification of: '+review.slice(0,5).join(', ')+'.':'Choose the direction you are considering and SitePivot will build a lowest-regret next-step sequence.';
+ }
+ return 'I can answer from the current SitePivot evidence about zoning, FSR, height, lot size, DCP, flood, bushfire, environmental constraints, property identity, options, costs, value, feasibility and what still needs review. I will not treat missing evidence as verified.';
+}
+function assistantMessage(role,text){
+ assistantState.messages.push({role,text:String(text||'')});
+ if(assistantState.messages.length>40)assistantState.messages=assistantState.messages.slice(-40);
+ renderAssistant();
+}
+function ensureAssistantContext(){
+ const id=app.property?.id||null;
+ if(assistantState.propertyId!==id){
+   assistantState.propertyId=id;assistantState.messages=[];assistantState.lastTranscript='';
+ }
+ if(id&&assistantState.messages.length===0)assistantState.messages.push({role:'assistant',text:'Ask me about '+app.property.address+'. I will answer from the evidence currently loaded in SitePivot and flag anything that still needs review.'});
+}
+function voiceRecognitionCtor(){return window.SpeechRecognition||window.webkitSpeechRecognition||null}
+function voiceInputSupported(){return !!voiceRecognitionCtor()}
+function voiceOutputSupported(){return 'speechSynthesis' in window&&typeof window.SpeechSynthesisUtterance!=='undefined'}
+function setAssistantVoiceStatus(text){const el=$('assistantVoiceStatus');if(el)el.textContent=text||''}
+function updateVoiceControls(){
+ const mic=$('assistantMic'),toggle=$('assistantVoiceReply');if(!mic||!toggle)return;
+ const supported=voiceInputSupported();
+ mic.disabled=!supported;mic.classList.toggle('listening',assistantState.listening);mic.setAttribute('aria-pressed',String(assistantState.listening));mic.setAttribute('aria-label',assistantState.listening?'Stop voice input':'Start voice input');mic.textContent=assistantState.listening?'■ Stop':'🎙 Speak';
+ toggle.disabled=!voiceOutputSupported();toggle.setAttribute('aria-pressed',String(assistantState.voiceReply));toggle.textContent='Voice replies: '+(assistantState.voiceReply?'on':'off');
+ if(assistantState.listening)setAssistantVoiceStatus('Listening… speak naturally. Stop when finished.');
+ else if(assistantState.lastError)setAssistantVoiceStatus(assistantState.lastError);
+ else if(!supported)setAssistantVoiceStatus('Voice input is unavailable in this browser. Typed chat remains fully available.');
+ else if(assistantState.lastTranscript)setAssistantVoiceStatus('Transcript ready. Edit it if needed, then press Ask.');
+ else setAssistantVoiceStatus('Voice input is available. Your browser may ask for microphone permission.');
+}
+function renderAssistant(){
+ const log=$('assistantMessages');if(!log)return;ensureAssistantContext();log.textContent='';
+ assistantState.messages.forEach(m=>{const el=document.createElement('div');el.className='assistantMessage '+(m.role==='user'?'user':'assistant');el.textContent=m.text;log.appendChild(el)});
+ log.scrollTop=log.scrollHeight;updateVoiceControls();
+}
+function speakAssistant(text){
+ if(!assistantState.voiceReply||!voiceOutputSupported())return;
+ try{window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(String(text||''));u.lang='en-AU';window.speechSynthesis.speak(u)}catch(e){assistantState.lastError='Voice reply could not start. The text response is still available.';updateVoiceControls()}
+}
+function submitAssistant(){
+ const input=$('assistantInput');if(!input)return;const q=input.value.trim();if(!q)return;
+ assistantMessage('user',q);input.value='';const reply=assistantAnswer(q);assistantMessage('assistant',reply);speakAssistant(reply);
+}
+function stopVoiceInput(){
+ const r=assistantState.recognition;if(r){try{r.stop()}catch(e){}}
+ assistantState.listening=false;updateVoiceControls();
+}
+function startVoiceInput(){
+ if(assistantState.listening){stopVoiceInput();return}
+ const Ctor=voiceRecognitionCtor();assistantState.lastError=null;
+ if(!Ctor){assistantState.lastError='Voice input is unavailable in this browser. Type your question instead.';updateVoiceControls();return}
+ if(voiceOutputSupported())assistantState.voiceReply=true;
+ try{
+   const r=new Ctor();assistantState.recognition=r;r.lang='en-AU';r.continuous=false;r.interimResults=true;r.maxAlternatives=1;
+   r.onstart=()=>{assistantState.listening=true;assistantState.lastError=null;updateVoiceControls()};
+   r.onresult=e=>{let transcript='';let finalText='';for(let i=e.resultIndex||0;i<e.results.length;i++){const part=e.results[i]?.[0]?.transcript||'';transcript+=part;if(e.results[i].isFinal)finalText+=part}const text=(finalText||transcript).trim();if(text){assistantState.lastTranscript=text;const input=$('assistantInput');if(input)input.value=text}updateVoiceControls()};
+   r.onerror=e=>{assistantState.listening=false;const code=e?.error||'voice-error';assistantState.lastError=(code==='not-allowed'||code==='service-not-allowed')?'Microphone permission was denied. Enable microphone access or use typed chat.':code==='no-speech'?'No speech was detected. Try again or type your question.':'Voice input stopped: '+code+'. Typed chat is still available.';updateVoiceControls()};
+   r.onend=()=>{assistantState.listening=false;assistantState.recognition=null;updateVoiceControls()};
+   r.start();
+ }catch(e){assistantState.listening=false;assistantState.recognition=null;assistantState.lastError='Voice input could not start. Typed chat is still available.';updateVoiceControls()}
+}
+function toggleVoiceReply(){
+ if(!voiceOutputSupported()){assistantState.voiceReply=false;assistantState.lastError='Spoken replies are unavailable in this browser.';updateVoiceControls();return}
+ assistantState.voiceReply=!assistantState.voiceReply;if(!assistantState.voiceReply)try{window.speechSynthesis.cancel()}catch(e){};updateVoiceControls();
+}
+function renderPassport(){const p=app.property;if(!p)return;const pl=p.planning||{};$('passportAddress').textContent=p.address;const err=(pl.liveErrors||[]).length;const msg=p.live?(pl.loading?'<div class="notice info"><strong>Property verified in '+esc(p.lga)+'.</strong> Planning controls are loading in the background…</div>':'<div class="notice '+(err?'warn':'good')+'"><strong>Live NSW evidence loaded for '+esc(p.lga)+'.</strong> Address, parcel, EPI layers and LGA planning-plan records were queried for this property.'+(err?'<br><span class="small">'+esc(err)+' source group(s) did not respond and remain Needs Review.</span>':'')+'</div>'):p.generic?'<div class="notice warn"><strong>Statewide fallback mode:</strong> no automated planning conclusion is shown until property identity and sources are verified.</div>':'<div class="notice info"><strong>Fixture evidence:</strong> test data only.</div>';$('passportBanner').innerHTML=msg;$('passportMetrics').innerHTML=[['Site area',p.area?`${num(p.area)} m²`:'Unknown'],['Zone',pl.loading?'Checking…':(pl.zone||'Unknown')],['Height',pl.loading?'Checking…':(pl.height||'Unknown')],['FSR',pl.loading?'Checking…':(pl.fsr||'Unknown')]].map(x=>`<div class="metric"><div class="label">${esc(x[0])}</div><div class="value">${esc(x[1])}</div></div>`).join('');$('planningFacts').innerHTML=planningFactRows(p).map(renderFact).join('');$('opportunityCards').innerHTML=p.opportunities.map((x,i)=>`<div class="panel" style="box-shadow:none"><div class="kicker">Direction ${i+1}</div><h3>${esc(x)}</h3><p class="small">Screening direction only. Eligibility is tested against evidence in the selected scenario.</p></div>`).join('');renderAssistant()}
 function renderFact(f){const src=sourceBy(f.source);return`<div class="fact"><div class="factTop"><div><div class="factName">${esc(f.name)}</div><div class="factValue">${esc(f.value)}</div></div>${statusPill(f.status)}</div><div class="factMeta">${esc(f.why||'')}</div><div class="factMeta">Source: ${esc(src.name)} · ${esc(f.date)}</div></div>`}
 function renderGoals(){$('goalGrid').innerHTML=GOALS.map(g=>`<button type="button" class="goalCard" data-goal="${g.id}"><div class="goalIcon">${g.icon}</div><div class="goalTitle">${g.title}</div><div class="goalDesc">${g.desc}</div></button>`).join('');$$('[data-goal]').forEach(b=>b.onclick=()=>chooseGoal(b.dataset.goal))}
 function chooseGoal(goal){app.goal=goal;app.devType=null;app.assessment=null;if(goal==='develop')show('develop');else if(goal==='unsure')show('unsure');else show('scope')}
@@ -462,6 +613,11 @@ function bind(){let timer=null;
 $('addressSearch').addEventListener('input',e=>{clearTimeout(timer);const q=e.target.value.trim();if(q.length<4){app.lookupSeq++;$('searchResults').classList.remove('open');return}setSearchMessage('<div class="notice info" style="margin:8px">Searching the NSW address register…</div>',true);timer=setTimeout(async()=>{try{const items=await liveAddressSearch(q);if(items.length)renderSearch(items,'live');else setLiveStatus('No NSW address match yet — keep typing the street number, street and suburb.','warn')}catch(err){console.warn('NSW address search',err);setLiveStatus('The NSW address service is temporarily unavailable. Try again in a moment.','warn')}},280)});
 $('addressSearch').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();continueAddress()}if(e.key==='Escape')$('searchResults').classList.remove('open')});
 $('addressContinue').onclick=()=>continueAddress();
+$('assistantSend').onclick=submitAssistant;
+$('assistantMic').onclick=startVoiceInput;
+$('assistantVoiceReply').onclick=toggleVoiceReply;
+$('assistantInput').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();submitAssistant()}});
+updateVoiceControls();
 $('sampleGrid').innerHTML=[FIXTURES[2],FIXTURES[3],FIXTURES[5],FIXTURES[6],FIXTURES[9],FIXTURES[10]].map(f=>`<button class="sample" data-sample="${f.id}"><strong>${esc(f.suburb)}</strong><br>${esc(f.address.split(',')[0])}</button>`).join('');
 $$('[data-sample]').forEach(b=>b.onclick=()=>{const f=FIXTURES.find(x=>x.id===b.dataset.sample);$('addressSearch').value=f.address;selectProperty(f)});
 $('confirmProperty').onclick=()=>show('passport');$('changeProperty').onclick=()=>reset();$$('[data-next]').forEach(b=>b.onclick=()=>show(b.dataset.next));$$('[data-back]').forEach(b=>b.onclick=()=>show(b.dataset.back));$('restartBtn').onclick=()=>reset();$('unsureRecommend').onclick=recommendUnsure;$('runAssessment').onclick=()=>{syncScope();computeAssessment();show('assessment')};$('editScope').onclick=()=>show('scope');$('toRoadmap').onclick=()=>show('roadmap');$('toReport').onclick=()=>show('report');$('saveLocal').onclick=saveLocal;$('downloadJson').onclick=download;$('printReport').onclick=()=>window.print();$('sourcesBtn').onclick=()=>{$('sourcesModal').classList.add('open');renderSources()};$('closeSources').onclick=()=>$('sourcesModal').classList.remove('open');$('sourcesModal').addEventListener('click',e=>{if(e.target.id==='sourcesModal')$('sourcesModal').classList.remove('open')});$('assessmentTabs').addEventListener('click',e=>{const t=e.target.closest('[data-tab]');if(!t)return;$$('.tab').forEach(x=>x.classList.remove('active'));t.classList.add('active');$$('.tabPanel').forEach(x=>x.classList.toggle('active',x.id===`tab-${t.dataset.tab}`))});}
@@ -530,7 +686,7 @@ async function runLiveDiagnostics(){
  window.__SITEPIVOT_LIVE_DIAGNOSTICS__=out;
  return out;
 }
-window.SitePivot={FIXTURES,SOURCES,GOALS,DEV,LIVE,SERVER_API,API_BASE,app,findMatches,liveAddressSearch,resolveLiveIdentity,completeLiveProperty,selectProperty,computeAssessment,projectCost,currentMarket,completedMarket,marketRange,compScore,runSelfTests,runLiveDiagnostics,reset};bind();renderSources();
+window.SitePivot={FIXTURES,SOURCES,GOALS,DEV,LIVE,SERVER_API,API_BASE,app,findMatches,liveAddressSearch,resolveLiveIdentity,completeLiveProperty,selectProperty,computeAssessment,projectCost,currentMarket,completedMarket,marketRange,compScore,assistantAnswer,submitAssistant,startVoiceInput,stopVoiceInput,voiceInputSupported,voiceOutputSupported,runSelfTests,runLiveDiagnostics,reset};bind();renderSources();
 if(new URLSearchParams(location.search).get('autotest')==='1'){setTimeout(()=>runSelfTests(),50)}
 })();
 </script>
