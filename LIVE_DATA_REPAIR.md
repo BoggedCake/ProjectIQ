@@ -122,3 +122,30 @@ The branch contains the repaired serverless architecture and the strengthened QA
 The next acceptance action is to deploy the current `sitepivot-concept` branch to Vercel (or an equivalent serverless host) and run the repository's live browser and server data QA against that deployed URL.
 
 Do not call the overall product PASS until that deployed runtime test succeeds.
+
+
+## Consumer simplification and voice UX pass
+
+The consumer simplification brief was executed without removing the underlying NSW planning evidence.
+
+Implemented:
+
+- Added a separate `consumerPropertySummary()` presentation layer over the full planning evidence model.
+- Default Property Passport now shows only dwelling/land summary, zoning, height, FSR, minimum lot size, a short “Worth knowing” section, homeowner pathways and Ask SitePivot.
+- Full technical planning evidence remains available behind **View detailed planning information**.
+- Raw statewide SEPP / planning-instrument lists no longer dominate the default homeowner view.
+- Added normalized `dwellingProfile` with property type, bedrooms, bathrooms, parking, source, confidence and verification date.
+- Where the current data sources do not provide reliable bedroom/bathroom/car configuration, SitePivot asks the homeowner to confirm them instead of inventing values.
+- Fixed null dwelling fields incorrectly coercing to zero.
+- Simplified homeowner pathway and development-option language.
+- Passport pathway cards are now actual interactive controls wired directly to the correct next screen.
+- Added an “I’m not sure” development choice.
+- Added browser regression coverage for all five homeowner pathways and all five development choices.
+- Added consumer relevance logic so negative environmental checks remain background evidence while material triggers and unresolved flood information are surfaced.
+- Added ranked speech-synthesis voice selection favouring high-quality Australian/British female English voices where the browser provides them.
+- Added separate display and spoken assistant responses so voice no longer reads evidence-state/source/date metadata.
+- Spoken answers are shorter and more conversational.
+- Added selected voice name to developer diagnostics.
+- Browser bundle syntax passes and duplicate HTML IDs were not found after the refactor.
+
+The external property/listing integration available in the current environment does not provide a reliable arbitrary-address property-profile lookup suitable for automatically filling bedrooms/bathrooms/parking for every SitePivot property. The user-confirmation fallback therefore remains the trustworthy default until a production property-data provider is connected.
