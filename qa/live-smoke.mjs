@@ -52,6 +52,23 @@ try{
       const planStart=Date.now();
       try{await page.waitForFunction(()=>window.SitePivot?.app?.property?.planning?.loading===false,{timeout:9000});result.planningMs=Date.now()-planStart;}catch(e){result.planningTimeout=e.message;}
       result.passport=await page.locator('#planningFacts').innerText();
+
+      result.assistant=await page.evaluate(()=>{
+        const api=window.SitePivot;
+        const zoning=api?.assistantAnswer?.('What is the zoning?')||'';
+        const review=api?.assistantAnswer?.('What still needs review?')||'';
+        return{
+          textAvailable:typeof api?.assistantAnswer==='function',
+          zoning,
+          review,
+          voiceInputSupported:!!api?.voiceInputSupported?.(),
+          voiceOutputSupported:!!api?.voiceOutputSupported?.()
+        };
+      });
+      await page.locator('#assistantInput').fill('What is the zoning?');
+      await page.locator('#assistantSend').click();
+      result.assistantRendered=await page.locator('#assistantMessages .assistantMessage').count();
+      result.assistantFallbackVisible=await page.locator('#assistantVoiceStatus').innerText();
       result.zone=await page.evaluate(()=>window.SitePivot?.app?.property?.planning?.zone||null);
       result.lga=await page.evaluate(()=>window.SitePivot?.app?.property?.lga||null);
       result.lot=await page.evaluate(()=>window.SitePivot?.app?.property?.lot||null);
@@ -113,4 +130,4 @@ console.log(JSON.stringify(result,null,2));
 console.log('SITEPIVOT_LIVE_QA_END');
 await browser.close();
 
-if(!result.suggestionMs || result.suggestionMs>3000 || !result.propertyResolved || !result.lga || !result.lot || !result.dp || !result.exactNumberRegression || result.matrix?.some(x=>!x.pass)) process.exitCode=1;
+if(!result.suggestionMs || result.suggestionMs>3000 || !result.propertyResolved || !result.lga || !result.lot || !result.dp || !result.exactNumberRegression || result.matrix?.some(x=>!x.pass) || !result.assistant?.textAvailable || (result.assistantRendered||0)<3) process.exitCode=1;
