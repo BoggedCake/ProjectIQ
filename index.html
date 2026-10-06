@@ -505,12 +505,12 @@ function propertyTypeLabel(v){
 function ensureDwellingProfile(p){
  if(!p)return null;
  if(!p.dwellingProfile){
-   const known=Number.isFinite(+p.beds)&&Number.isFinite(+p.baths)&&Number.isFinite(+p.parking);
+   const known=hasDwellingNumber(p.beds)&&hasDwellingNumber(p.baths)&&hasDwellingNumber(p.parking);
    p.dwellingProfile={
      propertyType:p.propertyType||'house',
-     bedrooms:Number.isFinite(+p.beds)?+p.beds:null,
-     bathrooms:Number.isFinite(+p.baths)?+p.baths:null,
-     parkingSpaces:Number.isFinite(+p.parking)?+p.parking:null,
+     bedrooms:hasDwellingNumber(p.beds)?Number(p.beds):null,
+     bathrooms:hasDwellingNumber(p.baths)?Number(p.baths):null,
+     parkingSpaces:hasDwellingNumber(p.parking)?Number(p.parking):null,
      garageSpaces:null,
      source:known?(p.live?'Existing property record':'Prototype fixture'):'User confirmation required',
      confidence:known?(p.live?'indicative':'fixture'):'review',
