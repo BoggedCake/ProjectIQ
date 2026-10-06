@@ -72,3 +72,19 @@ GitHub Pages cannot execute the serverless `/api/*` routes. To founder-test the 
 After deployment, the browser automatically uses the SitePivot server API because the hostname is no longer `github.io`.
 
 Do not merge to `main` until founder testing is complete.
+
+
+## Post-prompt implementation audit
+
+The full repair prompt was re-applied against the current branch rather than assuming the first repair was complete.
+
+Additional defects found and fixed:
+
+- Normalized planning failure-state contract now exposes `failedKeys` as well as `failedSources`, so a failed DCP / SEPP / local source is rendered as **Needs Review** rather than being mistaken for a clean “no record” result.
+- Normalized state-policy output now exposes `sepp` as the browser Property Passport expects, while retaining `statePolicies`.
+- Normalized EPI metadata now exposes both `epiNames` and `allEpiNames` for compatibility with the browser model.
+- The NSW test matrix now uses a genuine strata/unit-formatted Sydney address: `84/2-8 Dixon Street, Sydney NSW 2000`.
+- Server QA now records an explicit autocomplete p95 metric and uses p95 < 3,000 ms as the acceptance gate.
+- Server QA now asserts the normalized planning contract so these UI/API naming regressions cannot silently return.
+
+These changes remain on `sitepivot-concept`; they have not been merged to `main`.
