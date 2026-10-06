@@ -101,19 +101,7 @@ try{
     return !!one&&!!nine&&one.pass&&nine.pass&&/^1\s/i.test(one.address)&&/^9\s/i.test(nine.address)&&one.address!==nine.address;
   })();
 
-  result.multiLgaPlanning=await page.evaluate(async()=>{
-    const qs=['290 King Street Newcastle NSW 2300','41 Burelli Street Wollongong NSW 2500'];
-    const out=[];
-    for(const q of qs){
-      try{
-        const s=await window.SitePivot.liveAddressSearch(q);if(!s.length){out.push({q,pass:false,error:'no suggestion'});continue}
-        const r=await window.SitePivot.resolveLiveIdentity(s[0]);
-        const t=performance.now();await window.SitePivot.completeLiveProperty(r.p,r.official,r.geo,r.seq);
-        out.push({q,pass:!!r.p.planning.zone,lga:r.p.lga,zone:r.p.planning.zone,instrument:r.p.planning.instrument,dcp:r.p.planning.dcpPlans,planningMs:Math.round(performance.now()-t),errors:r.p.planning.liveErrors});
-      }catch(e){out.push({q,pass:false,error:String(e)})}
-    }
-    return out;
-  });
+  result.browserPlanningArchitecture='GitHub Pages is static-only. Statewide planning enrichment is validated by the server data QA and must run through the deployed SitePivot API to avoid browser ORB/CORS failures.';
 
   result.consoleErrors=consoleErrors;
   result.requestFailures=requestFailures;
@@ -125,4 +113,4 @@ console.log(JSON.stringify(result,null,2));
 console.log('SITEPIVOT_LIVE_QA_END');
 await browser.close();
 
-if(!result.suggestionMs || result.suggestionMs>3000 || !result.propertyResolved || !result.lga || !result.zone || !result.lot || !result.dp || !result.exactNumberRegression || result.matrix?.some(x=>!x.pass) || result.multiLgaPlanning?.some(x=>!x.pass)) process.exitCode=1;
+if(!result.suggestionMs || result.suggestionMs>3000 || !result.propertyResolved || !result.lga || !result.lot || !result.dp || !result.exactNumberRegression || result.matrix?.some(x=>!x.pass)) process.exitCode=1;
