@@ -49,7 +49,13 @@ try{
       result.identity=await page.locator('#identityMetrics').innerText();
       await page.locator('#confirmProperty').click();
       await page.waitForSelector('#view-passport.active',{timeout:5000});
+      const planStart=Date.now();
+      try{await page.waitForFunction(()=>window.SitePivot?.app?.property?.planning?.loading===false,{timeout:9000});result.planningMs=Date.now()-planStart;}catch(e){result.planningTimeout=e.message;}
       result.passport=await page.locator('#planningFacts').innerText();
+      result.zone=await page.evaluate(()=>window.SitePivot?.app?.property?.planning?.zone||null);
+      result.lga=await page.evaluate(()=>window.SitePivot?.app?.property?.lga||null);
+      result.lot=await page.evaluate(()=>window.SitePivot?.app?.property?.lot||null);
+      result.dp=await page.evaluate(()=>window.SitePivot?.app?.property?.dp||null);
     }catch(e){result.propertyResolved=false;result.propertyError=e.message;result.searchBox=await page.locator('#searchResults').innerText().catch(()=>null);}
   }catch(e){
     result.suggestionMs=null;
@@ -66,4 +72,4 @@ console.log(JSON.stringify(result,null,2));
 console.log('SITEPIVOT_LIVE_QA_END');
 await browser.close();
 
-if(!result.suggestionMs || result.suggestionMs>3000 || !result.propertyResolved) process.exitCode=1;
+if(!result.suggestionMs || result.suggestionMs>3000 || !result.propertyResolved || !result.lga || !result.zone) process.exitCode=1;
