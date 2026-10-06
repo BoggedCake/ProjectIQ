@@ -185,6 +185,17 @@ const LIVE_LAYER={
  flood:1,landslide:2,
  contribution:219,dcp:220,greenfield:222,localProvision:223,apu:225,keySites:226,urbanRelease:227,sic:218
 };
+const API_BASE=(new URLSearchParams(location.search).get('apiBase')||'').replace(/\/$/,'');
+const SERVER_API=!!API_BASE||((location.protocol==='https:'||location.protocol==='http:')&&!/github\.io$/i.test(location.hostname));
+async function apiJSON(path,{method='GET',body=null,timeout=8000}={}){
+ const ctrl=typeof AbortController!=='undefined'?new AbortController():null,timer=setTimeout(()=>ctrl&&ctrl.abort(),timeout);
+ try{
+   const url=(API_BASE||'')+path;
+   const r=await fetch(url,{method,headers:{Accept:'application/json',...(body?{'Content-Type':'application/json'}:{})},body:body?JSON.stringify(body):null,signal:ctrl?.signal});
+   const j=await r.json().catch(()=>({error:'Invalid API response'}));if(!r.ok||j?.error)throw new Error(j?.error||('HTTP '+r.status));return j;
+ }finally{clearTimeout(timer)}
+}
+
 const esc=s=>String(s??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 const uniq=arr=>[...new Set((arr||[]).filter(v=>v!==undefined&&v!==null&&String(v).trim()!=='').map(v=>String(v).trim()))];
 const attrs=f=>f&&f.attributes?f.attributes:{};
@@ -216,10 +227,16 @@ function sqlSafe(s){return String(s||'').replace(/'/g,"''")}
 async function liveAddressSearch(q){
  const seq=++app.lookupSeq,key=String(q||'').toLowerCase().trim();if(key.length<4)return[];
  app._suggestCache=app._suggestCache||new Map();if(app._suggestCache.has(key))return app._suggestCache.get(key);
- const t=performance.now();
- const j=await arcJSON(LIVE.geocoder+'/suggest',{text:q,countryCode:'AUS',category:'Address',maxSuggestions:10,returnCollections:'false'},2800);
+ const t=performance.now();let out=[];
+ if(SERVER_API){
+   try{const j=await apiJSON('/api/address/suggest?q='+encodeURIComponent(q),{timeout:3000});out=(j.suggestions||[]).slice(0,10);app.lastSuggestProvider=j.provider||'SitePivot API'}
+   catch(e){console.warn('SitePivot address API fallback',e)}
+ }
+ if(!out.length){
+   const j=await arcJSON(LIVE.geocoder+'/suggest',{text:q,countryCode:'AUS',category:'Address',maxSuggestions:10,returnCollections:'false'},2800);
+   out=(j.suggestions||[]).filter(x=>x&&x.text).filter(x=>/New South Wales|\bNSW\b/i.test(x.text)).slice(0,10);app.lastSuggestProvider='ArcGIS World Geocoder';
+ }
  if(seq!==app.lookupSeq)return[];
- const out=(j.suggestions||[]).filter(x=>x&&x.text).filter(x=>/New South Wales|\bNSW\b/i.test(x.text)).slice(0,10);
  app._suggestCache.set(key,out);app.lastSuggestMs=Math.round(performance.now()-t);return out
 }
 async function geocoderCandidate(item){
@@ -324,25 +341,39 @@ function titleFromCadastralIdentifier(a){
 }
 async function resolveLiveIdentity(item){
  const seq=++app.enrichSeq,started=performance.now();setLiveStatus('Resolving the selected NSW property…','info');
+ if(SERVER_API){
+   const j=await apiJSON('/api/property/resolve?text='+encodeURIComponent(item.text||'')+(item.magicKey?'&magicKey='+encodeURIComponent(item.magicKey):''),{timeout:8000});
+   if(seq!==app.enrichSeq)throw new Error('Stale property request');
+   const a=j.property||{},point=a.point,t={title:a.title||'Needs Review',lot:a.lot||'Needs Review',dp:a.dp||'Needs Review'},isStrata=!!a.strata;
+   const p={id:'live-'+(a.addressId||Date.now()),address:a.address||item.text||'NSW property',suburb:a.suburb||'NSW',region:a.lga||'NSW',lga:a.lga||'Needs Review',postcode:String(a.postcode||''),propertyType:isStrata?'apartment':'house',title:t.title,lot:t.lot,dp:t.dp,area:null,frontage:null,beds:null,baths:null,parking:null,parcels:1,identityStatus:'verified',live:true,generic:false,point,parcelGeometry:null,parcelProximity:false,planning:{loading:true,zone:null,fsr:null,height:null,minLot:null,heritage:'Checking…',flood:'Checking…',bushfire:'Checking…',acid:'Checking…',biodiversity:'Checking…',riparian:'Checking…',wetlands:'Checking…',sensitive:'Checking…',landslide:'Checking…',reservation:'Checking…',application:'Checking…',dcpPlans:[],contributionPlans:[],sepp:[],localTriggers:[],instrument:null,liveErrors:[]},opportunities:['Improve / renovation pathway','Extension or additional-level screening','Development pathway after planning evidence loads'],costRegion:1,currentComps:[],completed:{reno:[],extend:[],storey:[],duplex:[],townhouse:[],apartment:[],multisite:[]},active:[],sourceMeta:{address:'SitePivot API → ArcGIS fast suggestion → NSW Address Point Formatted',addressObjectId:a.addressId||null,cadastralIdentifier:a.cadastralIdentifier||null,cadid:a.cadid||null,cadastre:'NSW Land Parcel Property Theme',planning:'NSW Planning Portal spatial services',checkedAt:new Date().toISOString(),serverApi:true,timing:{suggestMs:app.lastSuggestMs||null,addressMs:j.timingMs||null,identityMs:Math.round(performance.now()-started)}}};
+   return{p,official:null,geo:null,seq,server:true}
+ }
  const geo=await geocoderCandidate(item);if(seq!==app.enrichSeq)throw new Error('Stale property request');
  const tAuth=performance.now(),official=await authoritativeAddressForCandidate(geo,item.text||'');const addressMs=Math.round(performance.now()-tAuth);
  if(seq!==app.enrichSeq)throw new Error('Stale property request');
  const a=attrs(official),point=official.geometry||geo.location,lga=a.lganame||await lgaForPoint(point,null),t=titleFromCadastralIdentifier(a),canonical=a.formattedaddress||item.text||'NSW property',suburb=a.localityname||geo.attributes?.City||'NSW',postcode=String(a.postcode||geo.attributes?.Postal||''),isStrata=isStrataFromAddress(a);
- const p={id:'live-'+(a.objectid||a.ap_gurasid||Date.now()),address:canonical,suburb,region:lga,lga,postcode,propertyType:isStrata?'apartment':'house',title:t.title,lot:t.lot,dp:t.dp,area:null,frontage:null,beds:null,baths:null,parking:null,parcels:1,identityStatus:'verified',live:true,generic:false,point,parcelGeometry:null,parcelProximity:false,planning:{loading:true,zone:null,fsr:null,height:null,minLot:null,heritage:'Checking…',flood:'Checking…',bushfire:'Checking…',acid:'Checking…',biodiversity:'Checking…',riparian:'Checking…',wetlands:'Checking…',sensitive:'Checking…',landslide:'Checking…',reservation:'Checking…',application:'Checking…',dcpPlans:[],contributionPlans:[],sepp:[],localTriggers:[],instrument:null,liveErrors:[]},opportunities:['Improve / renovation pathway','Extension or additional-level screening','Development pathway after planning evidence loads'],costRegion:1,currentComps:[],completed:{reno:[],extend:[],storey:[],duplex:[],townhouse:[],apartment:[],multisite:[]},active:[],sourceMeta:{address:'ArcGIS fast suggestion + NSW Address Point Formatted authoritative match',addressObjectId:a.objectid||null,cadastralIdentifier:a.cadastralidentifier||a.pl_ptlotsecpn||null,cadastre:'NSW Cadastre',planning:'NSW Planning Portal spatial services',checkedAt:new Date().toISOString(),timing:{suggestMs:app.lastSuggestMs||null,addressMs,identityMs:Math.round(performance.now()-started)}}};
- return{p,official,geo,seq}
+ const p={id:'live-'+(a.objectid||a.ap_gurasid||Date.now()),address:canonical,suburb,region:lga,lga,postcode,propertyType:isStrata?'apartment':'house',title:t.title,lot:t.lot,dp:t.dp,area:null,frontage:null,beds:null,baths:null,parking:null,parcels:1,identityStatus:'verified',live:true,generic:false,point,parcelGeometry:null,parcelProximity:false,planning:{loading:true,zone:null,fsr:null,height:null,minLot:null,heritage:'Checking…',flood:'Checking…',bushfire:'Checking…',acid:'Checking…',biodiversity:'Checking…',riparian:'Checking…',wetlands:'Checking…',sensitive:'Checking…',landslide:'Checking…',reservation:'Checking…',application:'Checking…',dcpPlans:[],contributionPlans:[],sepp:[],localTriggers:[],instrument:null,liveErrors:[]},opportunities:['Improve / renovation pathway','Extension or additional-level screening','Development pathway after planning evidence loads'],costRegion:1,currentComps:[],completed:{reno:[],extend:[],storey:[],duplex:[],townhouse:[],apartment:[],multisite:[]},active:[],sourceMeta:{address:'ArcGIS fast suggestion + NSW Address Point Formatted authoritative match',addressObjectId:a.objectid||null,cadastralIdentifier:a.cadastralidentifier||a.pl_ptlotsecpn||null,cadid:a.lot_cadid||null,cadastre:'NSW Cadastre',planning:'NSW Planning Portal spatial services',checkedAt:new Date().toISOString(),serverApi:false,timing:{suggestMs:app.lastSuggestMs||null,addressMs,identityMs:Math.round(performance.now()-started)}}};
+ return{p,official,geo,seq,server:false}
 }
 async function completeLiveProperty(p,official,geo,seq){
- const a=attrs(official),point=official.geometry||geo.location;
  try{
-   const tParcel=performance.now();
-   const parcel=await Promise.race([parcelForPoint(point,a.cadastralidentifier||a.pl_ptlotsecpn||'',a.lot_cadid),new Promise(resolve=>setTimeout(()=>resolve({features:[],geometry:null,proximity:false,errors:['parcel timeout']}),2600))]);
-   p.sourceMeta.timing.parcelMs=Math.round(performance.now()-tParcel);
-   if(parcel.features?.length){const pt=parseTitleFromLots(parcel);p.title=pt.title;p.lot=pt.lot;p.dp=pt.dp;p.area=pt.area;p.parcels=pt.parcels;p.parcelGeometry=parcel.geometry;p.parcelProximity=parcel.proximity}
-   const tPlan=performance.now(),planning=await pullPlanning(point,parcel,p.lga);p.sourceMeta.timing.planningMs=Math.round(performance.now()-tPlan);
-   if(seq!==app.enrichSeq)return;
-   planning.loading=false;p.planning=planning;p.sourceMeta.timing.totalMs=(p.sourceMeta.timing.identityMs||0)+(p.sourceMeta.timing.parcelMs||0)+(p.sourceMeta.timing.planningMs||0);
+   if(p.sourceMeta?.serverApi){
+     const payload={point:p.point,lga:p.lga,cadastralIdentifier:p.sourceMeta.cadastralIdentifier,cadid:p.sourceMeta.cadid,lot:p.lot,dp:p.dp};
+     const tPlan=performance.now(),j=await apiJSON('/api/planning/property',{method:'POST',body:payload,timeout:9500});
+     if(seq!==app.enrichSeq)return;
+     const parcel=j.parcel||{},planning=j.planning||{};p.sourceMeta.timing.planningMs=Math.round(performance.now()-tPlan);p.sourceMeta.timing.serverPlanningMs=j.timingMs||null;
+     if(parcel.lot)p.lot=parcel.lot;if(parcel.dp)p.dp=parcel.dp;if(parcel.area)p.area=parcel.area;if(parcel.parcels)p.parcels=parcel.parcels;
+     planning.loading=false;p.planning=planning;p.sourceMeta.timing.totalMs=(p.sourceMeta.timing.identityMs||0)+(p.sourceMeta.timing.planningMs||0);
+   }else{
+     const a=attrs(official),point=official.geometry||geo.location,tParcel=performance.now();
+     const parcel=await Promise.race([parcelForPoint(point,a.cadastralidentifier||a.pl_ptlotsecpn||'',a.lot_cadid),new Promise(resolve=>setTimeout(()=>resolve({features:[],geometry:null,proximity:false,errors:['parcel timeout']}),2600))]);
+     p.sourceMeta.timing.parcelMs=Math.round(performance.now()-tParcel);
+     if(parcel.features?.length){const pt=parseTitleFromLots(parcel);p.title=pt.title;p.lot=pt.lot;p.dp=pt.dp;p.area=pt.area;p.parcels=pt.parcels;p.parcelGeometry=parcel.geometry;p.parcelProximity=parcel.proximity}
+     const tPlan=performance.now(),planning=await pullPlanning(point,parcel,p.lga);p.sourceMeta.timing.planningMs=Math.round(performance.now()-tPlan);
+     if(seq!==app.enrichSeq)return;planning.loading=false;p.planning=planning;p.sourceMeta.timing.totalMs=(p.sourceMeta.timing.identityMs||0)+(p.sourceMeta.timing.parcelMs||0)+(p.sourceMeta.timing.planningMs||0);
+   }
    p.opportunities=['Improve / renovation pathway','Extension or additional-level screening','Development pathway based on verified planning evidence'];
-   if(planning.zone&&/R[1-4]|MU1|E1|B\d/i.test(planning.zone))p.opportunities.unshift('Planning-led development opportunity screening');
+   if(p.planning.zone&&/R[1-4]|MU1|E1|B\d/i.test(p.planning.zone))p.opportunities.unshift('Planning-led development opportunity screening');
  }catch(e){if(seq!==app.enrichSeq)return;p.planning.loading=false;p.planning.liveErrors=[...(p.planning.liveErrors||[]),e.message];console.warn('planning enrichment',e)}
  if(app.property&&app.property.id===p.id){app.property=deep(p);renderIdentity();if(app.view==='passport')renderPassport()}
 }
@@ -464,7 +495,7 @@ out.push(assert('Flood/protection/bushfire sources wired',LIVE.hazard.includes('
 }catch(e){out.push(assert('Self-test runtime',false,String(e&&e.stack||e)))}
 const fails=out.filter(x=>!x.pass);window.__SITEPIVOT_TEST_RESULTS__={total:out.length,passed:out.length-fails.length,failed:fails.length,results:out};$('testHarness').classList.remove('hidden');$('testOutput').textContent=`SITEPIVOT SELF TESTS\n${out.map(x=>`${x.pass?'PASS':'FAIL'} · ${x.name}${x.details?' · '+x.details:''}`).join('\n')}\n\nTOTAL ${out.length} · PASSED ${out.length-fails.length} · FAILED ${fails.length}`;return window.__SITEPIVOT_TEST_RESULTS__}
 async function runLiveDiagnostics(){const out=[];try{let t=performance.now();const sug=await liveAddressSearch('57 Griffiths Street Fairlight NSW');out.push({name:'autocomplete',pass:sug.length>0,ms:Math.round(performance.now()-t),provider:'ArcGIS World Geocoder',count:sug.length});if(!sug.length)throw new Error('No suggestions');t=performance.now();const r=await resolveLiveIdentity(sug[0]);out.push({name:'property identity',pass:!!r.p.lga,ms:Math.round(performance.now()-t),provider:'NSW Address Point Formatted',address:r.p.address,lga:r.p.lga,lot:r.p.lot,dp:r.p.dp});t=performance.now();await completeLiveProperty(r.p,r.official,r.geo,r.seq);out.push({name:'planning enrichment',pass:!!r.p.planning.zone,ms:Math.round(performance.now()-t),provider:'NSW Cadastre + NSW Planning Portal',zone:r.p.planning.zone,instrument:r.p.planning.instrument,dcp:r.p.planning.dcpPlans,errors:r.p.planning.liveErrors});}catch(e){out.push({name:'runtime',pass:false,error:e.message})}window.__SITEPIVOT_LIVE_DIAGNOSTICS__=out;return out}
-window.SitePivot={FIXTURES,SOURCES,GOALS,DEV,LIVE,app,findMatches,liveAddressSearch,resolveLiveIdentity,completeLiveProperty,selectProperty,computeAssessment,projectCost,currentMarket,completedMarket,marketRange,compScore,runSelfTests,runLiveDiagnostics,reset};bind();renderSources();
+window.SitePivot={FIXTURES,SOURCES,GOALS,DEV,LIVE,SERVER_API,API_BASE,app,findMatches,liveAddressSearch,resolveLiveIdentity,completeLiveProperty,selectProperty,computeAssessment,projectCost,currentMarket,completedMarket,marketRange,compScore,runSelfTests,runLiveDiagnostics,reset};bind();renderSources();
 if(new URLSearchParams(location.search).get('autotest')==='1'){setTimeout(()=>runSelfTests(),50)}
 })();
 </script>
