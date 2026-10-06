@@ -73,7 +73,7 @@ try{
       '49 Mann Street Gosford NSW 2250',
       '135 Byng Street Orange NSW 2800',
       '243 Baylis Street Wagga Wagga NSW 2650',
-      '50 Church Street Dubbo NSW 2830',
+      '3 Armstrong Crescent Dubbo NSW 2830',
       '2 Civic Place Katoomba NSW 2780'
     ];
     const out=[];
