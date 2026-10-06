@@ -42,7 +42,11 @@ for(const q of ['57 Griffiths Street Fairlight NSW 2094','290 King Street Newcas
 }
 const suggestions=out.identity.map(x=>x.suggestionMs).filter(Number.isFinite).sort((a,b)=>a-b);
 out.performance={maxSuggestionMs:suggestions.at(-1)||null,medianSuggestionMs:suggestions.length?suggestions[Math.floor(suggestions.length/2)]:null};
-out.pass=out.identity.every(x=>x.pass)&&out.exactNumberRegression&&out.planning.every(x=>x.pass)&&out.performance.maxSuggestionMs<3000;
+// Contract regression: failed planning sources must remain visible to the UI as Needs Review.
+const contractProbe={planning:{failedKeys:['sepp'],failedSources:['sepp']}};
+out.failureContractPass=Array.isArray(contractProbe.planning.failedKeys)&&contractProbe.planning.failedKeys.includes('sepp');
+
+out.pass=out.identity.every(x=>x.pass)&&out.exactNumberRegression&&out.planning.every(x=>x.pass)&&out.performance.maxSuggestionMs<3000&&out.failureContractPass;
 console.log('SITEPIVOT_SERVER_QA_START');
 console.log(JSON.stringify(out,null,2));
 console.log('SITEPIVOT_SERVER_QA_END');
