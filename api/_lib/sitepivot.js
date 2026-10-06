@@ -234,7 +234,7 @@ async function planningFor(property){
   return {
     parcel:{lot:parcel.lot,dp:parcel.dp,area:parcel.area,parcels:parcel.parcels,geometryResolved:!!parcel.geometry},
     planning:{
-      instrument:localInstrument,allEpiNames:epis,statePolicies,
+      instrument:localInstrument,allEpiNames:epis,statePolicies,sepp:statePolicies,
       zone:failed.includes('zone')?null:formatZone(data.zone),
       fsr:failed.includes('fsr')?null:formatFsr(data.fsr),
       height:failed.includes('height')?null:formatHeight(data.height),
