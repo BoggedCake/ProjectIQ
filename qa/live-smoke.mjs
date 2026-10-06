@@ -65,6 +65,8 @@ try{
     result.searchBox=await page.locator('#searchResults').innerText().catch(()=>null);
   }
 
+  result.parcelProbe=await page.evaluate(async()=>{const url='https://portal.spatial.nsw.gov.au/server/rest/services/NSW_Land_Parcel_Property_Theme/FeatureServer/8/query?f=json&where='+encodeURIComponent("planlabel = 'DP1729' AND lotnumber = '32'")+'&outFields='+encodeURIComponent('cadid,lotnumber,planlabel,planlotarea,planlotareaunits,lotidstring,classsubtype')+'&returnGeometry=true&outSR=4283&resultRecordCount=5';const t=performance.now();try{const r=await fetch(url,{mode:'cors'});const j=await r.json();return{ok:r.ok,status:r.status,ms:Math.round(performance.now()-t),features:(j.features||[]).map(f=>({attributes:f.attributes,hasGeometry:!!f.geometry,rings:f.geometry?.rings?.length||0})),error:j.error||null}}catch(e){return{ok:false,ms:Math.round(performance.now()-t),error:String(e)}}});
+
   result.matrix=await page.evaluate(async()=>{
     const cases=[
       '1 Waratah Street Balgowlah NSW 2093',
