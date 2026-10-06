@@ -30,7 +30,7 @@ jobs:
         run: |
           for i in {1..18}; do
             code=$(curl -L -s -o /tmp/sitepivot.html -w "%{http_code}" "https://boggedcake.github.io/ProjectIQ/?qa=${GITHUB_SHA}")
-            if [ "$code" = "200" ] && grep -q "SitePivot" /tmp/sitepivot.html; then
+            if [ "$code" = "200" ] && grep -q "SITEPIVOT-LIVE-DATA-V2" /tmp/sitepivot.html; then
               echo "Site reachable"
               exit 0
             fi
