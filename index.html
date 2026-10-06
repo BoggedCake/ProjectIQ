@@ -315,7 +315,8 @@ async function pullPlanning(point,parcel,lga){
    failedKeys,liveErrors:errors,liveCheckedAt:new Date().toISOString(),_liveSource:true
  }
 }
-function parseTitleFromLots(lots){const fs=lots?.features||[];return{lot:uniq(fs.map(f=>attrs(f).lotnumber)).join(' + ')||'Needs Review',dp:uniq(fs.map(f=>attrs(f).planlabel)).join(' + ')||'Needs Review',area:fs.reduce((s,f)=>s+areaSqm(attrs(f)),0)||null,parcels:fs.length||null,title:fs.some(f=>/STRATA/i.test(String(attrs(f).lotidstring||'')))?'Strata / cadastral':'Torrens / cadastral'}}
+function geometryAreaSqm(geom){if(!geom||!geom.rings?.length)return 0;const R=6378137,d=Math.PI/180;let total=0;for(const ring of geom.rings){let sum=0;for(let i=0;i<ring.length;i++){const a=ring[i],b=ring[(i+1)%ring.length];sum+=(b[0]-a[0])*d*(2+Math.sin(a[1]*d)+Math.sin(b[1]*d))}total+=sum*R*R/2}return Math.abs(total)}
+function parseTitleFromLots(lots){const fs=lots?.features||[];const attrArea=fs.reduce((s,f)=>s+areaSqm(attrs(f)),0);const geomArea=fs.reduce((s,f)=>s+geometryAreaSqm(f.geometry),0);return{lot:uniq(fs.map(f=>attrs(f).lotnumber)).join(' + ')||'Needs Review',dp:uniq(fs.map(f=>attrs(f).planlabel)).join(' + ')||'Needs Review',area:attrArea||geomArea||null,parcels:fs.length||null,title:fs.some(f=>/STRATA/i.test(String(attrs(f).lotidstring||'')))?'Strata / cadastral':'Torrens / cadastral'}}
 function isStrataFromAddress(a){return !!a.complexunitidentifier||/STRATA|UNIT/i.test(String(a.ss_addresspointtype||'')+' '+String(a.ss_classsubtype||''))}
 function titleFromCadastralIdentifier(a){
  const cid=String(a.cadastralidentifier||a.pl_ptlotsecpn||'').trim(),m=cid.match(/^([^/]*)\/[^/]*\/(.+)$/);
