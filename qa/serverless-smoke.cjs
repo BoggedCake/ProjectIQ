@@ -15,6 +15,7 @@ const cases=[
  '2 Civic Place Katoomba NSW 2780'
 ];
 
+(async()=>{
 const out={started:new Date().toISOString(),identity:[],planning:[]};
 for(const q of cases){
  const t0=Date.now();
@@ -46,3 +47,4 @@ console.log('SITEPIVOT_SERVER_QA_START');
 console.log(JSON.stringify(out,null,2));
 console.log('SITEPIVOT_SERVER_QA_END');
 if(!out.pass)process.exitCode=1;
+})().catch(e=>{console.error(e);process.exitCode=1});
