@@ -71,7 +71,7 @@ try{
     const cases=[
       '1 Waratah Street Balgowlah NSW 2093',
       '9 Waratah Street Balgowlah NSW 2093',
-      '483 George Street Sydney NSW 2000',
+      '84/2-8 Dixon Street Sydney NSW 2000',
       '290 King Street Newcastle NSW 2300',
       '41 Burelli Street Wollongong NSW 2500',
       '49 Mann Street Gosford NSW 2250',
