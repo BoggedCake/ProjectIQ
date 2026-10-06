@@ -16,6 +16,7 @@ try{
   await page.goto(URL,{waitUntil:'domcontentloaded',timeout:30000});
   result.navigationMs=Date.now()-navStart;
   await page.waitForSelector('#addressSearch',{timeout:10000});
+  result.fixtureToolsHidden=await page.locator('#fixtureTools').evaluate(el=>el.classList.contains('hidden'));
 
   result.liveFetchHeaders=await page.evaluate(async()=>{
     const checks=[
@@ -41,6 +42,8 @@ try{
     await page.waitForSelector('#searchResults.open .searchResult',{timeout:3500});
     result.suggestionMs=Date.now()-t0;
     result.suggestions=await page.locator('#searchResults.open .searchResult').allTextContents();
+    await input.press('ArrowDown');
+    result.keyboardActiveSuggestion=await page.locator('#searchResults.open .searchResult.active').count();
     const exact=page.locator('#searchResults.open .searchResult').filter({hasText:'57 Griffiths'}).first();
     if(await exact.count()) await exact.click(); else await page.locator('#searchResults.open .searchResult').first().click();
     try{
@@ -120,6 +123,20 @@ try{
 
   result.browserPlanningArchitecture='GitHub Pages is static-only. Statewide planning enrichment is validated by the server data QA and must run through the deployed SitePivot API to avoid browser ORB/CORS failures.';
 
+  const mobile=await browser.newPage({viewport:{width:390,height:844}});
+  try{
+    await mobile.goto(URL+'&mobile=1',{waitUntil:'domcontentloaded',timeout:30000});
+    await mobile.waitForSelector('#addressSearch',{timeout:10000});
+    result.mobile={
+      width:await mobile.evaluate(()=>innerWidth),
+      scrollWidth:await mobile.evaluate(()=>document.documentElement.scrollWidth),
+      fixtureToolsHidden:await mobile.locator('#fixtureTools').evaluate(el=>el.classList.contains('hidden')),
+      assistantExists:await mobile.locator('#assistantSection').count()
+    };
+    result.mobile.pass=result.mobile.scrollWidth<=result.mobile.width&&result.mobile.fixtureToolsHidden&&result.mobile.assistantExists===1;
+  }catch(e){result.mobile={pass:false,error:e.message}}
+  await mobile.close();
+
   result.consoleErrors=consoleErrors;
   result.requestFailures=requestFailures;
 }catch(e){
@@ -130,4 +147,4 @@ console.log(JSON.stringify(result,null,2));
 console.log('SITEPIVOT_LIVE_QA_END');
 await browser.close();
 
-if(!result.suggestionMs || result.suggestionMs>3000 || !result.propertyResolved || !result.lga || !result.lot || !result.dp || !result.exactNumberRegression || result.matrix?.some(x=>!x.pass) || !result.assistant?.textAvailable || (result.assistantRendered||0)<3) process.exitCode=1;
+if(!result.suggestionMs || result.suggestionMs>3000 || !result.propertyResolved || !result.lga || !result.lot || !result.dp || !result.exactNumberRegression || result.matrix?.some(x=>!x.pass) || !result.fixtureToolsHidden || result.keyboardActiveSuggestion!==1 || !result.assistant?.textAvailable || (result.assistantRendered||0)<3 || !result.mobile?.pass) process.exitCode=1;
