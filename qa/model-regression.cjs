@@ -28,4 +28,11 @@ test('identity does not label missing dwelling data as verified',(api,d)=>{
 test('speech removes evidence labels, ISO dates and source metadata',api=>{
  api.selectProperty(api.FIXTURES[0]);const spoken=api.assistantSpeechAnswer('Tell me the evidence','Value (Indicative). Verified. Evidence state: Unavailable. Source: NSW. Checked 2026-10-06.');assert.doesNotMatch(spoken,/Indicative|Verified|Unavailable|Source:|2026-10-06/i);
 });
+test('negative hazard results do not create bushfire or flood consultant recommendations',api=>{
+ api.selectProperty(api.FIXTURES[0]);api.app.goal='reno';Object.assign(api.app.property.planning,{bushfire:'No NSW bush fire prone land overlap',flood:'No mapped flood planning overlap'});const a=api.computeAssessment();assert.ok(!a.risks.some(r=>/Bushfire mapping is material|Flood controls may change/.test(r.title)));assert.notEqual(a.next.who,'Bushfire consultant');
+});
+test('report keeps technical policies behind progressive disclosure',(api,d)=>{
+ api.selectProperty(api.FIXTURES[0]);api.app.property.planning.instrument='Manly Local Environmental Plan 2013 / State Environmental Planning Policy (Housing) 2021';api.app.goal='reno';api.computeAssessment();api.show('report');
+ const details=d.querySelector('#reportContent details');assert.ok(details,'Report must retain evidence in a closed detail section');assert.equal(details.open,false);assert.match(details.textContent,/State Environmental Planning Policy/);
+});
 process.exitCode=failures?1:0;

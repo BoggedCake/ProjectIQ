@@ -1,0 +1,14 @@
+{
+  "name": "sitepivot",
+  "private": true,
+  "scripts": {
+    "test": "node qa/model-regression.cjs && node qa/async-regression.cjs && node qa/journey.cjs",
+    "test:live": "node qa/live-smoke.mjs",
+    "test:providers": "node qa/serverless-smoke.cjs"
+  },
+  "devDependencies": {
+    "jsdom": "30.1.2",
+    "playwright": "1.62.1"
+  },
+  "engines": { "node": ">=24" }
+}

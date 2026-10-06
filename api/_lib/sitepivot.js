@@ -94,8 +94,9 @@ async function geocode(item){
   return hit;
 }
 async function authoritativeAddress(candidate,input){
+  const q=parsedAddress(input),where=q.unit?"complexunitidentifier = '"+safe(q.unit)+"' AND streetnumber1 = '"+safe(q.number)+"'":'1=1';
   const j=await arcQuery(UPSTREAM.address.replace('/0',''),0,{
-    where:'1=1',geometry:JSON.stringify(candidate.location),geometryType:'esriGeometryPoint',inSR:4283,spatialRel:'esriSpatialRelIntersects',
+    where,geometry:JSON.stringify(candidate.location),geometryType:'esriGeometryPoint',inSR:4283,spatialRel:'esriSpatialRelIntersects',
     distance:100,units:'esriSRUnit_Meter',
     outFields:'objectid,formattedaddress,localityname,lganame,cadastralidentifier,pl_ptlotsecpn,streetnumber1,streetnumber2,streetname,streettype,streettypedescription,postcode,complexunitidentifier,complexlevelnumber,ss_addresspointtype,ss_classsubtype,ss_principaladdresstype,ss_addressstringoid,ss_principaladdresssiteoid,ss_propid,ss_sppropid,lot_cadid,ap_gurasid',
     returnGeometry:'true',outSR:4283,resultRecordCount:100

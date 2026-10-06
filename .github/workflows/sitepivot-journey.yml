@@ -17,11 +17,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
-      - run: npm install --no-save playwright@1.62.1 jsdom@30.1.2
-      - run: node qa/model-regression.cjs
-      - run: node qa/async-regression.cjs
+      - run: npm ci
       - run: npx playwright install --with-deps chromium
-      - run: node qa/journey.cjs
+      - run: npm test
         env:
           QA_OUTPUT: journey-results.json
       - uses: actions/upload-artifact@v4
