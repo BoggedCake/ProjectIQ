@@ -51,6 +51,14 @@ const suiteTimeout=setTimeout(()=>{console.error('FAIL async suite did not finis
   if(stage==='passport')assert.equal(d.getElementById('confirmBeds').value,'4');
   else assert.ok(!api.app.assessment.risks.some(r=>/height is not confirmed/.test(r.title)));
  });
+ await test('late planning preserves resolved sold-market evidence',async()=>{
+  let release;const sold={id:'sold-qa',label:'Real provider row',source:'QA provider',price:2100000,beds:4,baths:2,land:416,days:20,type:'house'};
+  const w=dom(url=>String(url).includes('/api/market/')?Promise.resolve(response({status:'indicative',soldComparables:[sold],completedProductComparables:[sold],currentListings:[]})):new Promise(r=>release=r)),api=w.window.SitePivot;
+  const p=JSON.parse(JSON.stringify(api.FIXTURES[0]));Object.assign(p,{live:true,sourceMeta:{serverApi:true,timing:{}}});p.planning.loading=true;
+  api.selectProperty(p);const pending=api.completeLiveProperty(p,null,null,api.app.enrichSeq);await until(()=>release);api.chooseGoal('reno');await until(()=>api.app.property.marketEvidence);
+  release(response({parcel:{area:416},planning:{height:'8.5 m',fsr:'0.5:1',liveErrors:[],failedKeys:[]}}));await pending;
+  assert.equal(api.app.property.currentComps[0]?.id,'sold-qa');assert.equal(api.app.property.completed.reno[0]?.id,'sold-qa');assert.equal(api.app.property.marketEvidence.status,'indicative');
+ });
  await test('provider failures survive the real normalized planning contract',async()=>{
   const prior=global.fetch;global.fetch=async()=>{throw Error('QA upstream failure')};delete require.cache[require.resolve('../api/_lib/sitepivot')];
   try{const r=await require('../api/_lib/sitepivot').planningFor({point:{x:151.22,y:-33.82},lga:'TEST',lot:'1',dp:'DP0'});assert.ok(r.planning.failedKeys.includes('zone'));assert.ok(r.planning.failedKeys.includes('sepp'));assert.deepEqual(r.planning.failedSources,r.planning.failedKeys);assert.equal(r.planning.zone,null);assert.ok(Array.isArray(r.planning.sepp));assert.deepEqual(r.planning.dcpPlans,[])}finally{global.fetch=prior}
