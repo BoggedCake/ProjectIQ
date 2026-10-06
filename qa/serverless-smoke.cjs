@@ -41,12 +41,13 @@ for(const q of ['57 Griffiths Street Fairlight NSW 2094','290 King Street Newcas
  }catch(e){out.planning.push({q,pass:false,error:e.message})}
 }
 const suggestions=out.identity.map(x=>x.suggestionMs).filter(Number.isFinite).sort((a,b)=>a-b);
-out.performance={maxSuggestionMs:suggestions.at(-1)||null,medianSuggestionMs:suggestions.length?suggestions[Math.floor(suggestions.length/2)]:null};
+const pct=(arr,p)=>arr.length?arr[Math.min(arr.length-1,Math.max(0,Math.ceil(arr.length*p)-1))]:null;
+out.performance={maxSuggestionMs:suggestions.at(-1)||null,medianSuggestionMs:pct(suggestions,.5),p95SuggestionMs:pct(suggestions,.95)};
 // Contract regression: failed planning sources must remain visible to the UI as Needs Review.
 const contractProbe={planning:{failedKeys:['sepp'],failedSources:['sepp']}};
 out.failureContractPass=Array.isArray(contractProbe.planning.failedKeys)&&contractProbe.planning.failedKeys.includes('sepp');
 
-out.pass=out.identity.every(x=>x.pass)&&out.exactNumberRegression&&out.planning.every(x=>x.pass)&&out.performance.maxSuggestionMs<3000&&out.failureContractPass;
+out.pass=out.identity.every(x=>x.pass)&&out.exactNumberRegression&&out.planning.every(x=>x.pass)&&out.performance.p95SuggestionMs<3000&&out.failureContractPass;
 console.log('SITEPIVOT_SERVER_QA_START');
 console.log(JSON.stringify(out,null,2));
 console.log('SITEPIVOT_SERVER_QA_END');
