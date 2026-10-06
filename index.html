@@ -519,8 +519,9 @@ function ensureDwellingProfile(p){
  }
  return p.dwellingProfile;
 }
+function hasDwellingNumber(v){return v!==null&&v!==undefined&&v!==''&&Number.isFinite(Number(v))}
 function dwellingProfileComplete(p){
- const d=ensureDwellingProfile(p);return !!d&&Number.isFinite(+d.bedrooms)&&Number.isFinite(+d.bathrooms)&&Number.isFinite(+d.parkingSpaces)&&!!d.propertyType;
+ const d=ensureDwellingProfile(p);return !!d&&hasDwellingNumber(d.bedrooms)&&hasDwellingNumber(d.bathrooms)&&hasDwellingNumber(d.parkingSpaces)&&!!d.propertyType;
 }
 function shortAddress(p){
  const a=String(p?.address||'').replace(/\s+NSW\s+\d{4}$/i,'').replace(/,\s*NSW\s*\d{4}$/i,'');
@@ -570,7 +571,7 @@ function consumerPropertySummary(p){
 function renderDwellingSummary(p){
  const d=ensureDwellingProfile(p),summary=$('dwellingSummary'),source=$('dwellingSource'),confirm=$('dwellingConfirm'),area=$('propertyAreaBadge');
  if(!summary||!source||!confirm||!area)return;
- const bits=[];if(Number.isFinite(+d.bedrooms))bits.push(d.bedrooms+' Bed');if(Number.isFinite(+d.bathrooms))bits.push(d.bathrooms+' Bath');if(Number.isFinite(+d.parkingSpaces))bits.push(d.parkingSpaces+' Car');
+ const bits=[];if(hasDwellingNumber(d.bedrooms))bits.push(d.bedrooms+' Bed');if(hasDwellingNumber(d.bathrooms))bits.push(d.bathrooms+' Bath');if(hasDwellingNumber(d.parkingSpaces))bits.push(d.parkingSpaces+' Car');
  summary.textContent=bits.length?bits.join(' · '):propertyTypeLabel(d.propertyType);
  source.textContent=propertyTypeLabel(d.propertyType)+(d.source==='User confirmed'?' · User confirmed':d.source==='Prototype fixture'?' · Test data':'');
  area.innerHTML=p.area?'<span class="pill indicative">'+esc(num(p.area))+' m² land</span>':'';
@@ -586,8 +587,9 @@ function renderDwellingSummary(p){
 }
 function saveDwellingProfile(){
  const p=app.property;if(!p)return;
- const beds=+$('confirmBeds').value,baths=+$('confirmBaths').value,cars=+$('confirmCars').value,type=$('confirmType').value;
- if(!Number.isFinite(beds)||!Number.isFinite(baths)||!Number.isFinite(cars)){return}
+ const bedsRaw=$('confirmBeds').value,bathsRaw=$('confirmBaths').value,carsRaw=$('confirmCars').value,type=$('confirmType').value;
+ if(!hasDwellingNumber(bedsRaw)||!hasDwellingNumber(bathsRaw)||!hasDwellingNumber(carsRaw)){return}
+ const beds=Number(bedsRaw),baths=Number(bathsRaw),cars=Number(carsRaw);
  p.dwellingProfile={propertyType:type,bedrooms:beds,bathrooms:baths,parkingSpaces:cars,garageSpaces:null,source:'User confirmed',confidence:'user',lastVerified:new Date().toISOString()};
  p.propertyType=type;p.beds=beds;p.baths=baths;p.parking=cars;app.assessment=null;renderPassport();
 }
@@ -869,7 +871,7 @@ function runSelfTests(){const out=[];try{
 out.push(assert('Exact-match 1 Waratah',FIXTURES.find(x=>x.address.startsWith('1 Waratah')).id==='waratah-1'));
 out.push(assert('Exact-match 9 Waratah',FIXTURES.find(x=>x.address.startsWith('9 Waratah')).id==='waratah-9'));
 out.push(assert('1 and 9 never cross-match',findMatches('1 Waratah Street').length===1&&findMatches('1 Waratah Street')[0].id==='waratah-1'&&findMatches('9 Waratah Street')[0].id==='waratah-9'));
-out.push(assert('Five primary directions',GOALS.length===5));out.push(assert('Four development intentions',DEV.length===4));
+out.push(assert('Five primary directions',GOALS.length===5));out.push(assert('Five development choices including unsure',DEV.length===5&&DEV.some(x=>x.id==='unsure')));
 for(const p of FIXTURES){app.property=deep(p);app.goal='reno';app.devType=null;app.scope={area:70,quality:'premium',complexity:'normal',budget:700000,targetPurchase:2000000,dwellings:2,gfa:420};const a=computeAssessment();out.push(assert(`Fixture computes: ${p.id}`,!!a.cost&&!!a.current));}
 app.property=deep(FIXTURES[0]);app.goal='reno';app.scope={area:60,quality:'premium',complexity:'normal',budget:500000,targetPurchase:2500000,dwellings:2,gfa:420};const a1=computeAssessment();const before=a1.completed.mid;app.scope.area=120;const a2=computeAssessment();out.push(assert('Completed value independent of project cost',before===a2.completed.mid,'Completed market evidence should not change when cost area changes'));
 app.property=deep(FIXTURES.find(x=>x.id==='waratah-9'));out.push(assert('Missing FSR remains unknown',app.property.planning.fsr===null));
