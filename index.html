@@ -9,9 +9,10 @@
 :root{--ink:#17201c;--muted:#66706a;--line:#dfe5e1;--paper:#f6f8f6;--card:#fff;--accent:#1f5f49;--accent2:#dfeee7;--warn:#8a5a12;--warnbg:#fff5de;--bad:#8b3030;--badbg:#fff0f0;--good:#276047;--goodbg:#eaf6f0;--info:#355d82;--infobg:#eef5fb;--shadow:0 12px 34px rgba(25,48,38,.08);--radius:20px;--max:1180px}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:var(--paper);line-height:1.45}.appShell{min-height:100vh}.topbar{position:sticky;top:0;z-index:20;background:rgba(246,248,246,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}.topInner{max-width:var(--max);margin:auto;padding:14px 20px;display:flex;align-items:center;gap:16px}.brand{font-weight:850;letter-spacing:-.04em;font-size:25px}.brand span{color:var(--accent)}.stage{font-size:12px;color:var(--muted);background:#fff;border:1px solid var(--line);padding:6px 9px;border-radius:999px}.spacer{flex:1}.ghostBtn,.primaryBtn,.secondaryBtn,.miniBtn{appearance:none;border:0;border-radius:12px;font-weight:750;cursor:pointer;transition:.15s ease;font:inherit}.ghostBtn{background:transparent;color:var(--ink);padding:9px 10px}.primaryBtn{background:var(--accent);color:#fff;padding:13px 18px;box-shadow:0 6px 16px rgba(31,95,73,.15)}.primaryBtn:hover{transform:translateY(-1px)}.secondaryBtn{background:#fff;border:1px solid var(--line);color:var(--ink);padding:12px 16px}.miniBtn{background:#fff;border:1px solid var(--line);padding:8px 10px;font-size:13px}.primaryBtn:disabled,.secondaryBtn:disabled{opacity:.45;cursor:not-allowed}.container{max-width:var(--max);margin:auto;padding:26px 20px 70px}.view{display:none}.view.active{display:block}.hero{display:grid;grid-template-columns:1.2fr .8fr;gap:36px;align-items:start;padding:56px 0 28px}.eyebrow{font-size:13px;text-transform:uppercase;letter-spacing:.14em;font-weight:800;color:var(--accent)}h1{font-size:clamp(42px,7vw,78px);line-height:.96;letter-spacing:-.055em;margin:12px 0 20px;max-width:900px}h2{font-size:clamp(28px,4vw,44px);letter-spacing:-.04em;line-height:1.05;margin:8px 0 14px}h3{font-size:21px;letter-spacing:-.02em;margin:0 0 8px}p{margin:0 0 12px}.lede{font-size:20px;color:#455049;max-width:780px}.trustStrip{display:flex;flex-wrap:wrap;gap:8px;margin:20px 0}.pill{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:#fff;border-radius:999px;padding:7px 10px;font-size:12px;font-weight:750}.pill.verified{background:var(--goodbg);color:var(--good);border-color:#cde7d9}.pill.indicative{background:var(--infobg);color:var(--info);border-color:#d5e5f1}.pill.review{background:var(--warnbg);color:var(--warn);border-color:#f0deb5}.pill.unavailable{background:#f1f1f1;color:#666}.panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px}.heroPanel{position:sticky;top:92px}.field{margin:14px 0}.field label{display:block;font-weight:800;font-size:14px;margin:0 0 7px}.hint{font-size:12px;color:var(--muted)}input,select,textarea{width:100%;padding:13px 14px;border:1px solid #cfd7d2;border-radius:12px;background:#fff;color:var(--ink);font:inherit;outline:none}input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(31,95,73,.12)}textarea{min-height:110px;resize:vertical}.searchResults{margin-top:9px;border:1px solid var(--line);border-radius:12px;background:#fff;overflow:hidden;display:none}.searchResults.open{display:block}.searchResult{display:block;width:100%;text-align:left;padding:12px 14px;border:0;border-bottom:1px solid var(--line);background:#fff;cursor:pointer}.searchResult:last-child{border-bottom:0}.searchResult:hover,.searchResult.active{background:#f0f6f2;outline:2px solid rgba(31,95,73,.18);outline-offset:-2px}.demoTag{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--warn);font-weight:850}.sampleGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:10px}.sample{font-size:12px;border:1px solid var(--line);background:#fff;border-radius:10px;padding:9px;text-align:left;cursor:pointer}.steps{display:flex;gap:8px;align-items:center;margin:4px 0 22px;overflow:auto;padding-bottom:2px}.step{font-size:12px;color:var(--muted);white-space:nowrap}.step.current{color:var(--accent);font-weight:850}.step:after{content:"›";margin-left:8px;color:#aaa}.step:last-child:after{display:none}.pageHead{display:flex;gap:16px;align-items:flex-start;justify-content:space-between;margin:22px 0}.pageHead .copy{max-width:760px}.notice{border-radius:14px;padding:13px 15px;margin:12px 0;border:1px solid}.notice.info{background:var(--infobg);border-color:#d9e6f0}.notice.warn{background:var(--warnbg);border-color:#edddb8}.notice.good{background:var(--goodbg);border-color:#d0e7dc}.notice.bad{background:var(--badbg);border-color:#efcece}.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.metric{padding:16px;border:1px solid var(--line);border-radius:15px;background:#fff}.metric .label{font-size:12px;color:var(--muted);font-weight:750}.metric .value{font-size:22px;font-weight:850;letter-spacing:-.03em;margin-top:3px}.metric .sub{font-size:12px;color:var(--muted);margin-top:4px}.section{margin:22px 0}.sectionTitle{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}.factList{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.fact{border:1px solid var(--line);border-radius:14px;padding:13px;background:#fff}.factTop{display:flex;justify-content:space-between;gap:8px}.factName{font-size:12px;color:var(--muted);font-weight:750}.factValue{font-weight:850}.factMeta{font-size:11px;color:var(--muted);margin-top:5px}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}.goalGrid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}.goalCard{border:1px solid var(--line);background:#fff;border-radius:18px;padding:18px;text-align:left;cursor:pointer;min-height:170px}.goalCard:hover,.goalCard.selected{border-color:var(--accent);box-shadow:0 0 0 3px rgba(31,95,73,.1)}.goalIcon{font-size:26px}.goalTitle{font-size:17px;font-weight:850;margin:12px 0 6px}.goalDesc{font-size:13px;color:var(--muted)}.scopeGrid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.segmented{display:flex;gap:8px;flex-wrap:wrap}.segmented button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:9px 12px;cursor:pointer;font-weight:750}.segmented button.active{background:var(--accent);color:#fff;border-color:var(--accent)}.tabs{display:flex;gap:8px;overflow:auto;margin:18px 0 14px}.tab{border:1px solid var(--line);background:#fff;border-radius:999px;padding:9px 12px;cursor:pointer;white-space:nowrap;font-weight:750}.tab.active{background:var(--ink);color:#fff}.tabPanel{display:none}.tabPanel.active{display:block}.score{font-size:12px;font-weight:850;padding:4px 7px;border-radius:999px;background:#eef3ef}.compareTable{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff}.compareTable th,.compareTable td{text-align:left;padding:11px;border-bottom:1px solid var(--line);font-size:13px;vertical-align:top}.compareTable tr:last-child td{border-bottom:0}.compareTable th{background:#f4f7f5;font-size:12px;color:var(--muted)}.bar{height:9px;background:#edf0ee;border-radius:999px;overflow:hidden}.bar span{height:100%;background:var(--accent);display:block}.risk{display:flex;gap:12px;padding:13px;border:1px solid var(--line);border-radius:14px;background:#fff;margin-bottom:8px}.riskRank{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:#f1f4f2;font-weight:850;flex:0 0 auto}.roadmap{position:relative;padding-left:16px}.roadStep{display:grid;grid-template-columns:34px 1fr;gap:12px;padding:0 0 20px}.roadNo{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:#fff;font-weight:850}.roadStep:not(:last-child):before{content:"";position:absolute;left:32px;margin-top:34px;height:28px;border-left:2px solid #d5ddd8}.sourceRow{display:grid;grid-template-columns:1.2fr .9fr .8fr .8fr;gap:10px;border-bottom:1px solid var(--line);padding:10px 0;font-size:12px}.sourceRow.header{font-weight:850;color:var(--muted)}.modal{position:fixed;inset:0;background:rgba(15,22,18,.55);display:none;place-items:center;padding:20px;z-index:50}.modal.open{display:grid}.modalCard{max-width:1000px;width:100%;max-height:85vh;overflow:auto;background:#fff;border-radius:20px;padding:22px}.right{margin-left:auto}.small{font-size:12px;color:var(--muted)}.divider{border:0;border-top:1px solid var(--line);margin:18px 0}.kicker{font-weight:850;color:var(--accent)}.money{font-variant-numeric:tabular-nums}.footerNote{font-size:11px;color:var(--muted);margin-top:24px}.hidden{display:none!important}.testOutput{white-space:pre-wrap;background:#111;color:#eee;padding:16px;border-radius:12px;font:12px ui-monospace,monospace;margin-top:16px}
 .assistantPanel{box-shadow:none}.assistantMessages{display:flex;flex-direction:column;gap:10px;max-height:360px;overflow:auto;padding:4px 2px 12px;scrollbar-gutter:stable}.assistantMessage{max-width:88%;padding:11px 13px;border-radius:14px;white-space:pre-wrap}.assistantMessage.user{align-self:flex-end;background:var(--accent);color:#fff}.assistantMessage.assistant{align-self:flex-start;background:var(--paper);border:1px solid var(--line)}.assistantComposer{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end}.assistantComposer textarea{min-height:72px;margin:0}.assistantControls{display:flex;gap:8px;flex-wrap:wrap}.voiceBtn.listening{outline:3px solid rgba(31,95,73,.18);background:var(--accent2);color:var(--accent)}.voiceStatus{margin-top:8px}.assistantPrivacy{margin-top:8px}
-@media(max-width:980px){.hero{grid-template-columns:1fr}.heroPanel{position:static}.goalGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.grid4{grid-template-columns:repeat(2,minmax(0,1fr))}.grid3{grid-template-columns:1fr 1fr}.sourceRow{grid-template-columns:1fr 1fr}.sourceRow.header{display:none}}
+.consumerPropertyCard{padding:20px}.consumerPropertyTop{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}.propertyConfigLine{font-size:20px;font-weight:850;letter-spacing:-.02em}.propertyTypeLine{font-size:13px;color:var(--muted);margin-top:4px}.confirmationBox{margin-top:16px;padding:16px;border:1px solid var(--line);border-radius:14px;background:#f8faf8}.confirmationGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:12px}.confirmationGrid .field{margin:0}.consumerPlanningGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.consumerMetric{padding:16px;border:1px solid var(--line);border-radius:15px;background:#fff}.consumerMetric .label{font-size:12px;color:var(--muted);font-weight:750}.consumerMetric .value{font-size:20px;font-weight:850;letter-spacing:-.025em;margin-top:4px}.matterList{display:grid;gap:10px}.matterItem{display:flex;gap:12px;align-items:flex-start;padding:13px 15px;border:1px solid var(--line);border-radius:14px;background:#fff}.matterIcon{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;flex:0 0 auto;font-weight:900}.matterItem.good .matterIcon{background:var(--goodbg);color:var(--accent)}.matterItem.warn .matterIcon{background:var(--warnbg);color:#8b5b00}.matterItem .matterTitle{font-weight:850}.matterItem .matterText{font-size:13px;color:var(--muted);margin-top:2px}.pathwayGrid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}.pathwayCard{border:1px solid var(--line);background:#fff;border-radius:18px;padding:17px;text-align:left;cursor:pointer;min-height:138px;transition:.15s ease}.pathwayCard:hover,.pathwayCard:focus-visible,.pathwayCard.selected{border-color:var(--accent);box-shadow:0 0 0 3px rgba(31,95,73,.1);transform:translateY(-1px)}.pathwayCard .goalTitle{margin-top:8px}.planningDetails{border:1px solid var(--line);border-radius:15px;background:#fff;overflow:hidden}.planningDetails summary{cursor:pointer;padding:14px 16px;font-weight:850;list-style:none}.planningDetails summary::-webkit-details-marker{display:none}.planningDetails summary:after{content:"＋";float:right;color:var(--accent)}.planningDetails[open] summary:after{content:"−"}.planningDetails .detailsInner{padding:0 16px 16px}.consumerSubtle{font-size:13px;color:var(--muted)}.assistantPromptChips{display:flex;gap:7px;flex-wrap:wrap;margin:8px 0 12px}.assistantPromptChip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:7px 10px;cursor:pointer;font-size:12px}.assistantPromptChip:hover{border-color:var(--accent)}
+@media(max-width:980px){.confirmationGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.consumerPlanningGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.pathwayGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.hero{grid-template-columns:1fr}.heroPanel{position:static}.goalGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.grid4{grid-template-columns:repeat(2,minmax(0,1fr))}.grid3{grid-template-columns:1fr 1fr}.sourceRow{grid-template-columns:1fr 1fr}.sourceRow.header{display:none}}
 @media(max-width:680px){.topInner{padding:12px 14px}.brand{font-size:22px}.stage{display:none}.container{padding:18px 14px 54px}.hero{padding-top:28px}.lede{font-size:18px}.grid2,.grid3,.grid4,.scopeGrid,.factList{grid-template-columns:1fr}.goalGrid{grid-template-columns:1fr}.goalCard{min-height:auto}.pageHead{display:block}.pageHead .actions{margin-top:12px}.metric .value{font-size:20px}.compareTable{display:block;overflow:auto}.sampleGrid{grid-template-columns:1fr}.sourceRow{grid-template-columns:1fr}}
-@media(max-width:680px){.assistantComposer{grid-template-columns:1fr}.assistantControls{justify-content:stretch}.assistantControls button{flex:1}.assistantMessage{max-width:96%}}
+@media(max-width:680px){.consumerPropertyTop{display:block}.confirmationGrid,.consumerPlanningGrid,.pathwayGrid{grid-template-columns:1fr}.pathwayCard{min-height:auto}.assistantComposer{grid-template-columns:1fr}.assistantControls{justify-content:stretch}.assistantControls button{flex:1}.assistantMessage{max-width:96%}}
 @media print{#assistantSection,.topbar,.tabs,.actions,.ghostBtn,.primaryBtn,.secondaryBtn,.demoTag{display:none!important}.view{display:none!important}.view.active{display:block!important}.container{max-width:none;padding:0}.panel{box-shadow:none}.tabPanel{display:block!important;break-inside:avoid}.notice{break-inside:avoid}}
 </style>
 </head>
@@ -43,32 +44,56 @@
 </section>
 <section class="view" id="view-passport">
   <div class="steps"><span class="step">Property</span><span class="step current">Passport</span><span class="step">Direction</span><span class="step">Assessment</span><span class="step">Next steps</span></div>
-  <div class="pageHead"><div class="copy"><div class="eyebrow">Property Passport</div><h2 id="passportAddress">Your property at a glance.</h2><p>Important facts are separated from SitePivot interpretation. Every material planning fact carries a confidence state.</p></div><div class="actions"><button class="secondaryBtn" id="changeProperty">Change property</button></div></div>
-  <div id="passportBanner"></div><div class="grid4" id="passportMetrics"></div>
-  <div class="section"><div class="sectionTitle"><h3>Planning snapshot</h3><span class="small">What applies · why it matters · what still needs checking</span></div><div class="factList" id="planningFacts"></div></div>
-  <div class="section"><div class="sectionTitle"><h3>Potential directions worth exploring</h3></div><div class="grid3" id="opportunityCards"></div></div>
+  <div class="pageHead"><div class="copy"><div class="eyebrow">Property Passport</div><h2 id="passportAddress">Your property at a glance.</h2><p class="consumerSubtle">We analyse the detailed planning information in the background and show you the parts that matter.</p></div><div class="actions"><button class="secondaryBtn" id="changeProperty">Change property</button></div></div>
+  <div id="passportBanner"></div>
+
+  <div class="panel consumerPropertyCard">
+    <div class="consumerPropertyTop"><div><div class="kicker">Your property</div><div id="dwellingSummary" class="propertyConfigLine"></div><div id="dwellingSource" class="propertyTypeLine"></div></div><div id="propertyAreaBadge"></div></div>
+    <div id="dwellingConfirm"></div>
+  </div>
+
+  <div class="section"><div class="sectionTitle"><div><h3>Property planning</h3><div class="small">The key controls most likely to affect what you can do.</div></div></div><div class="consumerPlanningGrid" id="passportMetrics"></div></div>
+
+  <div class="section"><div class="sectionTitle"><div><h3>Worth knowing</h3><div class="small">Only the issues that deserve your attention right now.</div></div></div><div class="matterList" id="consumerMatters"></div></div>
+
+  <div class="section"><div class="sectionTitle"><div><h3>What would you like to explore?</h3><div class="small">Choose the closest fit. SitePivot will use the detailed property evidence in the background.</div></div></div><div class="pathwayGrid" id="passportPathways"></div></div>
+
   <div class="section" id="assistantSection">
     <div class="panel assistantPanel">
-      <div class="sectionTitle"><div><h3>Ask SitePivot</h3><div class="small">Ask about this property's verified planning evidence, constraints, options or your current assessment.</div></div><button class="miniBtn" id="assistantVoiceReply" type="button" aria-pressed="false">Voice replies: off</button></div>
+      <div class="sectionTitle"><div><h3>Ask SitePivot</h3><div class="small">Ask a simple question about the property or what you could do next.</div></div><button class="miniBtn" id="assistantVoiceReply" type="button" aria-pressed="false">Voice replies: off</button></div>
+      <div class="assistantPromptChips">
+        <button class="assistantPromptChip" type="button" data-assistant-prompt="What could I do with this property?">What could I do here?</button>
+        <button class="assistantPromptChip" type="button" data-assistant-prompt="Could a duplex work here?">Could a duplex work?</button>
+        <button class="assistantPromptChip" type="button" data-assistant-prompt="Is there anything I should be worried about?">Anything to worry about?</button>
+        <button class="assistantPromptChip" type="button" data-assistant-prompt="What should I do next?">What should I do next?</button>
+      </div>
       <div id="assistantMessages" class="assistantMessages" role="log" aria-live="polite" aria-label="SitePivot conversation"></div>
       <div class="assistantComposer">
-        <div><label class="hidden" for="assistantInput">Ask SitePivot about this property</label><textarea id="assistantInput" placeholder="e.g. What is the zoning? Can I explore a duplex? What still needs review?"></textarea></div>
+        <div><label class="hidden" for="assistantInput">Ask SitePivot about this property</label><textarea id="assistantInput" placeholder="Ask SitePivot a question about this property…"></textarea></div>
         <div class="assistantControls"><button class="secondaryBtn voiceBtn" id="assistantMic" type="button" aria-label="Start voice input" aria-pressed="false">🎙 Speak</button><button class="primaryBtn" id="assistantSend" type="button">Ask</button></div>
       </div>
       <div id="assistantVoiceStatus" class="small voiceStatus" aria-live="polite"></div>
-      <div class="small assistantPrivacy">Voice uses your browser's speech service when available. SitePivot does not store microphone audio or persist this conversation in saved test projects.</div>
+      <div class="small assistantPrivacy">Voice uses your browser's speech service when available. Typed chat remains available at all times.</div>
     </div>
   </div>
-  <div class="actions"><button class="secondaryBtn" data-back="property">Back</button><button class="primaryBtn" data-next="goal">What are you thinking?</button></div>
+
+  <div class="section">
+    <details class="planningDetails" id="planningDetails">
+      <summary>View detailed planning information</summary>
+      <div class="detailsInner"><div class="notice info"><strong>Detailed evidence.</strong> This is the technical information SitePivot uses behind the scenes. It is here for transparency and deeper review.</div><div class="factList" id="planningFacts"></div></div>
+    </details>
+  </div>
+
+  <div class="actions"><button class="secondaryBtn" data-back="property">Back</button></div>
 </section>
 <section class="view" id="view-goal">
   <div class="steps"><span class="step">Property</span><span class="step">Passport</span><span class="step current">Direction</span><span class="step">Assessment</span><span class="step">Next steps</span></div>
-  <div class="pageHead"><div class="copy"><div class="eyebrow">Your direction</div><h2>What are you thinking?</h2><p>Choose the closest fit. You can change direction later without losing the property evidence.</p></div></div>
+  <div class="pageHead"><div class="copy"><div class="eyebrow">Your direction</div><h2>What would you like to explore?</h2><p>Choose the option that feels closest. You do not need to understand the planning rules.</p></div></div>
   <div class="goalGrid" id="goalGrid"></div><div class="actions"><button class="secondaryBtn" data-back="passport">Back</button></div>
 </section>
 <section class="view" id="view-develop">
   <div class="steps"><span class="step">Property</span><span class="step">Passport</span><span class="step current">Development direction</span><span class="step">Assessment</span><span class="step">Next steps</span></div>
-  <div class="pageHead"><div class="copy"><div class="eyebrow">Develop my land</div><h2>What sort of outcome are you considering?</h2><p>These are intentions, not a statement that the site is eligible.</p></div></div>
+  <div class="pageHead"><div class="copy"><div class="eyebrow">Develop my property</div><h2>What are you considering?</h2><p>Pick the closest idea. SitePivot will work through the planning detail in the background.</p></div></div>
   <div class="grid2" id="developGrid"></div><div class="actions"><button class="secondaryBtn" data-back="goal">Back</button></div>
 </section>
 <section class="view" id="view-unsure">
@@ -174,12 +199,24 @@ const FIXTURES=[
   steep.opportunities=['Renovate / extend','Steep-site design pathway','Development only after survey/geotechnical review'];
   FIXTURES.push(steep);
 })();
-const GOALS=[{id:'reno',icon:'✦',title:'Improve my home',desc:'Renovate or rework the home you already have.'},{id:'extend',icon:'↔',title:'Make it bigger',desc:'Add floor area, rooms or better living space.'},{id:'storey',icon:'↑',title:'Add another level',desc:'Explore a second-storey or upper-level addition.'},{id:'develop',icon:'◇',title:'Develop my land',desc:'Test development pathways before spending heavily.'},{id:'unsure',icon:'?',title:"I’m not sure",desc:'Compare the most relevant options without knowing the jargon.'}];
-const DEV=[{id:'duplex',title:'Duplex / dual occupancy',desc:'Two dwellings or a dual-occupancy outcome.'},{id:'townhouse',title:'Townhouse / terrace',desc:'A small multi-dwelling attached or detached scheme.'},{id:'apartment',title:'Boutique apartment',desc:'A compact apartment development where controls warrant investigation.'},{id:'multisite',title:'Multi-site with neighbours',desc:'Test an amalgamated or larger development opportunity.'}];
+const GOALS=[
+{id:'reno',icon:'✦',title:'Improve my home',desc:'Renovate or make the existing home better.'},
+{id:'extend',icon:'↔',title:'Add more space',desc:'Extend the home or create more living space.'},
+{id:'storey',icon:'↑',title:'Add another level',desc:'Explore whether an upper level may work.'},
+{id:'develop',icon:'◇',title:'Develop my property',desc:'Explore options such as a duplex or multiple homes.'},
+{id:'unsure',icon:'?',title:"I’m not sure",desc:'Let SitePivot help work out the best option.'}
+];
+const DEV=[
+{id:'duplex',title:'Duplex',desc:'Explore two homes on the property.'},
+{id:'townhouse',title:'Townhouses',desc:'Explore a small multi-home development.'},
+{id:'apartment',title:'Apartments',desc:'Explore a boutique apartment development.'},
+{id:'multisite',title:'Combine with neighbours',desc:'Explore a larger development site.'},
+{id:'unsure',title:"I’m not sure",desc:'Let SitePivot guide the next step.'}
+];
 
 const app={view:'landing',property:null,goal:null,devType:null,scope:{area:80,quality:'premium',complexity:'normal',budget:800000,targetPurchase:2500000,dwellings:2,gfa:440},assessment:null,savedAt:null};
 app.liveSuggestions=[];app.lookupSeq=0;app.inputSeq=0;app.enrichSeq=0;app.liveStatus='idle';app.lastLiveError=null;app.activeSuggestion=-1;
-const assistantState={propertyId:null,messages:[],recognition:null,listening:false,voiceReply:false,lastTranscript:'',lastError:null,lastSubmitText:'',lastSubmitAt:0};
+const assistantState={propertyId:null,messages:[],recognition:null,listening:false,voiceReply:false,lastTranscript:'',lastError:null,lastSubmitText:'',lastSubmitAt:0,selectedVoiceName:null};
 
 const LIVE={
  geocoder:'https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer',
@@ -390,14 +427,20 @@ async function completeLiveProperty(p,official,geo,seq){
    p.opportunities=['Improve / renovation pathway','Extension or additional-level screening','Development pathway based on verified planning evidence'];
    if(p.planning.zone&&/R[1-4]|MU1|E1|B\d/i.test(p.planning.zone))p.opportunities.unshift('Planning-led development opportunity screening');
  }catch(e){if(seq!==app.enrichSeq)return;p.planning.loading=false;p.planning.liveErrors=[...(p.planning.liveErrors||[]),e.message];console.warn('planning enrichment',e)}
- if(app.property&&app.property.id===p.id){app.property=deep(p);renderIdentity();if(app.view==='passport')renderPassport()}
+ if(app.property&&app.property.id===p.id){
+   const currentProfile=app.property.dwellingProfile;
+   if(currentProfile?.source==='User confirmed'){
+     p.dwellingProfile=deep(currentProfile);p.propertyType=currentProfile.propertyType;p.beds=currentProfile.bedrooms;p.baths=currentProfile.bathrooms;p.parking=currentProfile.parkingSpaces;
+   }
+   app.property=deep(p);ensureDwellingProfile(app.property);renderIdentity();if(app.view==='passport')renderPassport()
+ }
 }
 function statusPill(s){return`<span class="pill ${s}">${STATUS[s]||s}</span>`}
 function show(name){app.view=name;$$('.view').forEach(v=>v.classList.toggle('active',v.id===`view-${name}`));window.scrollTo(0,0);if(name==='passport')renderPassport();if(name==='goal')renderGoals();if(name==='develop')renderDevelop();if(name==='scope')renderScope();if(name==='assessment')renderAssessment();if(name==='roadmap')renderRoadmap();if(name==='report')renderReport()}
 function reset(full=true){app.property=null;app.goal=null;app.devType=null;app.scope={area:80,quality:'premium',complexity:'normal',budget:800000,targetPurchase:2500000,dwellings:2,gfa:440};app.assessment=null;resetAssistant(null);$('addressSearch').value='';$('searchResults').classList.remove('open');$('addressSearch').setAttribute('aria-expanded','false');show('landing')}
 function findMatches(q){q=(q||'').toLowerCase().replace(/,/g,' ').replace(/\s+/g,' ').trim();if(!q)return[];return FIXTURES.filter(f=>f.address.toLowerCase().replace(/,/g,' ').includes(q)||(`${f.suburb} ${f.postcode}`).toLowerCase().includes(q)).slice(0,8)}
 function genericProperty(address){return{id:'generic-'+Date.now(),address:address||'Unverified NSW property',suburb:'Unverified',region:'NSW',lga:'Needs Review',postcode:'',propertyType:'house',title:'Needs Review',lot:'—',dp:'—',area:null,frontage:null,beds:null,baths:null,parking:null,parcels:null,identityStatus:'review',generic:true,live:false,planning:{zone:null,fsr:null,height:null,minLot:null,heritage:'Needs Review',flood:'Needs Review',bushfire:'Needs Review',acid:'Needs Review',biodiversity:'Needs Review',riparian:'Needs Review',wetlands:'Needs Review',sensitive:'Needs Review',landslide:'Needs Review',reservation:'Needs Review',application:'Needs Review',dcpPlans:[],contributionPlans:[],sepp:[],localTriggers:[],splitZone:false,localDcp:'Needs Review',instrument:'Authoritative NSW property/planning lookup did not complete'},opportunities:['Improve / renovation pathway','Extension pathway','Development pathway after property identity and planning evidence are verified'],costRegion:1,currentComps:[],completed:{reno:[],extend:[],storey:[],duplex:[],townhouse:[],apartment:[],multisite:[]},active:[]}}
-function selectProperty(p){app.property=deep(p);app.goal=null;app.devType=null;app.assessment=null;app.scope={area:80,quality:'premium',complexity:'normal',budget:800000,targetPurchase:2500000,dwellings:2,gfa:440};resetAssistant(app.property.id);renderIdentity();show('property')}
+function selectProperty(p){app.property=deep(p);ensureDwellingProfile(app.property);app.goal=null;app.devType=null;app.assessment=null;app.scope={area:80,quality:'premium',complexity:'normal',budget:800000,targetPurchase:2500000,dwellings:2,gfa:440};resetAssistant(app.property.id);renderIdentity();show('property')}
 async function selectLiveSuggestion(item){
  try{
    const {p,official,geo,seq}=await resolveLiveIdentity(item);setSearchMessage('',false);$('addressSearch').setAttribute('aria-expanded','false');app.activeSuggestion=-1;$('addressSearch').value=p.address;selectProperty(p);
@@ -452,6 +495,112 @@ fact('Applicable LGA DCP',dcp,live&&!failed.has('dcp')&&pl.dcpPlans?.length?'ver
 fact('Contribution plan',cp,live&&!failed.has('contribution')&&pl.contributionPlans?.length?'verified':'review','dcp','LGA-based contribution plan identity where published in the Planning Portal.'),
 fact('SEPP / state-policy spatial triggers',sepp,live&&!failed.has('sepp')&&pl.sepp?.length?'verified':'review','sepp','Spatial triggers are surfaced; textual SEPP eligibility criteria still require rule evaluation.'),
 fact('Additional local provisions / maps',local,live&&!failed.has('localIdentify')&&pl.localTriggers?.length?'verified':'review','dcp','Property-point local provision layers returned by the Planning Portal.')];}
+function propertyTypeLabel(v){
+ const x=String(v||'house').toLowerCase();
+ if(x==='apartment'||x==='unit')return'Apartment';
+ if(x==='townhouse'||x==='terrace')return'Townhouse';
+ if(x==='duplex')return'Duplex';
+ return'House';
+}
+function ensureDwellingProfile(p){
+ if(!p)return null;
+ if(!p.dwellingProfile){
+   const known=Number.isFinite(+p.beds)&&Number.isFinite(+p.baths)&&Number.isFinite(+p.parking);
+   p.dwellingProfile={
+     propertyType:p.propertyType||'house',
+     bedrooms:Number.isFinite(+p.beds)?+p.beds:null,
+     bathrooms:Number.isFinite(+p.baths)?+p.baths:null,
+     parkingSpaces:Number.isFinite(+p.parking)?+p.parking:null,
+     garageSpaces:null,
+     source:known?(p.live?'Existing property record':'Prototype fixture'):'User confirmation required',
+     confidence:known?(p.live?'indicative':'fixture'):'review',
+     lastVerified:known?today:null
+   };
+ }
+ return p.dwellingProfile;
+}
+function dwellingProfileComplete(p){
+ const d=ensureDwellingProfile(p);return !!d&&Number.isFinite(+d.bedrooms)&&Number.isFinite(+d.bathrooms)&&Number.isFinite(+d.parkingSpaces)&&!!d.propertyType;
+}
+function shortAddress(p){
+ const a=String(p?.address||'').replace(/\s+NSW\s+\d{4}$/i,'').replace(/,\s*NSW\s*\d{4}$/i,'');
+ return a;
+}
+function planningNameList(pl){
+ return uniq([...(pl?.epiNames||[]),...(pl?.allEpiNames||[]),...String(pl?.instrument||'').split(/\s+\/\s+/)]).filter(Boolean);
+}
+function localPlanningPlan(pl){
+ const names=planningNameList(pl);
+ return names.find(x=>/Local Environmental Plan/i.test(x))||names.find(x=>/\bLEP\b/i.test(x))||null;
+}
+function negativeMapped(v){
+ const s=String(v||'');return /^No mapped/i.test(s)||/^No NSW/i.test(s)||/^No property-point/i.test(s)||/^No additional/i.test(s)||/^No LGA-based/i.test(s);
+}
+function realMappedTrigger(v){
+ return meaningful(v)&&!negativeMapped(v)&&!/^(Unknown|Checking|Needs Review)/i.test(String(v));
+}
+function consumerPropertySummary(p){
+ const pl=p?.planning||{},failed=new Set(pl.failedKeys||[]),matters=[];
+ const add=(type,title,text,key)=>matters.push({type,title,text,key});
+ if(pl.loading)add('warn','Planning checks are still loading','You can keep exploring while SitePivot finishes the background checks.','loading');
+ if(failed.has('flood')||/requires checking/i.test(String(pl.flood||'')))add('warn','Flood information','We need one additional council check before relying on the flood position.','flood');
+ else if(realMappedTrigger(pl.flood))add('warn','Flood controls may apply','Flood mapping has been identified and may affect design or approvals.','flood');
+ if(realMappedTrigger(pl.heritage))add('warn','Heritage may affect the property','Heritage mapping has been identified and should be checked before design decisions.','heritage');
+ if(realMappedTrigger(pl.bushfire))add('warn','Bushfire planning may apply','Bushfire-prone land mapping has been identified for the property.','bushfire');
+ if(realMappedTrigger(pl.acid)&&!/Class\s*5/i.test(String(pl.acid)))add('warn','Acid sulfate soils','Mapped acid sulfate soil controls may affect excavation or site works.','acid');
+ else if(/Class\s*5/i.test(String(pl.acid||'')))add('warn','Acid sulfate soils','Class 5 mapping applies. This may matter if significant excavation is proposed.','acid');
+ const environmentalKeys=['biodiversity','riparian','wetlands','sensitive','landslide'];
+ const envFailed=environmentalKeys.some(k=>failed.has(k)),envTriggered=environmentalKeys.some(k=>realMappedTrigger(pl[k]));
+ if(envTriggered)add('warn','Environmental constraints','One or more mapped environmental controls may affect the design or approval pathway.','environment');
+ else if(!pl.loading&&!envFailed)add('good','No major mapped environmental constraints identified','No biodiversity, wetland, riparian, sensitive-land or landslide trigger was returned from the mapped checks.','environment-clear');
+ const localPlan=localPlanningPlan(pl),dcp=(pl.dcpPlans||[])[0]||null;
+ return{
+   address:shortAddress(p),
+   propertyType:propertyTypeLabel(ensureDwellingProfile(p)?.propertyType||p?.propertyType),
+   area:p?.area||null,
+   zone:pl.loading?'Checking…':(pl.zone||'Not available'),
+   height:pl.loading?'Checking…':(pl.height||'Not mapped'),
+   fsr:pl.loading?'Checking…':(pl.fsr||'Not mapped'),
+   minLot:pl.loading?'Checking…':(pl.minLot||'Not mapped'),
+   localPlan,dcp,
+   matters:matters.slice(0,4),
+   detailed:planningFactRows(p)
+ };
+}
+function renderDwellingSummary(p){
+ const d=ensureDwellingProfile(p),summary=$('dwellingSummary'),source=$('dwellingSource'),confirm=$('dwellingConfirm'),area=$('propertyAreaBadge');
+ if(!summary||!source||!confirm||!area)return;
+ const bits=[];if(Number.isFinite(+d.bedrooms))bits.push(d.bedrooms+' Bed');if(Number.isFinite(+d.bathrooms))bits.push(d.bathrooms+' Bath');if(Number.isFinite(+d.parkingSpaces))bits.push(d.parkingSpaces+' Car');
+ summary.textContent=bits.length?bits.join(' · '):propertyTypeLabel(d.propertyType);
+ source.textContent=propertyTypeLabel(d.propertyType)+(d.source==='User confirmed'?' · User confirmed':d.source==='Prototype fixture'?' · Test data':'');
+ area.innerHTML=p.area?'<span class="pill indicative">'+esc(num(p.area))+' m² land</span>':'';
+ if(dwellingProfileComplete(p)){confirm.innerHTML='';return}
+ confirm.innerHTML=`<div class="confirmationBox"><strong>Help us confirm your home</strong><div class="small">Planning data does not reliably contain bedrooms, bathrooms or car spaces. Confirm these so later value and comparison tools use the right property profile.</div><div class="confirmationGrid">
+ <div class="field"><label for="confirmBeds">Bedrooms</label><input id="confirmBeds" type="number" min="0" max="20" step="1" value="${d.bedrooms??''}"></div>
+ <div class="field"><label for="confirmBaths">Bathrooms</label><input id="confirmBaths" type="number" min="0" max="20" step="1" value="${d.bathrooms??''}"></div>
+ <div class="field"><label for="confirmCars">Car spaces</label><input id="confirmCars" type="number" min="0" max="20" step="1" value="${d.parkingSpaces??''}"></div>
+ <div class="field"><label for="confirmType">Property type</label><select id="confirmType"><option value="house">House</option><option value="apartment">Apartment</option><option value="townhouse">Townhouse</option><option value="duplex">Duplex</option></select></div>
+ </div><div class="actions"><button class="primaryBtn" type="button" id="saveDwellingProfile">Confirm details</button></div></div>`;
+ $('confirmType').value=d.propertyType||p.propertyType||'house';
+ $('saveDwellingProfile').onclick=saveDwellingProfile;
+}
+function saveDwellingProfile(){
+ const p=app.property;if(!p)return;
+ const beds=+$('confirmBeds').value,baths=+$('confirmBaths').value,cars=+$('confirmCars').value,type=$('confirmType').value;
+ if(!Number.isFinite(beds)||!Number.isFinite(baths)||!Number.isFinite(cars)){return}
+ p.dwellingProfile={propertyType:type,bedrooms:beds,bathrooms:baths,parkingSpaces:cars,garageSpaces:null,source:'User confirmed',confidence:'user',lastVerified:new Date().toISOString()};
+ p.propertyType=type;p.beds=beds;p.baths=baths;p.parking=cars;app.assessment=null;renderPassport();
+}
+function renderConsumerMatters(items){
+ const box=$('consumerMatters');if(!box)return;
+ const rows=(items||[]).length?items:[{type:'good',title:'Nothing major is standing out yet',text:'SitePivot will keep checking the detailed planning evidence as you explore an option.'}];
+ box.innerHTML=rows.map(x=>`<div class="matterItem ${x.type==='warn'?'warn':'good'}"><div class="matterIcon">${x.type==='warn'?'!':'✓'}</div><div><div class="matterTitle">${esc(x.title)}</div><div class="matterText">${esc(x.text)}</div></div></div>`).join('');
+}
+function renderPathways(containerId){
+ const root=$(containerId);if(!root)return;
+ root.innerHTML=GOALS.map(g=>`<button type="button" class="pathwayCard" data-goal="${g.id}" aria-label="${esc(g.title)}"><div class="goalIcon">${g.icon}</div><div class="goalTitle">${esc(g.title)}</div><div class="goalDesc">${esc(g.desc)}</div></button>`).join('');
+ root.querySelectorAll('[data-goal]').forEach(b=>b.addEventListener('click',()=>chooseGoal(b.dataset.goal)));
+}
 function resetAssistant(propertyId=null){
  if(assistantState.recognition){try{assistantState.recognition.abort()}catch(e){}}
  if('speechSynthesis' in window){try{window.speechSynthesis.cancel()}catch(e){}}
@@ -464,8 +613,10 @@ function assistantEvidence(name){
 }
 function assistantDescribe(name){
  const f=assistantEvidence(name);
- if(!f)return name+': unavailable.';
- return name+': '+f.value+'. Evidence state: '+(STATUS[f.status]||f.status)+'.';
+ if(!f)return name+' is not available yet.';
+ if(f.status==='review')return name+': '+f.value+'. I would check this further before relying on it.';
+ if(f.status==='unavailable')return name+' is not currently available for this property.';
+ return name+': '+f.value+'.';
 }
 function assistantNeedsReview(){
  if(!app.property)return[];
@@ -504,8 +655,9 @@ function assistantAnswer(question){
    return risks.length?'The main evidence items to pay attention to are: '+risks.slice(0,8).map(f=>f.name+' — '+f.value+' ('+(STATUS[f.status]||f.status)+')').join('; ')+'.':'No material mapped constraint has been surfaced in the current evidence, but that is not the same as development approval.';
  }
  if(/duplex|dual occupancy|subdiv|develop|development|build (two|2)|can i build|allowed to build|approval/.test(l)){
-   const zone=assistantEvidence('Land zone'),lot=assistantEvidence('Minimum lot size'),dcp=assistantEvidence('Applicable LGA DCP');
-   return 'SitePivot cannot confirm approval from mapped controls alone. Current screening evidence: '+(zone?('zone '+zone.value+' ('+(STATUS[zone.status]||zone.status)+')'):'zone unavailable')+', '+(lot?('minimum lot size '+lot.value+' ('+(STATUS[lot.status]||lot.status)+')'):'minimum lot size unavailable')+', and '+(dcp?('DCP '+dcp.value+' ('+(STATUS[dcp.status]||dcp.status)+')'):'DCP unavailable')+'. Use the development pathway to test a scenario, then verify unresolved local controls before relying on the result.';
+   const zone=assistantEvidence('Land zone'),lot=assistantEvidence('Minimum lot size');
+   const promising=zone&&/R[1-4]|MU1|E1|B\d/i.test(String(zone.value||''));
+   return (promising?'A duplex or development option is worth exploring here, but I would not call it confirmed yet. ':'Development may be possible, but the current evidence is not enough to confirm it. ')+(zone?'The property is '+zone.value+'. ':'')+(lot&&lot.status!=='unavailable'?'The mapped minimum lot size is '+lot.value+'. ':'')+'The next step is testing the local rules and site-specific controls for the option you choose.';
  }
  if(/what can i do|options|opportunit|potential|worth exploring/.test(l))return 'The current screening directions are: '+(p.opportunities||[]).join('; ')+'. These are directions to investigate, not approvals.';
  if(/cost|budget|how much/.test(l)){
@@ -541,6 +693,35 @@ function ensureAssistantContext(){
 function voiceRecognitionCtor(){return window.SpeechRecognition||window.webkitSpeechRecognition||null}
 function voiceInputSupported(){return !!voiceRecognitionCtor()}
 function voiceOutputSupported(){return 'speechSynthesis' in window&&typeof window.SpeechSynthesisUtterance!=='undefined'}
+function preferredSpeechVoice(){
+ if(!voiceOutputSupported())return null;
+ const voices=window.speechSynthesis.getVoices()||[];if(!voices.length)return null;
+ const preferredFemale=['Karen','Natasha','Samantha','Sonia','Libby','Serena','Moira','Tessa','Google UK English Female','Microsoft Natasha','Microsoft Sonia'];
+ const natural=/natural|neural|premium|enhanced/i;
+ const score=v=>{
+   const name=String(v.name||''),lang=String(v.lang||'').toLowerCase();let s=0;
+   if(lang==='en-au')s+=80;else if(lang==='en-gb')s+=65;else if(lang.startsWith('en'))s+=40;
+   const fi=preferredFemale.findIndex(x=>name.toLowerCase().includes(x.toLowerCase()));if(fi>=0)s+=100-fi*3;
+   if(/female/i.test(name))s+=35;if(natural.test(name))s+=30;
+   if(v.localService)s+=4;return s;
+ };
+ return voices.filter(v=>/^en/i.test(v.lang||'')||preferredFemale.some(x=>String(v.name||'').toLowerCase().includes(x.toLowerCase()))).sort((a,b)=>score(b)-score(a))[0]||voices[0]||null;
+}
+function refreshPreferredVoice(){const v=preferredSpeechVoice();assistantState.selectedVoiceName=v?.name||null;return v}
+function assistantSpeechAnswer(question,displayText){
+ const p=app.property,pl=p?.planning||{},q=String(question||'').toLowerCase();
+ if(/zone|zoning/.test(q))return pl.zone?'The property is zoned '+pl.zone+'.':'The zoning is not available yet.';
+ if(/height/.test(q))return pl.height?'The mapped maximum building height is '+pl.height+'.':'The height control is not available yet.';
+ if(/floor space|\bfsr\b/.test(q))return pl.fsr?'The floor space ratio is '+pl.fsr+'.':'The floor space ratio is not available yet.';
+ if(/flood/.test(q))return /requires checking/i.test(String(pl.flood||''))?'Flood information needs one additional council check before I would rely on it.':realMappedTrigger(pl.flood)?'Flood controls may apply to this property and should be checked before design decisions.':'No mapped state flood overlap was returned, although detailed council flood information can still matter.';
+ if(/duplex|dual occupancy|develop|development/.test(q)){
+   const zone=pl.zone||'';return /R[1-4]|MU1|E1|B\d/i.test(zone)?'A duplex or development option is worth exploring here, but I would not call it confirmed yet. The next step is checking the local rules and site-specific controls.':'Development may be worth exploring, but the current evidence is not enough to confirm it yet.';
+ }
+ if(/what could i do|options|opportunit|potential|worth exploring/.test(q))return'There are a few directions worth exploring, including improving the home, adding space, another level, or development. Choose the option that interests you and I will narrow it down.';
+ if(/worried|risk|constraint|red flag/.test(q)){const m=consumerPropertySummary(p).matters.filter(x=>x.type==='warn');return m.length?m.slice(0,2).map(x=>x.title+'. '+x.text).join(' '):'Nothing major is standing out in the mapped checks so far, but SitePivot will keep the detailed rules in the background.'}
+ if(/next step/.test(q))return'Choose the outcome you are considering first. SitePivot will then use the property evidence to work out the lowest-regret next step.';
+ return String(displayText||'').replace(/Evidence state:\s*(Verified|Indicative|Needs Review|Unavailable)\.?/gi,'').replace(/\bVerified\b/gi,'').replace(/\bNeeds Review\b/gi,'needs another check').replace(/Source:[^.]*\.?/gi,'').replace(/\b\d{1,2}\s+(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s+\d{4}\b/gi,'').replace(/\s{2,}/g,' ').trim();
+}
 function setAssistantVoiceStatus(text){const el=$('assistantVoiceStatus');if(el)el.textContent=text||''}
 function updateVoiceControls(){
  const mic=$('assistantMic'),toggle=$('assistantVoiceReply');if(!mic||!toggle)return;
@@ -560,13 +741,17 @@ function renderAssistant(){
 }
 function speakAssistant(text){
  if(!assistantState.voiceReply||!voiceOutputSupported())return;
- try{window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(String(text||''));u.lang='en-AU';window.speechSynthesis.speak(u)}catch(e){assistantState.lastError='Voice reply could not start. The text response is still available.';updateVoiceControls()}
+ try{
+   window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(String(text||'')),v=refreshPreferredVoice();
+   if(v){u.voice=v;u.lang=v.lang||'en-AU'}else u.lang='en-AU';
+   u.rate=.94;u.pitch=1.03;u.volume=1;window.speechSynthesis.speak(u);
+ }catch(e){assistantState.lastError='Voice reply could not start. The text response is still available.';updateVoiceControls()}
 }
 function submitAssistant(){
  const input=$('assistantInput');if(!input)return;const q=input.value.trim();if(!q)return;
  const t=Date.now();if(q===assistantState.lastSubmitText&&t-assistantState.lastSubmitAt<700)return;
  assistantState.lastSubmitText=q;assistantState.lastSubmitAt=t;
- assistantMessage('user',q);input.value='';const reply=assistantAnswer(q);assistantMessage('assistant',reply);speakAssistant(reply);
+ assistantMessage('user',q);input.value='';const reply=assistantAnswer(q),speech=assistantSpeechAnswer(q,reply);assistantMessage('assistant',reply);speakAssistant(speech);
 }
 function stopVoiceInput(){
  const r=assistantState.recognition;if(r){try{r.stop()}catch(e){}}
@@ -590,12 +775,39 @@ function toggleVoiceReply(){
  if(!voiceOutputSupported()){assistantState.voiceReply=false;assistantState.lastError='Spoken replies are unavailable in this browser.';updateVoiceControls();return}
  assistantState.voiceReply=!assistantState.voiceReply;if(!assistantState.voiceReply)try{window.speechSynthesis.cancel()}catch(e){};updateVoiceControls();
 }
-function renderPassport(){const p=app.property;if(!p)return;const pl=p.planning||{};$('passportAddress').textContent=p.address;const err=(pl.liveErrors||[]).length;const msg=p.live?(pl.loading?'<div class="notice info"><strong>Property verified in '+esc(p.lga)+'.</strong> Planning controls are loading in the background…</div>':'<div class="notice '+(err?'warn':'good')+'"><strong>Live NSW evidence loaded for '+esc(p.lga)+'.</strong> Address, parcel, EPI layers and LGA planning-plan records were queried for this property.'+(err?'<br><span class="small">'+esc(err)+' source group(s) did not respond and remain Needs Review.</span>':'')+'</div>'):p.generic?'<div class="notice warn"><strong>Statewide fallback mode:</strong> no automated planning conclusion is shown until property identity and sources are verified.</div>':'<div class="notice info"><strong>Fixture evidence:</strong> test data only.</div>';$('passportBanner').innerHTML=msg;$('passportMetrics').innerHTML=[['Site area',p.area?`${num(p.area)} m²`:'Unknown'],['Zone',pl.loading?'Checking…':(pl.zone||'Unknown')],['Height',pl.loading?'Checking…':(pl.height||'Unknown')],['FSR',pl.loading?'Checking…':(pl.fsr||'Unknown')]].map(x=>`<div class="metric"><div class="label">${esc(x[0])}</div><div class="value">${esc(x[1])}</div></div>`).join('');$('planningFacts').innerHTML=planningFactRows(p).map(renderFact).join('');$('opportunityCards').innerHTML=p.opportunities.map((x,i)=>`<div class="panel" style="box-shadow:none"><div class="kicker">Direction ${i+1}</div><h3>${esc(x)}</h3><p class="small">Screening direction only. Eligibility is tested against evidence in the selected scenario.</p></div>`).join('');renderAssistant()}
+function renderPassport(){
+ const p=app.property;if(!p)return;const pl=p.planning||{},s=consumerPropertySummary(p),err=(pl.liveErrors||[]).length;
+ $('passportAddress').textContent=s.address||p.address;
+ $('passportBanner').innerHTML=p.live?(pl.loading?'<div class="notice info"><strong>Property found.</strong> SitePivot is finishing the detailed planning checks in the background.</div>':'<div class="notice '+(err?'warn':'good')+'"><strong>Property analysis ready.</strong> '+(err?'A detailed planning source still needs checking, but the key property summary is available.':'The key mapped planning checks are complete.')+'</div>'):p.generic?'<div class="notice warn"><strong>Property details need confirmation.</strong> SitePivot will keep unknown information clearly marked.</div>':'';
+ renderDwellingSummary(p);
+ $('passportMetrics').innerHTML=[
+   ['Zoning',s.zone],
+   ['Maximum height',s.height],
+   ['Floor space ratio',s.fsr],
+   ['Minimum lot size',s.minLot]
+ ].map(x=>`<div class="consumerMetric"><div class="label">${esc(x[0])}</div><div class="value">${esc(x[1])}</div></div>`).join('');
+ renderConsumerMatters(s.matters);
+ $('planningFacts').innerHTML=s.detailed.map(renderFact).join('');
+ renderPathways('passportPathways');
+ renderAssistant();
+}
 function renderFact(f){const src=sourceBy(f.source);return`<div class="fact"><div class="factTop"><div><div class="factName">${esc(f.name)}</div><div class="factValue">${esc(f.value)}</div></div>${statusPill(f.status)}</div><div class="factMeta">${esc(f.why||'')}</div><div class="factMeta">Source: ${esc(src.name)} · ${esc(f.date)}</div></div>`}
-function renderGoals(){$('goalGrid').innerHTML=GOALS.map(g=>`<button type="button" class="goalCard" data-goal="${g.id}"><div class="goalIcon">${g.icon}</div><div class="goalTitle">${g.title}</div><div class="goalDesc">${g.desc}</div></button>`).join('');$$('[data-goal]').forEach(b=>b.onclick=()=>chooseGoal(b.dataset.goal))}
-function chooseGoal(goal){app.goal=goal;app.devType=null;app.assessment=null;if(goal==='develop')show('develop');else if(goal==='unsure')show('unsure');else show('scope')}
-function renderDevelop(){$('developGrid').innerHTML=DEV.map(g=>`<button type="button" class="goalCard" data-dev="${g.id}"><div class="goalTitle">${g.title}</div><div class="goalDesc">${g.desc}</div><div class="small" style="margin-top:12px">Intention only · planning evidence still required</div></button>`).join('');$$('[data-dev]').forEach(b=>b.onclick=()=>{app.devType=b.dataset.dev;app.assessment=null;show('scope')})}
-function renderScope(){const p=app.property;if(!p)return;const g=app.goal;const title={reno:'Improve my home',extend:'Make it bigger',storey:'Add another level',develop:'Develop my land'}[g]||'Project';$('scopeHeading').textContent=title;$('scopeIntro').textContent=g==='develop'?`Testing: ${DEV.find(x=>x.id===app.devType)?.title||'development'}. Inputs create an indicative feasibility, not an approval or valuation.`:'Tell us only what materially affects cost and the comparison.';let fields='';if(g==='develop')fields=`
+function renderGoals(){renderPathways('goalGrid')}
+function goalDestination(goal){return goal==='develop'?'develop':goal==='unsure'?'unsure':'scope'}
+function chooseGoal(goal){
+ if(!GOALS.some(g=>g.id===goal))return;
+ app.goal=goal;app.devType=null;app.assessment=null;
+ $$('[data-goal]').forEach(b=>b.classList.toggle('selected',b.dataset.goal===goal));
+ show(goalDestination(goal));
+}
+function renderDevelop(){
+ $('developGrid').innerHTML=DEV.map(g=>`<button type="button" class="goalCard" data-dev="${g.id}"><div class="goalTitle">${esc(g.title)}</div><div class="goalDesc">${esc(g.desc)}</div></button>`).join('');
+ $('developGrid').querySelectorAll('[data-dev]').forEach(b=>b.addEventListener('click',()=>{
+   if(b.dataset.dev==='unsure'){app.devType=null;show('unsure');return}
+   app.devType=b.dataset.dev;app.assessment=null;show('scope')
+ }));
+}
+function renderScope(){const p=app.property;if(!p)return;const g=app.goal;const title={reno:'Improve my home',extend:'Add more space',storey:'Add another level',develop:'Develop my property'}[g]||'Project';$('scopeHeading').textContent=title;$('scopeIntro').textContent=g==='develop'?`Exploring: ${DEV.find(x=>x.id===app.devType)?.title||'development'}. We’ll use these details to build an indicative view of the option.`:'Tell us only what materially affects cost and the comparison.';let fields='';if(g==='develop')fields=`
 <div class="field"><label for="scopeGfa">Indicative total constructed floor area (m²)</label><input id="scopeGfa" type="number" min="80" step="10" value="${app.scope.gfa}"><div class="hint">Total across the proposed development, not one dwelling.</div></div>
 <div class="field"><label for="scopeDwellings">Indicative dwelling count</label><input id="scopeDwellings" type="number" min="1" max="30" value="${app.scope.dwellings}"></div>`;else fields=`
 <div class="field"><label for="scopeArea">Approximate area affected / added (m²)</label><input id="scopeArea" type="number" min="10" step="5" value="${app.scope.area}"></div>
@@ -620,7 +832,11 @@ function computeAssessment(){const current=currentMarket(),completed=completedMa
 function formatRange(m){return m&&m.mid?`${money(m.low)} – ${money(m.high)}`:'Needs Review'}
 function assessmentVerdict(a){if(!a.current.mid)return{type:'warn',title:'Evidence first',text:'The property can still be scoped, but reliable market evidence and property identity need verification before SitePivot should make a commercial comparison.'};if(app.goal==='develop'&&a.feas&&a.feas.marginPct!=null){if(a.feas.marginPct>=.16)return{type:'good',title:'This development scenario warrants deeper investigation',text:`The prototype margin is ${Math.round(a.feas.marginPct*100)}% of GRV before professional tax verification. Planning evidence still controls whether the pathway is realistic.`};if(a.feas.marginPct>=.08)return{type:'warn',title:'The development case is tight',text:`The prototype margin is ${Math.round(a.feas.marginPct*100)}% of GRV. Small changes in build cost, yield, time or value could change the decision.`};return{type:'bad',title:'This development scenario does not currently stack up',text:`The prototype residual margin is ${Math.round(a.feas.marginPct*100)}% of GRV. That is a valid outcome — do not remove costs to make the result positive.`}}if(a.completed.mid){const delta=a.completed.mid-a.current.mid-a.cost.mid;if(delta>0)return{type:'good',title:'The project creates an indicative value case worth testing',text:`Completed-market evidence exceeds current value plus the modelled project cost by about ${money(delta)} at the midpoint. This is not a valuation.`};return{type:'warn',title:'The value case needs refinement',text:`At the midpoint, completed-market evidence does not clearly exceed current value plus project cost. Lifestyle value may still matter, but the commercial case is not obvious.`}}return{type:'warn',title:'Completed-value evidence is not strong enough yet',text:'SitePivot will not create a post-project value from project cost. A stronger completed-product comparable set is required.'}}
 function renderAssessment(){if(!app.assessment)computeAssessment();const a=app.assessment,p=app.property;const title={reno:'Improve my home',extend:'Make it bigger',storey:'Add another level',develop:DEV.find(x=>x.id===app.devType)?.title}[app.goal]||'Property options';$('assessmentTitle').textContent=title;$('assessmentSub').textContent=`${p.address} · ${p.lga}`;const v=assessmentVerdict(a);$('assessmentHeadline').innerHTML=`<div class="notice ${v.type}"><strong>${v.title}</strong><br>${v.text}</div>`;$('assessmentMetrics').innerHTML=[['Current evidence',formatRange(a.current)],['Project cost',`${money(a.cost.low)} – ${money(a.cost.high)}`],['Completed evidence',formatRange(a.completed)],['Confidence',a.completed.mid?a.completed.confidence:'Needs Review']].map(x=>`<div class="metric"><div class="label">${x[0]}</div><div class="value" style="font-size:18px">${x[1]}</div></div>`).join('');renderPlanningTab();renderCostTab();renderMarketTab();renderCompareTab();renderFeasTab();renderRiskTab();$('assessmentTabs').querySelector('[data-tab="feasibility"]').style.display=app.goal==='develop'?'inline-flex':'none'}
-function renderPlanningTab(){const p=app.property;$('tab-planning').innerHTML=`<div class="panel"><div class="sectionTitle"><div><h3>Planning evidence</h3><p class="small">Planning facts are not the same thing as approval advice.</p></div>${statusPill(p.generic?'review':'indicative')}</div><div class="factList">${planningFactRows(p).map(renderFact).join('')}</div><div class="notice warn"><strong>Decision rule:</strong> “permissible with consent” does not mean “will be approved”, and a potential CDC pathway does not mean “CDC approved”.</div></div>`}
+function renderPlanningTab(){
+ const p=app.property,s=consumerPropertySummary(p);
+ const basics=[['Zoning',s.zone],['Maximum height',s.height],['Floor space ratio',s.fsr],['Minimum lot size',s.minLot]];
+ $('tab-planning').innerHTML=`<div class="panel"><div class="sectionTitle"><div><h3>Property planning</h3><p class="small">The important controls first. Detailed evidence stays available below.</p></div></div><div class="consumerPlanningGrid">${basics.map(x=>'<div class="consumerMetric"><div class="label">'+esc(x[0])+'</div><div class="value">'+esc(x[1])+'</div></div>').join('')}</div><div class="section"><h3>Worth knowing</h3><div class="matterList">${(s.matters.length?s.matters:[{type:'good',title:'Nothing major is standing out yet',text:'Detailed checks remain available below.'}]).map(x=>'<div class="matterItem '+(x.type==='warn'?'warn':'good')+'"><div class="matterIcon">'+(x.type==='warn'?'!':'✓')+'</div><div><div class="matterTitle">'+esc(x.title)+'</div><div class="matterText">'+esc(x.text)+'</div></div></div>').join('')}</div></div><details class="planningDetails"><summary>View detailed planning evidence</summary><div class="detailsInner"><div class="factList">${planningFactRows(p).map(renderFact).join('')}</div></div></details></div>`;
+}
 function renderCostTab(){const c=app.assessment.cost;$('tab-cost').innerHTML=`<div class="panel"><div class="sectionTitle"><div><h3>Indicative project cost</h3><p class="small">Versioned rate-card model · independent from market value.</p></div>${statusPill('indicative')}</div><div class="grid3"><div class="metric"><div class="label">Low</div><div class="value">${money(c.low)}</div></div><div class="metric"><div class="label">Midpoint</div><div class="value">${money(c.mid)}</div></div><div class="metric"><div class="label">High</div><div class="value">${money(c.high)}</div></div></div><hr class="divider"><table class="compareTable"><tr><th>Input</th><th>Prototype assumption</th></tr><tr><td>Area</td><td>${num(c.area)} m²</td></tr><tr><td>Rate band</td><td>${money(c.rateLow)}–${money(c.rateHigh)} / m²</td></tr><tr><td>Professional fees</td><td>${Math.round(c.professionalPct*100)}%</td></tr><tr><td>Approvals / reports</td><td>${Math.round(c.approvalsPct*100)}%</td></tr><tr><td>External/site works</td><td>${Math.round(c.externalPct*100)}%</td></tr><tr><td>Contingency</td><td>${Math.round(c.contingencyPct*100)}%</td></tr><tr><td>Demolition allowance</td><td>${money(c.demolition)}</td></tr></table><div class="notice warn"><strong>Not a quote.</strong> ${c.note}</div></div>`}
 function compTable(m,title){if(!m.scored.length)return`<div class="notice warn"><strong>${title}:</strong> no fixture evidence available. ${statusPill('review')}</div>`;return`<div class="section"><div class="sectionTitle"><h3>${title}</h3><span class="small">Higher score = closer match</span></div><table class="compareTable"><tr><th>Evidence</th><th>Price</th><th>Similarity</th><th>Why it matters</th></tr>${m.scored.map(x=>`<tr><td>${x.label}<div class="demoTag">test fixture</div></td><td>${money(x.price)}</td><td><span class="score">${x.score}/100</span></td><td>${x.beds} bed · ${x.baths} bath${x.land?` · ${num(x.land)}m²`:''} · ${x.days} days old</td></tr>`).join('')}</table></div>`}
 function renderMarketTab(){const a=app.assessment,p=app.property;const activeHtml=p.active.length?`<div class="section"><div class="sectionTitle"><h3>Current competing listings</h3><span class="pill review">Fixture context only</span></div><table class="compareTable"><tr><th>Listing</th><th>Asking context</th><th>Profile</th></tr>${p.active.map(x=>`<tr><td>${x.label}<div class="demoTag">not a sold comparable</div></td><td>${money(x.price)}</td><td>${x.beds} bed · ${x.baths} bath${x.land?` · ${x.land}m²`:''}</td></tr>`).join('')}</table></div>`:'<div class="notice info"><strong>Current listings:</strong> none included in this fixture. The static browser cannot call the connected REA plugin directly.</div>';$('tab-market').innerHTML=`<div class="panel"><div class="grid2"><div class="metric"><div class="label">Indicative current value</div><div class="value">${formatRange(a.current)}</div><div class="sub">${a.current.reason}</div></div><div class="metric"><div class="label">Indicative completed value ${app.goal==='develop'?'per dwelling':''}</div><div class="value">${formatRange(a.completed)}</div><div class="sub">${a.completed.reason}</div></div></div>${compTable(a.current,'Recent sold evidence — current property')}${compTable(a.completed,'Recent sold evidence — proposed finished product')}${activeHtml}<div class="notice warn"><strong>Evidence separation:</strong> sold evidence, current asking/listing context and the SitePivot indicative range are intentionally separate. Completed value is never derived from project cost.</div></div>`}
@@ -642,6 +858,8 @@ $('assistantSend').onclick=submitAssistant;
 $('assistantMic').onclick=startVoiceInput;
 $('assistantVoiceReply').onclick=toggleVoiceReply;
 $('assistantInput').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();submitAssistant()}});
+$('[data-assistant-prompt]').forEach(b=>b.addEventListener('click',()=>{$('assistantInput').value=b.dataset.assistantPrompt;submitAssistant()}));
+if(voiceOutputSupported()){try{window.speechSynthesis.addEventListener?.('voiceschanged',refreshPreferredVoice);refreshPreferredVoice()}catch(e){}}
 updateVoiceControls();
 const qaFixtures=new URLSearchParams(location.search).get('fixtures')==='1';$('fixtureTools').classList.toggle('hidden',!qaFixtures);$('sampleGrid').innerHTML=qaFixtures?[FIXTURES[2],FIXTURES[3],FIXTURES[5],FIXTURES[6],FIXTURES[9],FIXTURES[10]].map(f=>`<button class="sample" data-sample="${f.id}"><strong>${esc(f.suburb)}</strong><br>${esc(f.address.split(',')[0])}</button>`).join(''):'';
 $$('[data-sample]').forEach(b=>b.onclick=()=>{const f=FIXTURES.find(x=>x.id===b.dataset.sample);$('addressSearch').value=f.address;selectProperty(f)});
@@ -663,6 +881,10 @@ app.property=genericProperty('99 Example Road, Example NSW 2000');app.goal='reno
 const unknownChat=assistantAnswer('What is the zoning?');out.push(assert('Assistant preserves unknown planning state',/unavailable|unknown/i.test(unknownChat),unknownChat));
 app.property=deep(FIXTURES[0]);const zoneChat=assistantAnswer('What is the zoning?');out.push(assert('Assistant uses current property planning evidence',String(app.property.planning.zone||'').split(' ')[0]&&zoneChat.includes(String(app.property.planning.zone).split(' ')[0]),zoneChat));
 out.push(assert('Voice capability functions are safe booleans',typeof voiceInputSupported()==='boolean'&&typeof voiceOutputSupported()==='boolean'));
+const cs=consumerPropertySummary(app.property);out.push(assert('Consumer summary limits default planning to key metrics',!!cs.zone&&!!cs.height&&!!cs.fsr&&!!cs.minLot));
+const speech=assistantSpeechAnswer('What is the zoning?',assistantAnswer('What is the zoning?'));out.push(assert('Spoken answers omit evidence metadata',!/Verified|Evidence state|Source:|6 Oct 2026/i.test(speech),speech));
+for(const g of GOALS){out.push(assert('Pathway destination exists: '+g.id,['scope','develop','unsure'].includes(goalDestination(g.id))))}
+
 for(const g of ['reno','extend','storey']){app.property=deep(FIXTURES[0]);app.goal=g;app.devType=null;app.scope={area:85,quality:'premium',complexity:'normal',budget:800000,targetPurchase:3000000,dwellings:2,gfa:440};const a=computeAssessment();out.push(assert(`Route ${g} has cost`,a.cost.mid>0));}
 for(const d of ['duplex','townhouse','apartment','multisite']){app.property=deep(FIXTURES[3]);app.goal='develop';app.devType=d;app.scope={gfa:520,dwellings:d==='apartment'?6:d==='townhouse'?3:2,quality:'premium',complexity:'normal',targetPurchase:1800000};const a=computeAssessment();out.push(assert(`Development route ${d} computes`,!!a.cost&&!!a.current));}
 app.property=deep(FIXTURES[0]);app.goal='develop';app.devType='duplex';app.scope={gfa:420,dwellings:2,quality:'premium',complexity:'normal',targetPurchase:3500000};const fe=computeAssessment();out.push(assert('Development cost stack includes site opportunity cost',fe.feas&&fe.feas.site===fe.current.mid));out.push(assert('Development feasibility includes finance',fe.feas&&fe.feas.finance>0));out.push(assert('Development feasibility includes selling',fe.feas&&fe.feas.selling>0));out.push(assert('Development feasibility includes tax/GST sensitivity',fe.feas&&fe.feas.taxSensitivity>0));
@@ -709,7 +931,7 @@ async function runLiveDiagnostics(){
    const hazardKeys=['heritage','flood','bushfire','acid','biodiversity','riparian','wetlands','sensitive','landslide'];
    stage('hazards / constraints',true,0,{results:Object.fromEntries(hazardKeys.map(k=>[k,pl[k]??null])),failedKeys:(pl.failedKeys||[]).filter(k=>hazardKeys.includes(k))});
    stage('assistant text',/SitePivot|evidence|zone|property/i.test(assistantAnswer('What is the zoning?')),0,{sample:assistantAnswer('What is the zoning?')});
-   stage('voice capability detection',true,0,{inputSupported:voiceInputSupported(),outputSupported:voiceOutputSupported()});
+   stage('voice capability detection',true,0,{inputSupported:voiceInputSupported(),outputSupported:voiceOutputSupported(),selectedVoice:refreshPreferredVoice()?.name||null});
    stage('planning source health',true,0,{failedKeys:pl.failedKeys||[],errors:pl.liveErrors||[]});
 
    out.property={address:r.p.address,lga:r.p.lga,lot:r.p.lot,dp:r.p.dp,area:r.p.area,zone:pl.zone,height:pl.height,fsr:pl.fsr,minLot:pl.minLot,instrument:pl.instrument,dcp:pl.dcpPlans||[],sepp:pl.sepp||[]};
@@ -722,7 +944,7 @@ async function runLiveDiagnostics(){
  window.__SITEPIVOT_LIVE_DIAGNOSTICS__=out;
  return out;
 }
-window.SitePivot={FIXTURES,SOURCES,GOALS,DEV,LIVE,SERVER_API,API_BASE,app,findMatches,liveAddressSearch,resolveLiveIdentity,completeLiveProperty,selectProperty,computeAssessment,projectCost,currentMarket,completedMarket,marketRange,compScore,assistantAnswer,submitAssistant,startVoiceInput,stopVoiceInput,voiceInputSupported,voiceOutputSupported,runSelfTests,runLiveDiagnostics,reset};bind();renderSources();
+window.SitePivot={FIXTURES,SOURCES,GOALS,DEV,LIVE,SERVER_API,API_BASE,app,findMatches,liveAddressSearch,resolveLiveIdentity,completeLiveProperty,selectProperty,computeAssessment,projectCost,currentMarket,completedMarket,marketRange,compScore,assistantAnswer,assistantSpeechAnswer,consumerPropertySummary,saveDwellingProfile,chooseGoal,goalDestination,show,preferredSpeechVoice,submitAssistant,startVoiceInput,stopVoiceInput,voiceInputSupported,voiceOutputSupported,runSelfTests,runLiveDiagnostics,reset};bind();renderSources();
 if(new URLSearchParams(location.search).get('autotest')==='1'){setTimeout(()=>runSelfTests(),50)}
 })();
 </script>
