@@ -62,6 +62,55 @@ try{
     result.suggestionError=e.message;
     result.searchBox=await page.locator('#searchResults').innerText().catch(()=>null);
   }
+
+  result.matrix=await page.evaluate(async()=>{
+    const cases=[
+      '1 Waratah Street Balgowlah NSW 2093',
+      '9 Waratah Street Balgowlah NSW 2093',
+      '483 George Street Sydney NSW 2000',
+      '290 King Street Newcastle NSW 2300',
+      '41 Burelli Street Wollongong NSW 2500',
+      '49 Mann Street Gosford NSW 2250',
+      '135 Byng Street Orange NSW 2800',
+      '243 Baylis Street Wagga Wagga NSW 2650',
+      '50 Church Street Dubbo NSW 2830',
+      '2 Civic Place Katoomba NSW 2780'
+    ];
+    const out=[];
+    for(const q of cases){
+      const t=performance.now();
+      try{
+        const suggestions=await window.SitePivot.liveAddressSearch(q);
+        const suggestMs=Math.round(performance.now()-t);
+        if(!suggestions.length){out.push({q,pass:false,suggestMs,error:'no suggestions'});continue}
+        const ti=performance.now();
+        const r=await window.SitePivot.resolveLiveIdentity(suggestions[0]);
+        const identityMs=Math.round(performance.now()-ti);
+        out.push({q,pass:suggestMs<3000&&!!r.p.lga,suggestMs,identityMs,address:r.p.address,lga:r.p.lga,lot:r.p.lot,dp:r.p.dp});
+      }catch(e){out.push({q,pass:false,error:String(e)})}
+    }
+    return out;
+  });
+  result.exactNumberRegression=(()=>{
+    const one=result.matrix.find(x=>x.q.startsWith('1 Waratah'));
+    const nine=result.matrix.find(x=>x.q.startsWith('9 Waratah'));
+    return !!one&&!!nine&&one.pass&&nine.pass&&/^1\s/i.test(one.address)&&/^9\s/i.test(nine.address)&&one.address!==nine.address;
+  })();
+
+  result.multiLgaPlanning=await page.evaluate(async()=>{
+    const qs=['290 King Street Newcastle NSW 2300','41 Burelli Street Wollongong NSW 2500'];
+    const out=[];
+    for(const q of qs){
+      try{
+        const s=await window.SitePivot.liveAddressSearch(q);if(!s.length){out.push({q,pass:false,error:'no suggestion'});continue}
+        const r=await window.SitePivot.resolveLiveIdentity(s[0]);
+        const t=performance.now();await window.SitePivot.completeLiveProperty(r.p,r.official,r.geo,r.seq);
+        out.push({q,pass:!!r.p.planning.zone,lga:r.p.lga,zone:r.p.planning.zone,instrument:r.p.planning.instrument,dcp:r.p.planning.dcpPlans,planningMs:Math.round(performance.now()-t),errors:r.p.planning.liveErrors});
+      }catch(e){out.push({q,pass:false,error:String(e)})}
+    }
+    return out;
+  });
+
   result.consoleErrors=consoleErrors;
   result.requestFailures=requestFailures;
 }catch(e){
@@ -72,4 +121,4 @@ console.log(JSON.stringify(result,null,2));
 console.log('SITEPIVOT_LIVE_QA_END');
 await browser.close();
 
-if(!result.suggestionMs || result.suggestionMs>3000 || !result.propertyResolved || !result.lga || !result.zone) process.exitCode=1;
+if(!result.suggestionMs || result.suggestionMs>3000 || !result.propertyResolved || !result.lga || !result.zone || !result.exactNumberRegression || result.matrix?.some(x=>!x.pass) || result.multiLgaPlanning?.some(x=>!x.pass)) process.exitCode=1;
