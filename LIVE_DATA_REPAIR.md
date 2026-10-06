@@ -88,3 +88,37 @@ Additional defects found and fixed:
 - Server QA now asserts the normalized planning contract so these UI/API naming regressions cannot silently return.
 
 These changes remain on `sitepivot-concept`; they have not been merged to `main`.
+
+
+## Autonomous hardening pass — 6 October 2026
+
+The full autonomous engineering prompt was executed against the current `sitepivot-concept` branch.
+
+Additional defects and gaps found and repaired:
+
+- Added a property-aware **Ask SitePivot** text assistant to the Property Passport.
+- Added browser speech-recognition input where supported and speech-synthesis replies with explicit typed fallback.
+- Voice/chat is scoped to the active SitePivot property and existing planning/assessment evidence; it does not bypass confidence states or manufacture missing controls.
+- Conversation state resets when the property changes and is not included in saved prototype projects.
+- Added microphone-denied, no-speech, unsupported-browser and TTS-failure states.
+- Prevented duplicate rapid chat submissions and overlapping voice replies.
+- QA fixture controls are now hidden from normal consumer mode and only exposed through explicit `?fixtures=1` mode.
+- Added autocomplete ArrowUp/ArrowDown selection, Enter selection, Escape close, combobox/listbox ARIA state and active-result styling.
+- Fixed an autocomplete race where an in-flight older request could render during the debounce window after newer user input.
+- Added explicit API `OPTIONS` handling for cross-origin preflight and method validation.
+- Added bounded input validation to address, property-resolution and planning endpoints.
+- Added NSW coordinate-bound validation before planning spatial queries.
+- Expanded `SitePivot.runLiveDiagnostics()` to report height, FSR, minimum lot size, DCP, SEPP, hazards, assistant text and voice capability.
+- Expanded deployed browser QA to check assistant rendering, normal-mode fixture isolation, keyboard suggestion selection and a 390×844 mobile overflow test.
+- Expanded server QA to cover API preflight and validation contracts.
+- JavaScript syntax checks pass for the current browser bundle and server/API files; duplicate HTML IDs were not found.
+
+### Current acceptance status
+
+**PARTIAL / EXTERNAL DEPLOYMENT BLOCKER**
+
+The branch contains the repaired serverless architecture and the strengthened QA suite, but the full reliable NSW planning workflow still requires a serverless-capable deployment. GitHub Pages remains static-only and cannot execute the repository's `/api/*` functions.
+
+The next acceptance action is to deploy the current `sitepivot-concept` branch to Vercel (or an equivalent serverless host) and run the repository's live browser and server data QA against that deployed URL.
+
+Do not call the overall product PASS until that deployed runtime test succeeds.
