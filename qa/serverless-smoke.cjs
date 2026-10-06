@@ -1,5 +1,20 @@
 'use strict';
 const {suggestAddress,resolveProperty,planningFor}=require('../api/_lib/sitepivot');
+const addressHandler=require('../api/address/suggest');
+const propertyHandler=require('../api/property/resolve');
+const planningHandler=require('../api/planning/property');
+
+function fakeRes(){
+  return{
+    statusCode:200,body:null,ended:false,headers:{},
+    setHeader(k,v){this.headers[k]=v;return this},
+    status(n){this.statusCode=n;return this},
+    json(v){this.body=v;this.ended=true;return this},
+    end(){this.ended=true;return this}
+  };
+}
+async function routeCase(handler,req){const res=fakeRes();await handler(req,res);return{status:res.statusCode,body:res.body,ended:res.ended}}
+
 
 const cases=[
  '57 Griffiths Street Fairlight NSW 2094',
@@ -16,7 +31,13 @@ const cases=[
 ];
 
 (async()=>{
-const out={started:new Date().toISOString(),identity:[],planning:[]};
+const out={started:new Date().toISOString(),identity:[],planning:[],apiContract:{}};
+out.apiContract.addressOptions=await routeCase(addressHandler,{method:'OPTIONS',query:{}});
+out.apiContract.addressShort=await routeCase(addressHandler,{method:'GET',query:{q:'ab'}});
+out.apiContract.propertyLong=await routeCase(propertyHandler,{method:'GET',query:{text:'x'.repeat(301)}});
+out.apiContract.planningInvalid=await routeCase(planningHandler,{method:'POST',body:{point:{x:0,y:0},lga:'TEST'}});
+out.apiContractPass=out.apiContract.addressOptions.status===204&&out.apiContract.addressShort.status===400&&out.apiContract.propertyLong.status===400&&out.apiContract.planningInvalid.status===400;
+
 for(const q of cases){
  const t0=Date.now();
  try{
@@ -47,7 +68,7 @@ out.performance={maxSuggestionMs:suggestions.at(-1)||null,medianSuggestionMs:pct
 const contractProbe={planning:{failedKeys:['sepp'],failedSources:['sepp']}};
 out.failureContractPass=Array.isArray(contractProbe.planning.failedKeys)&&contractProbe.planning.failedKeys.includes('sepp');
 
-out.pass=out.identity.every(x=>x.pass)&&out.exactNumberRegression&&out.planning.every(x=>x.pass)&&out.performance.p95SuggestionMs<3000&&out.failureContractPass;
+out.pass=out.identity.every(x=>x.pass)&&out.exactNumberRegression&&out.planning.every(x=>x.pass)&&out.performance.p95SuggestionMs<3000&&out.failureContractPass&&out.apiContractPass;
 console.log('SITEPIVOT_SERVER_QA_START');
 console.log(JSON.stringify(out,null,2));
 console.log('SITEPIVOT_SERVER_QA_END');
