@@ -788,7 +788,7 @@ function stopVoiceInput(){
 function startVoiceInput(targetId='assistantInput'){
  targetId='assistantInput';app.intentSeq=(app.intentSeq||0)+1;voicePlayer.stop();
  if(assistantState.listening){stopVoiceInput();return}
- const Ctor=voiceRecognitionCtor();assistantState.lastError=null;
+ const Ctor=voiceRecognitionCtor();assistantState.lastError=null;assistantState.finalTranscript=false;
  if(!Ctor){assistantState.lastError='Voice input is unavailable in this browser. Type your question instead.';updateVoiceControls();return}
  if(voiceOutputSupported())assistantState.voiceReply=true;
  try{
