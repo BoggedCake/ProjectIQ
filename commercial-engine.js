@@ -27,7 +27,8 @@ function interpretIntent(text){
  const count=r=>{const m=t.match(new RegExp('(?:\\b(\\d+|one|two|three|four|five|six)\\s+)?'+r,'i'));return m?Math.min(20,counts[m[1]]||+m[1]||1):0};
  const roomPatterns={bedroom:'bedrooms?',masterSuite:'master suite|main suite',bathroom:'bathrooms?|ensuite',living:'living(?: room| area)?|dining',kitchenLiving:'kitchen',office:'office|study',garage:'garage',laundry:'laundry',upperLevel:'full upper level|whole upstairs',other:'other room'};
  for(const[k,r]of Object.entries(roomPatterns)){const n=count(r);if(n)p.rooms[k]=n}
- const dev=[['duplex',/duplex|dual occupancy/],['townhouse',/town\s*houses?|terraces/],['apartment',/apartments?|units/],['multisite',/neighbou?rs?|adjoining land|combine.*land/]].find(([,r])=>has(r));
+ const devCandidate=[['duplex',/duplex|dual occupancy/],['townhouse',/town\s*houses?|terraces/],['apartment',/apartments?|units/],['multisite',/neighbou?rs?|adjoining land|combine.*land/]].find(([,r])=>has(r));
+ const existingHome=has(/(?:my|our|current|existing|the)\s+(?:apartment|duplex|townhouse)/)&&has(/renovat|improv|refresh|remodel|refurb/),newHomes=has(/(?:build|construct|create|develop)\s+(?:a\s+|an\s+|new\s+|some\s+)?(?:duplex|townhouses?|apartments?)|new (?:duplex|townhouses?|apartments?)/),dev=existingHome&&!newHomes?null:devCandidate;
  const storey=has(/upstairs|another (?:level|floor)|second (?:storey|story|floor)|upper (?:level|floor)|add.*(?:storey|story)/);
  const extend=has(/\bextend|extension|\badd(?:ing)?\s+(?:an?\s+|\d+\s+|one\s+|two\s+|three\s+)?(?:extra\s+)?(?:bedroom|bathroom|room|garage)|\bextra (?:bedroom|bathroom|space)|additional (?:room|space)/);
  const renovate=has(/renovat|refurb|refresh|improv|remodel|open.?plan|open up|knock.*wall|remove.*wall|internal.*(?:layout|convert)/);
@@ -35,14 +36,16 @@ function interpretIntent(text){
  p.developmentType=dev?.[0]||null;p.developmentIntent=p.goal==='develop'?true:null;p.additionalLevel=storey?true:null;
  const areaPatterns={kitchen:/kitchen/,bathroom:/bathroom|ensuite/,living:/living|dining/,openplan:/open.?plan|open up|walls?|internal.*layout/,laundry:/laundry/,flooring:/flooring|finishes|carpet|tiles/,windows:/windows?|doors?/,office:/office|study|room conversion/,outdoor:/outdoor|alfresco|deck/,wholehome:/whole.?home|whole house/};
  p.renovationAreas=p.goal==='reno'?Object.entries(areaPatterns).filter(([,r])=>has(r)).map(([k])=>k):[];
+ if(p.goal==='reno'&&p.renovationAreas.includes('flooring')&&p.renovationAreas.some(k=>['bathroom','kitchen','living','office','laundry'].includes(k))&&!has(/elsewhere|other rooms|throughout|whole (?:home|house)|(?:living|bedroom|hall).*floor|flooring (?:through|across|in other)/))p.renovationAreas=p.renovationAreas.filter(k=>k!=='flooring');
+ const unsupported=t.match(/\b(?:pool|roof(?:ing)?|solar panels?|lift|fence|retaining wall|foundation|air conditioning|asbestos)\b/g)||[];if(p.goal==='reno'&&unsupported.length){p.renovationAreas.push('other');p.uncertainties.push('Also requested: '+[...new Set(unsupported)].join(', ')+'. This needs a separate scope and price.')}
  p.renovationExtent=has(/major structural/)?'structural':p.renovationAreas.includes('openplan')?'layout':has(/refresh|cosmetic|paint/)?'refresh':'replace';
  p.extraBedrooms=p.goal==='extend'||p.goal==='storey'?p.rooms.bedroom||null:null;p.extraBathrooms=p.goal==='extend'||p.goal==='storey'?p.rooms.bathroom||null:null;p.moreLivingSpace=has(/living.*(?:bigger|larger)|more living/)?true:null;
  p.basementPreference=has(/basement/)?'basement':'none';p.quality=has(/luxury|bespoke|high.end/)?'luxury':has(/standard|basic|budget finish/)?'standard':'premium';p.compareMove=has(/mov(?:e|ing)|sell|buy elsewhere|compare.*alternatives/);
  const money=t.match(/(?:budget\s*(?:of|is|around|about)?\s*|\$)(\d[\d,]*(?:\.\d+)?)\s*(million|thousand|m\b|k\b)?/);if(money)p.budget=Math.round(+money[1].replace(/,/g,'')*(/million|m\b/.test(money[2]||'')?1e6:/thousand|k\b/.test(money[2]||'')?1e3:1));
  const words=t.match(/budget\s+(one|two|three|four|five|six|seven|eight|nine)\s+hundred\s+thousand/);if(words)p.budget=({one:1,two:2,three:3,four:4,five:5,six:6,seven:7,eight:8,nine:9}[words[1]])*100000;
  p.desiredRooms=Object.keys(p.rooms);if(p.goal==='develop'&&p.developmentType==='duplex')p.dwellingCount=2;
- const mixed=renovate&&(extend||storey||dev);const confidence=mixed?.55:p.goal==='unsure'?.25:renovate||extend||storey||dev?.9:.65;
- return{status:'confirmation',profile:p,confidence,clarification:mixed?'Would you like to include both improvements to the existing rooms and the new space?':confidence<.7?'Are you improving the existing rooms, adding space, or building additional homes?':null};
+ const footprintConstraint=/not extend|no extension|without extend|within (?:the )?existing footprint/.test(raw),mixed=renovate&&(extend||storey||dev)||(extend&&!!dev)||(storey&&!!dev)||(extend&&storey),unclear=mixed||footprintConstraint||unsupported.length;const confidence=unclear?.55:p.goal==='unsure'?.25:renovate||extend||storey||dev?.9:.65;
+ return{status:'confirmation',profile:p,confidence,clarification:unsupported.length?'Should we include '+[...new Set(unsupported)].join(' and ')+' as work that still needs a separate price?':footprintConstraint?'Are you converting space inside the existing home rather than extending it?':mixed?'Which direction would you like to test first: improving existing rooms, adding space, or building new homes?':confidence<.7?'Are you improving the existing rooms, adding space, or building additional homes?':null};
 }
 // Founder component assumptions: GST, ordinary installation, local services and 10% room contingency included.
 // These are NOT verified quotes. Houzz AU 2023 median kitchen $30k/bath $19k is historical context only.

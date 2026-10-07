@@ -14,4 +14,9 @@ test('whole home includes shared finishes without duplicated selected floor/pain
 test('unknown renovation scope does not manufacture costs',()=>assert.equal(E.renovationCost({components:['other']}).status,'review'));
 test('delivered composition is explanation, exact sum unchanged',()=>{const c=E.deliveredCost({area:440});assert.equal(c.mid,2992000);assert.equal(E.deliveryComposition(c).reduce((n,x)=>n+x.amount,0),2992000)});
 test('mixed renovation and extension asks a useful clarification',()=>{const r=E.interpretIntent('Renovate the kitchen and extend with a bedroom');assert.ok(r.confidence<.7);assert.ok(r.clarification)});
+test('alternative development and extension asks a clarification',()=>{const r=E.interpretIntent('I want to extend or build a duplex');assert.ok(r.confidence<.7);assert.ok(r.clarification)});
+test('negative footprint constraint does not confidently select extension',()=>{const r=E.interpretIntent('I want to add a bedroom, not extend the footprint');assert.ok(r.profile.goal!=='extend'||r.confidence<.7);assert.ok(r.clarification)});
+test('renovating an existing apartment is not development',()=>assert.equal(E.interpretIntent('Renovate my apartment kitchen').profile.goal,'reno'));
+test('bathroom and kitchen room finishes do not add unrelated flooring',()=>{for(const text of ['Renovate my bathroom and replace its tiles','Renovate my kitchen and refresh the finishes'])assert.equal(E.interpretIntent(text).profile.renovationAreas.includes('flooring'),false)});
+test('unsupported pool work remains unpriced in the project',()=>{const r=E.interpretIntent('I want to renovate the kitchen and install a pool');assert.ok(r.profile.renovationAreas.includes('other'));assert.ok(r.profile.uncertainties.length);assert.equal(E.renovationCost({components:r.profile.renovationAreas}).status,'review')});
 process.exitCode=failed?1:0;

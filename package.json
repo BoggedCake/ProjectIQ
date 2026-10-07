@@ -3,6 +3,8 @@
   "private": true,
   "scripts": {
     "test": "node qa/commercial-regression.cjs && node qa/intake-component-regression.cjs && node qa/intake-ui-regression.cjs && node qa/provider-contract-regression.cjs && node qa/consumer-commercial.cjs && node qa/model-regression.cjs && node qa/async-regression.cjs && node qa/journey.cjs",
+    "test:deployed": "node qa/deployed-founder.mjs",
+    "test:mobile": "node qa/mobile-journey.cjs",
     "test:live": "node qa/live-smoke.mjs",
     "test:providers": "node qa/serverless-smoke.cjs"
   },

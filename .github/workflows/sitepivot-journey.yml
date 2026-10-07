@@ -18,12 +18,15 @@ jobs:
         with:
           node-version: '24'
       - run: npm ci
-      - run: npx playwright install --with-deps chromium
+      - run: npx playwright install --with-deps chromium webkit
       - run: npm test
         env:
           QA_OUTPUT: journey-results.json
+      - run: node qa/mobile-journey.cjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: consumer-journey-results
-          path: journey-results.json
+          path: |
+            journey-results.json
+            mobile-qa/
