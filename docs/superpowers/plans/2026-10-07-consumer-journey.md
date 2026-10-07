@@ -27,20 +27,20 @@
 ### Task 1: Shared intake and costing contracts
 **Files:** commercial-engine.js, api/_lib/intent.js, qa/intake-component-regression.cjs.
 **Interfaces:** interpretIntent(text) → normalized profile/confidence/clarification; renovationCost({components,extent,quality,complexity,region}) → low/mid/high/components/version; deliveryComposition(cost) → lines summing to cost.mid.
-- [ ] Write exact renovation, negation, counts/budget/quality, component aggregation/overlap, delivered arithmetic tests; run RED.
-- [ ] Implement deterministic interpreter and component assumptions; normalize server output to same schema with local fallback; run GREEN.
-- [ ] Run existing model/async/provider/full Chromium regression; browser check unchanged journey.
+- [x] Write exact renovation, negation, counts/budget/quality, component aggregation/overlap, delivered arithmetic tests; run RED.
+- [x] Implement deterministic interpreter and component assumptions; normalize server output to same schema with local fallback; run GREEN.
+- [x] Run existing model/async/provider/full Chromium regression; browser check unchanged journey.
 
 ### Task 2: Consumer integration
 **Files:** index.html, qa/consumer-commercial.cjs, qa/journey.cjs, qa/live-smoke.mjs.
 **Interfaces:** Existing scope and result IDs; normalized intake populates component/room scope, working value inputs feed existing feasibility.
-- [ ] Add failing UI tests for confirmation/edit, pathway-specific questions, clear per-unit/GRV/feasibility, decision gate and one disclosure; retain original coverage.
-- [ ] Wire hybrid intake, relevant scope, estimated area and visible working values; render one-scroll results and preserve all evidence sections.
-- [ ] Replace diagnostic consumer copy with plain labels; compact mobile layout and keep all navigation/chat/reset paths.
-- [ ] Run model/async/full Chromium/provider QA and deployed desktop/mobile founder journeys; fix discoveries with tests.
+- [x] Add failing UI tests for confirmation/edit, pathway-specific questions, clear per-unit/GRV/feasibility, decision gate and one disclosure; retain original coverage.
+- [x] Wire hybrid intake, relevant scope, estimated area and visible working values; render one-scroll results and preserve all evidence sections.
+- [x] Replace diagnostic consumer copy with plain labels; compact mobile layout and keep all navigation/chat/reset paths.
+- [x] Run model/async/full Chromium/provider QA and deployed desktop/mobile founder journeys; fix discoveries with tests.
 
 ### Task 3: Final acceptance
 **Files:** Regression documentation and workflow asset gates where needed.
-- [ ] Review diff and all brief requirements; regression any issue found.
-- [ ] After final implementation change run every suite and actual deployed browser journey/mobile checks; record exact evidence and limitations.
-- [ ] Commit/publish only sitepivot-concept under existing project authorization; verify main unchanged.
+- [x] Review diff and all brief requirements; regression any issue found.
+- [x] After final implementation change run every suite and actual deployed browser journey/mobile checks; record exact evidence and limitations.
+- [x] Commit/publish only sitepivot-concept under existing project authorization; verify main unchanged.
