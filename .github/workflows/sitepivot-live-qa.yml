@@ -6,6 +6,8 @@ on:
     paths:
       - 'index.html'
       - 'commercial-engine.js'
+      - 'conversation.js'
+      - 'voice.js'
       - 'qa/**'
       - '.github/workflows/sitepivot-live-qa.yml'
   workflow_dispatch:
@@ -34,7 +36,9 @@ jobs:
           for i in {1..18}; do
             code=$(curl -L -s -o /tmp/sitepivot.html -w "%{http_code}" "https://boggedcake.github.io/ProjectIQ/?qa=${GITHUB_SHA}")
             curl -L -s -o /tmp/sitepivot-engine.js "https://boggedcake.github.io/ProjectIQ/commercial-engine.js?qa=${GITHUB_SHA}"
-            if [ "$code" = "200" ] && cmp -s index.html /tmp/sitepivot.html && cmp -s commercial-engine.js /tmp/sitepivot-engine.js; then
+            curl -L -s -o /tmp/sitepivot-conversation.js "https://boggedcake.github.io/ProjectIQ/conversation.js?qa=${GITHUB_SHA}"
+            curl -L -s -o /tmp/sitepivot-voice.js "https://boggedcake.github.io/ProjectIQ/voice.js?qa=${GITHUB_SHA}"
+            if [ "$code" = "200" ] && cmp -s index.html /tmp/sitepivot.html && cmp -s commercial-engine.js /tmp/sitepivot-engine.js && cmp -s conversation.js /tmp/sitepivot-conversation.js && cmp -s voice.js /tmp/sitepivot-voice.js; then
               echo "Deployed source matches tested branch head"
               exit 0
             fi

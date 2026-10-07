@@ -2,7 +2,7 @@
   "name": "sitepivot",
   "private": true,
   "scripts": {
-    "test": "node qa/commercial-regression.cjs && node qa/intake-component-regression.cjs && node qa/intake-ui-regression.cjs && node qa/provider-contract-regression.cjs && node qa/consumer-commercial.cjs && node qa/model-regression.cjs && node qa/async-regression.cjs && node qa/journey.cjs",
+    "test": "node qa/conversation-provider-regression.cjs && node qa/conversation-regression.cjs && node qa/conversation-ui-regression.cjs && node qa/voice-adapter-regression.cjs && node qa/commercial-regression.cjs && node qa/intake-component-regression.cjs && node qa/intake-ui-regression.cjs && node qa/provider-contract-regression.cjs && node qa/consumer-commercial.cjs && node qa/model-regression.cjs && node qa/async-regression.cjs && node qa/journey.cjs",
     "test:deployed": "node qa/deployed-founder.mjs",
     "test:mobile": "node qa/mobile-journey.cjs",
     "test:live": "node qa/live-smoke.mjs",
@@ -12,5 +12,7 @@
     "jsdom": "30.1.2",
     "playwright": "1.62.1"
   },
-  "engines": { "node": ">=24" }
+  "engines": {
+    "node": ">=24"
+  }
 }
