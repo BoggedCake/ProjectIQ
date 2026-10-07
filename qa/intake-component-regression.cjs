@@ -1,0 +1,16 @@
+'use strict';
+const assert=require('node:assert/strict'), E=require('../commercial-engine');
+let failed=0; function test(n,f){try{f();console.log('PASS '+n)}catch(e){failed++;console.error('FAIL '+n+': '+e.message)}}
+const sentence='I’m thinking about renovating my current property. I want to open up the kitchen, make the living area bigger and renovate my bathroom.';
+test('exact founder renovation maps kitchen living bathroom internal layout, never extension',()=>{const r=E.interpretIntent(sentence);assert.equal(r.profile.goal,'reno');assert.deepEqual(r.profile.renovationAreas.sort(),['kitchen','living','bathroom','openplan'].sort());assert.equal(r.profile.additionalLevel,null);assert.equal(r.profile.developmentIntent,null);assert.ok(r.confidence>=.8)});
+test('voice transcript shares exact normalized text interpretation',()=>assert.deepEqual(E.interpretIntent(sentence),E.interpretIntent(sentence)));
+test('negated duplex does not become development',()=>{assert.equal(E.interpretIntent('Do not build a duplex. I want an office renovation.').profile.goal,'reno')});
+test('extension extracts counts budget quality and move interest',()=>{const p=E.interpretIntent('Extend with two bedrooms and a bathroom, premium finish, budget $600,000. Compare with moving.').profile;assert.equal(p.goal,'extend');assert.equal(p.rooms.bedroom,2);assert.equal(p.rooms.bathroom,1);assert.equal(p.budget,600000);assert.equal(p.compareMove,true)});
+test('upstairs and basement development remain separate concepts',()=>{assert.equal(E.interpretIntent('Add another level with a master suite and office').profile.goal,'storey');const p=E.interpretIntent('Build a duplex with a basement').profile;assert.equal(p.goal,'develop');assert.equal(p.developmentType,'duplex');assert.equal(p.basementPreference,'basement')});
+test('ambiguous language asks only one clarification',()=>{const r=E.interpretIntent('Make it nicer somehow');assert.ok(r.clarification);assert.equal(r.profile.goal,'unsure')});
+test('ordinary renovation sums selected components without area rates',()=>{const c=E.renovationCost({components:['kitchen','living','bathroom','openplan'],quality:'standard'});assert.equal(c.mid,c.components.reduce((n,x)=>n+x.mid,0));assert.ok(c.mid<200000);assert.equal(c.area,undefined);assert.ok(c.version);assert.ok(c.components.every(x=>x.inclusions.length&&x.exclusions.length&&x.version))});
+test('renovation quality complexity region adjust every component',()=>{const a=E.renovationCost({components:['kitchen']});const b=E.renovationCost({components:['kitchen'],quality:'luxury',complexity:'hard',region:1.1});assert.ok(b.mid>a.mid)});
+test('whole home includes shared finishes without duplicated selected floor/paint',()=>{const a=E.renovationCost({components:['wholehome']});const b=E.renovationCost({components:['wholehome','flooring','painting']});assert.equal(a.mid,b.mid)});
+test('unknown renovation scope does not manufacture costs',()=>assert.equal(E.renovationCost({components:['other']}).status,'review'));
+test('delivered composition is explanation, exact sum unchanged',()=>{const c=E.deliveredCost({area:440});assert.equal(c.mid,2992000);assert.equal(E.deliveryComposition(c).reduce((n,x)=>n+x.amount,0),2992000)});
+process.exitCode=failed?1:0;
