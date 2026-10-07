@@ -919,7 +919,7 @@ function renderConsumerResult(){$('consumerResult').innerHTML=consumerResultHTML
 async function interpretIntent(){
  const text=$('intentInput').value.trim();if(!text)return;const seq=app.intentSeq=(app.intentSeq||0)+1,pid=app.property?.id;$('intentStatus').textContent='Reading your ideas…';
  let result=E.interpretIntent(text);
- if(SERVER_API&&result.confidence<.8){try{const remote=await apiJSON('/api/intent/extract',{method:'POST',body:{text},timeout:7500});if(remote.status==='confirmation'&&remote.profile)result={...remote,profile:E.normalizeIntent(remote.profile)}}catch{}}
+ if(SERVER_API&&result.confidence<.8&&!result.profile.renovationAreas.includes('other')){try{const remote=await apiJSON('/api/intent/extract',{method:'POST',body:{text},timeout:7500});if(remote.status==='confirmation'&&remote.profile)result={...remote,profile:E.normalizeIntent(remote.profile)}}catch{}}
  if(seq!==app.intentSeq||pid!==app.property?.id||text!==$('intentInput').value.trim())return;
  app.intent={text,...result};const profile=E.normalizeIntent(result.profile);$('intentStatus').textContent=result.clarification||'Check this before continuing.';
  const labels=profile.goal==='reno'?profile.renovationAreas.map(k=>E.RENOVATION_LABELS[k]):Object.entries(profile.rooms).filter(([,v])=>v).map(([k,v])=>v+' '+(ADDITION_LABELS[profile.goal]?.[k]||E.RENOVATION_LABELS[k]||k));
