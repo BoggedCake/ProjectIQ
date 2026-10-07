@@ -9,6 +9,7 @@ async function test(name,fn){try{await fn();console.log('PASS '+name)}catch(e){f
 function dom(fetch,url='http://localhost/'){const w=new JSDOM(html,{url,runScripts:'dangerously',virtualConsole:new VirtualConsole(),beforeParse(w){w.eval(fs.readFileSync(path.join(__dirname,'../commercial-engine.js'),'utf8'));w.scrollTo=()=>{};w.fetch=fetch;w.AbortController=AbortController}});opened.push(w);return w}
 const suiteTimeout=setTimeout(()=>{console.error('FAIL async suite did not finish');process.exit(1)},30000);
 (async()=>{
+ await test('late intent cannot override a manual pathway',async()=>{let release;const w=dom(()=>new Promise(r=>release=r)).window,a=w.SitePivot;a.selectProperty(a.FIXTURES[0]);a.show('passport');w.document.getElementById('intentInput').value='Something nicer somehow';const pending=a.interpretIntent();await until(()=>release);a.chooseGoal('extend');release(response({status:'confirmation',profile:{goal:'develop',quality:'premium',basementPreference:'none',rooms:{},compareMove:false}}));await pending;assert.equal(a.app.goal,'extend');assert.equal(a.app.intent,null)});
  await test('start over ignores a pending identity response',async()=>{
   let release;const w=dom(async url=>String(url).includes('/suggest')?response({suggestions:[{text:'57 Griffiths Street Fairlight NSW 2094'}]}):new Promise(r=>release=r));
   const d=w.window.document;d.getElementById('addressSearch').value='57 Griffiths Street Fairlight';d.getElementById('addressContinue').click();await until(()=>release);

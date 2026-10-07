@@ -41,8 +41,8 @@ function interpretIntent(text){
  const money=t.match(/(?:budget\s*(?:of|is|around|about)?\s*|\$)(\d[\d,]*(?:\.\d+)?)\s*(million|thousand|m\b|k\b)?/);if(money)p.budget=Math.round(+money[1].replace(/,/g,'')*(/million|m\b/.test(money[2]||'')?1e6:/thousand|k\b/.test(money[2]||'')?1e3:1));
  const words=t.match(/budget\s+(one|two|three|four|five|six|seven|eight|nine)\s+hundred\s+thousand/);if(words)p.budget=({one:1,two:2,three:3,four:4,five:5,six:6,seven:7,eight:8,nine:9}[words[1]])*100000;
  p.desiredRooms=Object.keys(p.rooms);if(p.goal==='develop'&&p.developmentType==='duplex')p.dwellingCount=2;
- const confidence=p.goal==='unsure'?.25:renovate||extend||storey||dev?.9:.65;
- return{status:'confirmation',profile:p,confidence,clarification:confidence<.7?'Are you improving the existing rooms, adding space, or building additional homes?':null};
+ const mixed=renovate&&(extend||storey||dev);const confidence=mixed?.55:p.goal==='unsure'?.25:renovate||extend||storey||dev?.9:.65;
+ return{status:'confirmation',profile:p,confidence,clarification:mixed?'Would you like to include both improvements to the existing rooms and the new space?':confidence<.7?'Are you improving the existing rooms, adding space, or building additional homes?':null};
 }
 // Founder component assumptions: GST, ordinary installation, local services and 10% room contingency included.
 // These are NOT verified quotes. Houzz AU 2023 median kitchen $30k/bath $19k is historical context only.

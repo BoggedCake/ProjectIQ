@@ -132,7 +132,7 @@ try{
       // Exercise the actual deployed founder path through real controls, not show().
       const propertyId=await page.evaluate(()=>SitePivot.app.property.id);
       await page.locator('#passportPathways [data-goal="reno"]').click();
-      await page.locator('#scopeArea').evaluate(el=>el.closest('details').open=true);await page.locator('#scopeArea').fill('65');
+      await page.locator('[data-renovation="kitchen"]').check();await page.locator('[data-renovation="bathroom"]').check();
       await page.locator('#runAssessment').click();
       await page.locator('#view-assessment.active').waitFor();
       await page.locator('#assessmentDetail > summary').click();for(const control of await page.locator('#assessmentTabs [data-tab]').all()){

@@ -13,4 +13,5 @@ test('renovation quality complexity region adjust every component',()=>{const a=
 test('whole home includes shared finishes without duplicated selected floor/paint',()=>{const a=E.renovationCost({components:['wholehome']});const b=E.renovationCost({components:['wholehome','flooring','painting']});assert.equal(a.mid,b.mid)});
 test('unknown renovation scope does not manufacture costs',()=>assert.equal(E.renovationCost({components:['other']}).status,'review'));
 test('delivered composition is explanation, exact sum unchanged',()=>{const c=E.deliveredCost({area:440});assert.equal(c.mid,2992000);assert.equal(E.deliveryComposition(c).reduce((n,x)=>n+x.amount,0),2992000)});
+test('mixed renovation and extension asks a useful clarification',()=>{const r=E.interpretIntent('Renovate the kitchen and extend with a bedroom');assert.ok(r.confidence<.7);assert.ok(r.clarification)});
 process.exitCode=failed?1:0;
