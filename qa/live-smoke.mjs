@@ -64,6 +64,11 @@ try{
       };
       result.consumerUx.pass=result.consumerUx.detailedPlanningClosed&&result.consumerUx.planningMetricCount===4&&result.consumerUx.pathwayCount===5;
 
+      // The conversation starts after confirmed dwelling facts; manual paths are secondary.
+      for(const[id,value]of [['confirmBeds','3'],['confirmBaths','2'],['confirmCars','1']])await page.locator('#'+id).fill(value);
+      await page.locator('#saveDwellingProfile').click();
+      await page.locator('#assistantInput').waitFor({state:'visible'});
+      await page.locator('#manualDirections > summary').click();
       result.pathways=[];
       const pathwayCases=[
         ['reno','scope'],
