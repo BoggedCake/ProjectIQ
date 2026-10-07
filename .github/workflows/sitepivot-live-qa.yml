@@ -30,7 +30,7 @@ jobs:
       - name: Install browser test runtime
         run: |
           npm ci
-          npx playwright install --with-deps chromium
+          npx playwright install --with-deps chromium webkit
       - name: Wait for GitHub Pages deployment
         run: |
           for i in {1..18}; do
@@ -53,3 +53,6 @@ jobs:
 
       - name: Run full deployed desktop and iPhone founder journeys
         run: node qa/deployed-founder.mjs
+
+      - name: Run deployed unified conversation and voice journeys in Chromium and WebKit
+        run: node qa/deployed-conversation.mjs
