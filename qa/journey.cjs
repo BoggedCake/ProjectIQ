@@ -82,7 +82,7 @@ async function main(){
   });
   await p.route('**/api/voice/speak',r=>r.fulfill({status:503,json:{error:'Audio not available'}}));await p.goto(base+'/?fixtures=1');await fixture(p);
   await p.locator('#assistantMic').click();await p.locator('.assistantMessage.user').waitFor();
-  await p.waitForFunction(()=>window.__spoken.length===1);const spoken=await p.evaluate(()=>window.__spoken);assert.equal(spoken.length,1);assert.equal(spoken[0].voice,'Microsoft Natasha Natural');assert.doesNotMatch(spoken[0].text,/Verified|Source:|Evidence state|\d{4}/i);
+  await p.waitForFunction(()=>window.__spoken.length===1);const spoken=await p.evaluate(()=>window.__spoken);assert.equal(spoken.length,1);assert.equal(spoken[0].voice,'Microsoft Sonia Natural');assert.doesNotMatch(spoken[0].text,/Verified|Source:|Evidence state|\d{4}/i);
   await p.getByRole('button',{name:'Start over',exact:true}).click();await fixture(p);assert.equal(await p.locator('#assistantVoiceReply').getAttribute('aria-pressed'),'false');await p.close();
  });
  await test('mobile touch can finish development journey without overflow',async()=>{
