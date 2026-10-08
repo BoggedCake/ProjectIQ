@@ -31,7 +31,7 @@ Fresh independent review identified the duplicate fallback and server-only failu
 
 Local npm test reaches the browser stage after all nonbrowser checks pass, then fails because Chromium is absent. Attempted Playwright installation receives an invalid archive from the restricted network. Chromium/WebKit test scripts are supplied and wired into the existing CI workflow; they have not passed for this revision yet.
 
-Publication was rejected by automatic approval review: it classified pushing to the GitHub remote as an unapproved publication/source export. The remote remains the original baseline. The repaired code is committed locally and requires explicit approval to push to `BoggedCake/ProjectIQ` branch `sitepivot-concept`. The site has not been updated and CI has not run for these changes.
+The founder explicitly authorised publication on 8 October 2026. The repaired implementation was published as `6800d4410d5a3dc80791038d65958f134befe71d` to `BoggedCake/ProjectIQ` branch `sitepivot-concept`. GitHub Pages deployment and consumer/server/live CI checks are running; their terminal results remain pending at this documentation revision. Main remains untouched.
 
 IOS/WEBKIT CODE PATH: NOT YET VERIFIED IN BROWSER — CI REQUIRED
 REAL IPHONE AUDIBILITY: FOUNDER VERIFICATION REQUIRED
