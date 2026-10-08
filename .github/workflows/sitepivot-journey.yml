@@ -24,6 +24,7 @@ jobs:
           QA_OUTPUT: journey-results.json
       - run: node qa/mobile-journey.cjs
       - run: node qa/conversation-browser.cjs
+      - run: node qa/voice-browser.cjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:

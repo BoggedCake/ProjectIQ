@@ -79,6 +79,7 @@ input[type="checkbox"]{width:20px;height:20px;padding:0;flex:0 0 20px;accent-col
       </div>
       <div id="assistantVoiceStatus" class="small voiceStatus" aria-live="polite"></div>
       <button class="miniBtn hidden" id="assistantStop" type="button">Stop</button>
+      <button class="miniBtn hidden" id="assistantEnableAudio" type="button">Enable audio</button>
     </div>
   </div>
 
@@ -619,6 +620,7 @@ function renderPathways(containerId){
  root.querySelectorAll('[data-goal]').forEach(b=>b.addEventListener('click',()=>chooseGoal(b.dataset.goal)));
 }
 function resetAssistant(propertyId=null){
+ assistantState.conversationEpoch=(assistantState.conversationEpoch||0)+1;
  voicePlayer?.stop();assistantState.pending=null;assistantState.pendingQuestion=null;assistantState.lastResult=null;assistantState.finalTranscript=false;
  if(assistantState.recognition){try{assistantState.recognition.abort()}catch(e){}}
  if('speechSynthesis' in window){try{window.speechSynthesis.cancel()}catch(e){}}
@@ -729,15 +731,18 @@ function assistantSpeechAnswer(question,displayText){
 }
 function setAssistantVoiceStatus(text){const el=$('assistantVoiceStatus');if(el)el.textContent=text||'';if($('intentStatus')&&assistantState.inputTarget==='intentInput')$('intentStatus').textContent=String(text||'').replace('press Ask','press Help choose my direction')}
 function updateVoiceControls(){
- $('assistantStop')?.classList.toggle('hidden',!voicePlayer?.speaking);
+ $('assistantStop')?.classList.toggle('hidden',!voicePlayer?.speaking&&!voicePlayer?.pending);
+ $('assistantEnableAudio')?.classList.toggle('hidden',!voicePlayer?.needsRetry||!assistantState.voiceReply||assistantState.listening);
  const mic=$('assistantMic'),toggle=$('assistantVoiceReply');if(!mic||!toggle)return;
  const supported=voiceInputSupported();
  mic.disabled=!supported;mic.classList.toggle('listening',assistantState.listening);mic.setAttribute('aria-pressed',String(assistantState.listening));mic.setAttribute('aria-label',assistantState.listening?'Stop voice input':'Start voice input');mic.textContent=assistantState.listening?'■ Stop':'🎙 Speak';
  toggle.disabled=!voiceOutputSupported();toggle.setAttribute('aria-pressed',String(assistantState.voiceReply));toggle.textContent='Voice replies: '+(assistantState.voiceReply?'on':'off');
  if(assistantState.listening)setAssistantVoiceStatus('Listening… speak naturally. Stop when finished.');
+ else if(assistantState.voiceReply&&voicePlayer?.playbackError)setAssistantVoiceStatus('Voice couldn’t start. Tap Enable audio to try again.');
+ else if(voicePlayer?.speaking)setAssistantVoiceStatus('Speaking…');
+ else if(voicePlayer?.pending)setAssistantVoiceStatus('Preparing voice…');
  else if(assistantState.lastError)setAssistantVoiceStatus(assistantState.lastError);
  else if(!supported)setAssistantVoiceStatus('Voice input is unavailable in this browser. Typed chat remains fully available.');
- else if(voicePlayer?.speaking)setAssistantVoiceStatus('Speaking…');
  else if(assistantState.lastTranscript)setAssistantVoiceStatus('');
  else setAssistantVoiceStatus('Voice input is available. Your browser may ask for microphone permission.');
 }
@@ -751,6 +756,7 @@ function renderAssistant(){
  updateVoiceControls();
 }
 const voicePlayer=V.createPlayer({server:SERVER_API,endpoint:API_BASE+'/api/voice/speak',fetch:(...args)=>window.fetch(...args),Audio:window.Audio,URL:window.URL,synth:window.speechSynthesis,Utterance:window.SpeechSynthesisUtterance,onState:()=>updateVoiceControls()});
+function voiceDiagnostics(){return {...voicePlayer.diagnostics,inputSupport:voiceInputSupported(),recognitionState:assistantState.listening?'listening':assistantState.recognition?'starting':'idle',conversationId:assistantState.propertyId?assistantState.propertyId+':'+(assistantState.conversationEpoch||0):null,propertyId:app.property?.id||null,pageVisibility:document.visibilityState,synthesisState:{speaking:!!window.speechSynthesis?.speaking,pending:!!window.speechSynthesis?.pending,paused:!!window.speechSynthesis?.paused}}}
 function speakAssistant(text){if(assistantState.voiceReply&&!assistantState.listening)void voicePlayer.speak(text)}
 function applyConversationActions(actions){const r=C.applyActions(app,actions);const changed=r.accepted.some(a=>a.type.startsWith('set'));if(changed){app.goal=r.state.goal;app.devType=r.state.devType;app.scope=r.state.scope;app.assessment=null;app.confirmedIntent={goal:app.goal,...app.scope};if(['scope','assessment','roadmap','report'].includes(app.view))show(app.view)}for(const a of r.accepted){if(!app.property||!dwellingProfileComplete(app.property))continue;if(a.type==='navigateToScope'&&app.goal)continueConversation();if(a.type==='navigateToAssessment'&&app.goal){if(app.goal==='develop'&&!app.devType)show('develop');else{computeAssessment();show('assessment')}}if(a.type==='showEvidence'){if(app.view==='assessment')$('assessmentDetail').open=true;else{show('passport');$('planningDetails').open=true}}}return r}
 function conversationPropertyAnswer(key){
@@ -802,7 +808,7 @@ function startVoiceInput(targetId='assistantInput'){
 }
 function toggleVoiceReply(){
  if(!voiceOutputSupported()){assistantState.voiceReply=false;assistantState.lastError='Spoken replies are unavailable in this browser.';updateVoiceControls();return}
- assistantState.voiceReply=!assistantState.voiceReply;if(!assistantState.voiceReply)voicePlayer.stop();updateVoiceControls();
+ assistantState.voiceReply=!assistantState.voiceReply;if(!assistantState.voiceReply)voicePlayer.stop();else voicePlayer.unlock();updateVoiceControls();
 }
 function renderPassport(){
  const p=app.property;if(!p)return;const pl=p.planning||{},s=consumerPropertySummary(p),err=(pl.liveErrors||[]).length;
@@ -938,6 +944,8 @@ $('addressContinue').onclick=()=>continueAddress();
 $('assistantSend').onclick=submitAssistant;
 $('assistantMic').onclick=()=>startVoiceInput();$('assistantStop').onclick=()=>voicePlayer.stop();
 $('assistantVoiceReply').onclick=toggleVoiceReply;
+ $('assistantEnableAudio').onclick=()=>voicePlayer.retry();
+ document.addEventListener('visibilitychange',()=>{if(document.hidden){voicePlayer.stop();const r=assistantState.recognition;assistantState.recognition=null;assistantState.listening=false;assistantState.finalTranscript=false;try{r?.abort()}catch{}updateVoiceControls()}});
 $('assistantInput').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();submitAssistant()}});
 $$('[data-assistant-prompt]').forEach(b=>b.addEventListener('click',()=>{$('assistantInput').value=b.dataset.assistantPrompt;submitAssistant()}));
 if(voiceOutputSupported()){try{window.speechSynthesis.addEventListener?.('voiceschanged',refreshPreferredVoice);refreshPreferredVoice()}catch(e){}}
@@ -1025,7 +1033,7 @@ async function runLiveDiagnostics(){
  window.__SITEPIVOT_LIVE_DIAGNOSTICS__=out;
  return out;
 }
-window.SitePivot={conversation:C,voice:V,voicePlayer,assistantState,applyConversationActions,continueConversation,commercial:E,interpretIntent,applyIntent,refreshMarket,FIXTURES,SOURCES,GOALS,DEV,LIVE,SERVER_API,API_BASE,app,findMatches,liveAddressSearch,resolveLiveIdentity,completeLiveProperty,selectProperty,computeAssessment,projectCost,currentMarket,completedMarket,marketRange,compScore,assistantAnswer,assistantSpeechAnswer,consumerPropertySummary,saveDwellingProfile,chooseGoal,goalDestination,show,preferredSpeechVoice,submitAssistant,startVoiceInput,stopVoiceInput,voiceInputSupported,voiceOutputSupported,runSelfTests,runLiveDiagnostics,reset};bind();renderSources();
+window.SitePivot={conversation:C,voice:V,voicePlayer,voiceDiagnostics,assistantState,applyConversationActions,continueConversation,commercial:E,interpretIntent,applyIntent,refreshMarket,FIXTURES,SOURCES,GOALS,DEV,LIVE,SERVER_API,API_BASE,app,findMatches,liveAddressSearch,resolveLiveIdentity,completeLiveProperty,selectProperty,computeAssessment,projectCost,currentMarket,completedMarket,marketRange,compScore,assistantAnswer,assistantSpeechAnswer,consumerPropertySummary,saveDwellingProfile,chooseGoal,goalDestination,show,preferredSpeechVoice,submitAssistant,startVoiceInput,stopVoiceInput,voiceInputSupported,voiceOutputSupported,runSelfTests,runLiveDiagnostics,reset};bind();renderSources();
 if(new URLSearchParams(location.search).get('autotest')==='1'){setTimeout(()=>runSelfTests(),50)}
 })();
 </script>
