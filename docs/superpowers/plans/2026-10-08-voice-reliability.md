@@ -25,8 +25,8 @@ Interface: use player.unlock() in toggle and retry() in one audio-enable action;
 
 ## Task 3 — acceptance
 Files: qa/voice-browser.cjs; package.json; .github/workflows/sitepivot-journey.yml; VOICE_RELIABILITY_QA.md.
-- [ ] Verify mock lifecycle in Chromium/WebKit, retaining original journeys.
-- [ ] Run npm test, mobile, conversation and new voice browser tests; review diff.
-- [ ] Record evidence, exact server configuration and founder checklist; commit/push only sitepivot-concept, verify CI/deployed source.
+- [x] Verify mock lifecycle in Chromium/WebKit, retaining original journeys.
+- [x] Run npm test, mobile, conversation and new voice browser tests; review diff.
+- [x] Record evidence, exact server configuration and founder checklist; commit/push only sitepivot-concept, verify CI/deployed source.
 
-Execution ledger: baseline reconciled; 8 lifecycle failures and UI activation failure reproduced before implementation. Tasks 1–2 implemented and focused tests pass. Fresh review found duplicate media fallback and silent server-only failure; both RED→GREEN. Watchdog and interruption assertions strengthened. All original nonbrowser suites pass. Task 3 is blocked on browser availability and explicit publication approval; no main merge.
+Execution ledger: baseline reconciled; 8 lifecycle failures and UI activation failure reproduced before implementation. Tasks 1–2 implemented and focused tests pass. Fresh review found duplicate media fallback and silent server-only failure; both RED→GREEN. Watchdog and interruption assertions strengthened. All original nonbrowser suites pass. Task 3 complete: founder authorised publication, 174 consumer PASS entries and zero failures, server data checks pass, Chromium/WebKit voice tests pass, live deployed founder journeys and all 16 conversation cases pass at d6332c0. Earlier infrastructure install timeout and unknown-height test assumption are documented in VOICE_RELIABILITY_QA.md. Real iPhone audibility remains founder verification; no main merge.
