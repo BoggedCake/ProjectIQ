@@ -1,11 +1,7 @@
-# SitePivot standing development authority
+# SitePivot development authority
 
-Read `DEVELOPMENT_AUTHORITY.md` and the linked canonical Notion Founder Authority page before SitePivot work. Chris Lewis permanently authorises routine bug investigation, implementation, supporting files, tests, regression repair, development workflow maintenance, documentation, commits and pushes to `sitepivot-concept`. Do not ask for approval at each routine step.
+Read DEVELOPMENT_AUTHORITY.md and FOUNDER_TESTING.md. Routine SitePivot fixes, tests, commits and pushes to sitepivot-development are authorised. Follow Fix → Test → Commit → Push to safe development branch → Founder testing.
 
-Normal process: Investigate → Implement → Test → Commit → Push to development branch → Report results. Stay within the existing SitePivot project and preserve prior implementation.
+The repository and all branches are public source code. sitepivot-concept remains the public Pages source; do not push repairs there. The Pages build log checks out sitepivot-concept at repository root. Development workflows have contents: read only and no publishing steps. Before pushing, recheck workflow triggers and publishing dependencies; never bypass protections or expose secrets.
 
-Do not merge into `main` or deploy/publish production without exact founder approval. Paid services/expenditure/commercial commitments, external communications, destructive/irreversible operations, security-sensitive changes and production-credential changes also require explicit approval. Never expose secrets or bypass authentication, repository security or production protections.
-
-Before a development push, verify it cannot automatically publish the public website. Use only the existing GitHub connector and existing repository permissions. Do not request additional browser authentication, repository permissions or production access. At this stage, do not configure new deployment environments or modify Pages settings. The current no-deployment path is not verified; if the available configuration would publish the public site, preserve commits and report that specific blocker without requesting broader access. A statement in this file is not a technical gate. If a push would deploy production, stop at that concrete boundary. Do not treat standing development authority as production deployment authority.
-
-The staging artifact workflow builds a clearly labelled downloadable preview only; it does not deploy the public website. Stop only for consequential actions or unavailable credentials/permissions, and report the precise blocker without requesting approval already granted.
+Do not merge main or publish production without Chris Lewis’s explicit approval. Expenditure, commercial commitments, outbound communications, irreversible operations and security-sensitive production changes also require approval. Use existing connector permissions; do not request broader access or browser authentication for routine development. The loopback founder server is the verified local testing method; do not call a branch private or claim an authenticated hosted preview exists.

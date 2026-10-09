@@ -1,12 +1,12 @@
 name: SitePivot consumer regression
 on:
   push:
-    branches: [sitepivot-concept]
+    branches: [sitepivot-development]
   workflow_dispatch:
 permissions:
   contents: read
 concurrency:
-  group: sitepivot-consumer-regression
+  group: sitepivot-consumer-regression-${{ github.ref }}
   cancel-in-progress: true
 jobs:
   consumer-journey:

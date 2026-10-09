@@ -7,7 +7,8 @@
     "test:mobile": "node qa/mobile-journey.cjs",
     "test:live": "node qa/live-smoke.mjs",
     "test:providers": "node qa/serverless-smoke.cjs",
-    "test:voice": "node qa/voice-complete-regression.cjs && node qa/voice-adapter-regression.cjs && node qa/voice-reliability-regression.cjs && node qa/voice-ui-regression.cjs && node qa/voice-server-regression.cjs && node qa/voice-browser.cjs"
+    "test:voice": "node qa/voice-complete-regression.cjs && node qa/voice-adapter-regression.cjs && node qa/voice-reliability-regression.cjs && node qa/voice-ui-regression.cjs && node qa/voice-server-regression.cjs && node qa/voice-browser.cjs",
+    "founder:preview": "node qa/founder-server.cjs"
   },
   "devDependencies": {
     "jsdom": "30.1.2",

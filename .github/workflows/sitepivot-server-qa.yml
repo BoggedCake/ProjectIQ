@@ -2,7 +2,7 @@ name: SitePivot server data QA
 
 on:
   push:
-    branches: [sitepivot-concept]
+    branches: [sitepivot-development]
     paths:
       - 'api/**'
       - 'index.html'
@@ -15,7 +15,7 @@ on:
 permissions:
   contents: read
 concurrency:
-  group: sitepivot-server-data-qa
+  group: sitepivot-server-data-qa-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
