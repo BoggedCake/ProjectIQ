@@ -1,0 +1,22 @@
+name: SitePivot staging preview artifact
+on:
+  push:
+    branches: [sitepivot-concept]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  staging-preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Build labelled founder preview (no deployment)
+        run: node qa/build-staging-preview.cjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sitepivot-STAGING-${{ github.sha }}
+          path: qa-artifacts/staging-preview/
+          retention-days: 14
