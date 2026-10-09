@@ -1,6 +1,6 @@
 # SitePivot private migration — prepared, not activated
 
-Audit date: 10 October 2026 UTC. Baseline: `4dea7874efe5314300c1c4399c006e9096d70669`; last application release `b836516aa261021d1c4f16a3fb6e55f5dc85324a`. All historical development work through `1242a5c` is already incorporated. Main remains `2e7f85d1c935ce0d0f5253b05471211c817e3e62`.
+Audit date: 9 October 2026 UTC. Baseline: `4dea7874efe5314300c1c4399c006e9096d70669`; last application release `b836516aa261021d1c4f16a3fb6e55f5dc85324a`. All historical development work through `1242a5c` is already incorporated. Main remains `2e7f85d1c935ce0d0f5253b05471211c817e3e62`.
 
 The uploaded migration brief sections 10–11 require a single founder checkpoint before repository visibility, replacement hosting, tester access or expenditure changes. This preparation does not activate those changes. Routine concept-branch development and existing Pages updates retain standing authority.
 
@@ -45,7 +45,7 @@ Successful Pages deployment and Actions runs show concept publishing to https://
 | 2 | Private GitHub + GitHub Pages | Eligible paid GitHub plans support private-source Pages, but normal Pages remains public and static; proprietary browser logic still visible. Private Pages access requires Enterprise organisation and repository read access, contrary to tester-without-repo requirement. On GitHub Free, privatizing automatically unpublishes Pages. Current plan unknown. |
 | 3 | New alternative host | No verified advantage over existing adapter architecture. Adds accounts/tools/operational complexity. Not selected. |
 
-Vercel Hobby is non-commercial personal use only; do not assume SitePivot qualifies. Current published Pro pricing: USD20/month platform fee including one deploying seat and USD20 usage credit; extra usage and applicable taxes may add cost. Authentication All Deployments avoids password add-on; Password Protection on Pro is USD20/project/month extra. These are researched list prices, not an approved quote or commitment. Existing billing may differ. No purchase, free trial or licence accepted.
+Vercel Hobby is non-commercial personal use only; do not assume SitePivot qualifies. Current published Pro pricing: USD20/month platform fee including one deploying seat and USD20 usage credit; extra usage and applicable taxes may add cost. Authentication All Deployments avoids password add-on; Password Protection on Pro is USD20/project/month extra. These are researched list prices, not an approved quote or commitment. Existing billing may differ. No purchase, free trial or licence accepted. Private-repository Actions quotas and any overage billing must also be checked before migration; current account billing is unavailable.
 
 ## Tester access and feedback
 
@@ -81,11 +81,11 @@ Rollback before privacy: keep Pages unchanged and restore the approved target to
 
 ## Verification status
 
-Security suites and allowlisted build are run locally; reachable-history signature scan found zero matches in 458 scanned blobs/files at initial audit. Dependency npm audit reported zero vulnerabilities in 39 dependencies. Fresh full unit suite passed 202 checks. Security regressions, provider contracts, static build and diff whitespace checks passed. Local Chromium/WebKit launch failed because binaries are absent; download attempt failed due network restriction. CI browser verification must pass before reporting deployed journey success. Subsequent CI results and final deployed version must be recorded separately. Physical iPhone voice quality cannot be established by WebKit emulation.
+Security suites and allowlisted build are run locally; reachable-history signature scan found zero matches in 458 scanned blobs/files at initial audit. Dependency npm audit reported zero vulnerabilities in 39 dependencies. Fresh full unit suite passed 202 checks. Security regressions, provider contracts, static build and diff whitespace checks passed. Local Chromium/WebKit launch failed because binaries are absent; download attempt failed due network restriction. Deployed verification for `6daaca5c2335d0acf9a80b9e4729790ed3b19b61`: Pages run 37998623752, security 37998624723, server QA 37998624581 and live QA 37998624652 passed. All seven live browser files matched the commit. Live QA passed desktop/iPhone-sized founder journeys, eight Chromium/WebKit founder-repair runs at 375/390/430/1280 widths, sixteen deployed text/voice property journeys, and six planning/changeover/layout runs at 390/430/1280 widths. These are automated emulations, not physical-device acceptance. Cloud-browser interaction verified real NSW address resolution, passport, add-level routing and cost assessment with no desktop horizontal overflow. The separate consumer run 37998624630 hit its ten-minute job limit during Ubuntu browser-dependency downloads; application test steps were skipped. Its cancelled result is retained. The development QA timeout was increased to twenty minutes; a subsequent run must independently verify recovery. Physical iPhone voice quality cannot be established by WebKit emulation.
 
 Prepared/unactivated: protected build/template/guard. Blocked by account information/tools: replacement deployment, plan eligibility, privacy settings. Not started: full server-mediated intelligence conversion, live authenticated quotas, feedback retention, tester invitations. Current repository and testing website remain public. No claim of a completed private migration.
 
-New founder residential defects remain the next backlog; this security pass does not claim to fix them.
+New founder residential defects remain the next backlog; this security pass does not claim to fix them. The live cloud-browser check also reproduced the existing profile confirmation requiring a second click after entry; that issue remains unresolved.
 
 ## Official sources checked
 

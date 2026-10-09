@@ -29,11 +29,11 @@ Files: scripts/scan-secrets.py; scripts/build-founder-assets.cjs; api/_lib/reque
 - [x] Write failing tests for blocked unauthenticated calls, wrong origins, body limits, limiter failures, redacted scans and static build exclusion/symlinks.
 - [x] Implement reusable guard with injected authentication/global rate limiter, allowlisted static build and disabled deployment template; do not attach guard to live routes yet.
 - [x] Reject arbitrary apiBase origins; prepare no cross-origin server target until approved.
-- [ ] Run security suites, full-history scan and npm dependency audit; run existing unit/browser regressions.
+- [x] Run security suites, full-history scan and npm dependency audit; run existing unit/browser regressions.
 
 ## Task 3: review, commit and founder checkpoint
-- [ ] Independent review, material findings RED→GREEN, full regression results.
-- [ ] Push safe preparation through connector; verify Pages source and desktop/mobile CI.
+- [x] Independent review, material findings RED→GREEN, full regression results (live browser suites passed; consumer retry pending).
+- [x] Push safe preparation through connector; verify Pages source and desktop/mobile CI.
 - [ ] Deliver severity register, conditional architecture, tester access/revocation, pipeline/rollback and one concrete approval checkpoint.
 
 ## Ledger
@@ -42,3 +42,7 @@ Ruling: no Vercel account tools, CLI or linked local project were available. Rep
 Ruling: reusable security guard is preparation only, not live route authentication; activation requires verified hosting/authentication/global limiter. Current founder access remains unchanged.
 
 Review: independent reviewer found filename disclosure in scanner; CLI regression reproduced failure, SHA256 file identifiers fixed it, suite passed. Python caches ignored. Unit suite: 202 passes. Local browser binaries absent and download blocked; use existing GitHub Actions for full browser verification.
+
+Published preparation commit: 6daaca5c2335d0acf9a80b9e4729790ed3b19b61. Pages, security, server QA and full live QA passed; seven live assets byte-match. Deployed desktop/mobile Chromium/WebKit journeys passed. Private migration stays at the founder checkpoint; no target activated.
+
+CI issue: consumer job hit ten-minute timeout downloading Ubuntu dependencies, with app tests skipped. Development QA limit raised to twenty minutes; retain original cancellation and verify subsequent run separately. No production or access configuration changed.
