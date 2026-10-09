@@ -1,3 +1,43 @@
+# SitePivot complete voice repair — 9 October 2026
+
+This section records local preparation on the 4c1506e baseline. The older 8 October deployment record below is historical; this repair has not been pushed, deployed or merged.
+
+## Root causes and repair
+
+Voice history was traced through f647614, f459b4e and 6800d44. The original speech formatter retained only three sentences; subsequent activation repairs preserved that truncation. All browser versions sent an entire response as one utterance. The formatter expanded `m` before recognising `m²`, producing “metres²”, and never expanded `m2`, `sqm`, numbers or planning abbreviations. The most recent voice ranking and default locale explicitly favoured British English.
+
+The formatter now preserves the complete consumer response, strips existing provenance metadata, and normalizes a separate speech copy. Examples: `600 m²` → “six hundred square metres”; `440 m2` → “four hundred and forty square metres”; `120 sqm` → “one hundred and twenty square metres”; `FSR 0.6:1` → “floor space ratio zero point six to one”; `8.5 m` → “eight point five metres”. NSW/LGA/DA/CDC expand to their full spoken names. Percentages, numeric ranges and dollar amounts also expand. The displayed answer remains unchanged by this module.
+
+Browser and server playback use a sequential queue that preserves paragraph boundaries and groups complete sentences up to 220 characters per chunk by default (configurable between 80 and 1200). Only a sentence longer than the limit is split at word boundaries. The normalized speech copy retains paragraph separation. Each completion advances exactly one chunk. Cancellation, navigation integration calling `stop()`, superseding replies and stale callbacks invalidate the entire old queue. Retry retains the current and remaining chunks; a service failure after earlier chunks completed falls back for the remaining answer. Existing activation, startup timeout, request timeout, media validation and recoverable browser fallback remain.
+
+## Exact voice configuration
+
+Browser locale defaults to `en-AU`. Australian English receives the highest locale preference, recognised female voices receive a preference, and natural/neural/enhanced/premium voices receive a quality preference. Examples already handled by the catalogue include Karen Enhanced and Natasha Neural; availability and actual acoustic quality depend on the device. Playback rate is 0.94, pitch 1 and volume 1. This selection cannot guarantee one identical voice on iOS, or prove a named voice is neural.
+
+The existing optional server gateway remains opt-in: `SITEPIVOT_TTS_ENDPOINT` is an authenticated HTTPS gateway, `SITEPIVOT_TTS_VOICE` is the gateway's actual voice identifier, `SITEPIVOT_TTS_TOKEN` remains a required server-only credential. `SITEPIVOT_TTS_LOCALE` defaults to `en-AU`. The gateway receives `{text, voice, locale, format:"mp3", style:"warm, calm, professional"}`. Responses expose `X-SitePivot-Voice` and `X-SitePivot-Locale`; cache keys include locale. No vendor, account, purchased subscription or production voice ID was introduced, and no real provider call was made. Browser synthesis remains the working fallback when the server is absent or fails.
+
+## Recommended optional named provider
+
+For an explicitly approved future provider setup, the recommended candidate to audition is **Azure Speech `en-AU-NatashaNeural`**, locale `en-AU`. Microsoft's current language-support documentation identifies it as female Australian English. This is a named neural candidate, not an active provider in this repair, and no audition or subjective “calm” quality result is claimed. Its documented style column does not list a “calm” style; a gateway should use ordinary narration and controlled SSML prosody rather than invent an unsupported style. The existing `warm, calm, professional` gateway string is a desired instruction, not a verified Azure capability.
+
+Sources verified on 9 October 2026: [Microsoft language and voice support](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/language-support) and [Microsoft text-to-speech REST API](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/rest-text-to-speech). The REST API requires credentials (a Speech resource key or bearer token), SSML XML and an output format header. SitePivot's existing generic gateway sends JSON with a gateway bearer token, so setting its endpoint directly to Azure's REST endpoint would be incompatible. A server-only gateway must translate JSON into correctly escaped SSML and Azure authentication/output headers, return audio, and handle credential rotation before activation. `SITEPIVOT_TTS_VOICE=en-AU-NatashaNeural` and `SITEPIVOT_TTS_LOCALE=en-AU` would then identify the approved gateway voice.
+
+Creating or funding a provider resource, adding credentials and activating/deploying that gateway require separate user approval. None was performed or committed here. The browser fallback remains operational; setting `en-AU` or selecting a similarly named browser voice cannot guarantee the same Azure voice on every iPhone.
+
+## Local validation
+
+RED was observed for the complete-response normalization regression: `600 m²` returned `600 metres²` and only the first three sentences survived. The added server locale contract also failed before implementation. A sentence-boundary regression then reproduced a chunk split inside the second short sentence; the updated chunker passes whole-sentence, paragraph and overlong-sentence cases before replay/cancellation checks. Adapter, 17 lifecycle checks, UI, server and the new complete-response checks pass. The latter cover browser and server sequential delivery, content equality, stale/superseding cancellation, retry after a completed chunk and service failure after a completed chunk.
+
+The actual Chromium and WebKit browser regressions now both pass, including mobile activation, reply, blocked audio recovery, interruption, reset, delayed catalogues, startup timeouts and complete sequential speech queue equality. Chrome for Testing is the matching 151.0.7922.34 shell; WebKit is 26.5 (revision 2336). These browser flows use mocked synthesis/media boundaries and do not establish real device audibility.
+
+Initial browser recovery hit absent engines and invalid CDN ZIP responses. The matching Chrome shell was recovered from the direct Google Chrome-for-Testing artifact URL; WebKit downloaded from the Microsoft mirror. System dependency installation failed on `setgroups`/`setegid`, so 30 packages were downloaded and unpacked under `/tmp/projectiq-browser-libs`, with library symlinks added only inside the local WebKit browser cache. Browser runs use `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS=1` and `LD_LIBRARY_PATH=/tmp/projectiq-browser-libs/root/usr/lib/x86_64-linux-gnu:/tmp/projectiq-browser-libs/root/lib/x86_64-linux-gnu`: validation otherwise incorrectly treats the user-level GLES library as absent because it consults system `ldconfig`. Real browser processes load the unpacked libraries successfully. No production dependency, configuration or account was changed by environment recovery.
+
+Physical audible iPhone verification is unavailable; real Safari audibility and catalogue choice remain a device check.
+
+The first full `npm test` run passed every voice suite and stopped on commercial-regression’s mixed renovation/extension clarification assertion; that integration issue was subsequently resolved. The voice worker’s later integrated rerun passed the commercial checks and reached the browser journeys, where a legacy assertion still expected British `Microsoft Sonia Natural` instead of the correctly selected Australian `Microsoft Natasha Natural`. The same run also found the shared journey’s old construction-cost expectation (`2992000` versus the calibrated `2698214`). Both legacy expectations were reported to the root integration owner. The run finished with exit 1 because of those two shared journey assertions. These are the voice worker’s observed runs; the root owner records the final integrated repository result.
+
+---
+
 # SitePivot voice reliability — 8 October 2026
 
 Baseline: `862cb3127ddf42c1cddb0a34e32f18ddb28cb929` on `sitepivot-concept`.
