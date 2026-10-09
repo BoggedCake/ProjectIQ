@@ -129,7 +129,7 @@ async function resolveProperty(item){
       point:official.geometry||candidate.location,
       addressId:a.objectid||a.ap_gurasid||null,
       cadastralIdentifier:a.cadastralidentifier||a.pl_ptlotsecpn||null,
-      cadid:a.lot_cadid||null,streetName:a.streetname||null,
+      cadid:a.lot_cadid||null,
       propertyId:a.ss_propid||null,propertyGurasid:a.prop_gurasid||null,streetName:[a.streetname,a.streettype].filter(Boolean).join(' '),
       lot:title.lot,dp:title.dp,title:title.title,
       strata:title.title.startsWith('Strata'),

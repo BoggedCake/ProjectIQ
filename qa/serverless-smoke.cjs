@@ -1,4 +1,5 @@
 'use strict';
+const P=require('../planning-intelligence');
 const {suggestAddress,resolveProperty,planningFor}=require('../api/_lib/sitepivot');
 const addressHandler=require('../api/address/suggest');
 const propertyHandler=require('../api/property/resolve');
@@ -27,6 +28,7 @@ async function routeCase(handler,req){const res=fakeRes();await handler(req,res)
 
 
 const cases=[
+ '12 Fishbourne Road Allambie Heights NSW 2100',
  '57 Griffiths Street Fairlight NSW 2094',
  '1 Waratah Street Balgowlah NSW 2093',
  '9 Waratah Street Balgowlah NSW 2093',
@@ -62,14 +64,14 @@ for(const q of cases){
 const one=out.identity.find(x=>x.q.startsWith('1 Waratah')),nine=out.identity.find(x=>x.q.startsWith('9 Waratah'));
 out.exactNumberRegression=!!one&&!!nine&&one.pass&&nine.pass&&/^1\s/i.test(one.address)&&/^9\s/i.test(nine.address)&&one.address!==nine.address;
 
-for(const q of ['57 Griffiths Street Fairlight NSW 2094','290 King Street Newcastle NSW 2300','41 Burelli Street Wollongong NSW 2500']){
+for(const q of ['12 Fishbourne Road Allambie Heights NSW 2100','49 Mann Street Gosford NSW 2250','84/2-8 Dixon Street Sydney NSW 2000','2 Civic Place Katoomba NSW 2780','135 Byng Street Orange NSW 2800','57 Griffiths Street Fairlight NSW 2094','290 King Street Newcastle NSW 2300','41 Burelli Street Wollongong NSW 2500']){
  const id=out.identity.find(x=>x.q===q);
  if(!id?.pass){out.planning.push({q,pass:false,error:'identity prerequisite failed'});continue}
  const t=Date.now();
  try{
    const p=await planningFor(id.property);
    const contractPass=Array.isArray(p.planning.failedKeys)&&Array.isArray(p.planning.failedSources)&&p.planning.failedKeys.every(k=>p.planning.failedSources.includes(k))&&Array.isArray(p.planning.sepp);
-   out.planning.push({q,pass:!!p.planning.zone&&!!p.planning.instrument&&contractPass,contractPass,frontage:p.parcel.frontage,council:p.planning.councilEvidence,planningMs:Date.now()-t,lga:id.lga,zone:p.planning.zone,instrument:p.planning.instrument,dcp:p.planning.dcpPlans,sepp:p.planning.sepp,area:p.parcel.area,failedKeys:p.planning.failedKeys,errors:p.planning.liveErrors});
+   out.planning.push({q,pass:!!p.planning.zone&&!!p.planning.instrument&&contractPass,contractPass,frontage:p.parcel.frontage,council:p.planning.councilEvidence,planningMs:Date.now()-t,lga:id.lga,zone:p.planning.zone,instrument:p.planning.instrument,dcp:p.planning.dcpPlans,sepp:p.planning.sepp,area:p.parcel.area,areaEvidence:p.parcel.areaEvidence,identityEvidence:p.parcel.identityEvidence,spatialScope:p.planning.spatialScope,assessment:P.assess({...id.property,...p.parcel,planning:p.planning},{type:'duplex'}),failedKeys:p.planning.failedKeys,errors:p.planning.liveErrors});
  }catch(e){out.planning.push({q,pass:false,error:e.message})}
 }
 const suggestions=out.identity.map(x=>x.suggestionMs).filter(Number.isFinite).sort((a,b)=>a-b);
