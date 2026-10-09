@@ -8,9 +8,9 @@ Production publication/deployment, merges to `main`, expenditure and commercial 
 
 ## Current separation status
 
-**Not yet configured or verified.** Prior `sitepivot-concept` pushes triggered GitHub's implicit Pages build-and-deployment workflow. No repair push is permitted until the repository's real Pages/deployment protections are inspected, safely configured and verified. The browser is currently signed out and the connected repository tools cannot manage Pages/environment settings.
+**No safe development-branch push is currently verified.** The existing GitHub connector shows that prior `sitepivot-concept` pushes automatically triggered GitHub's implicit Pages build-and-deployment workflow. The remote head remains `4c1506e3c5f9656e1e68c299919debba8ba16ab1`.
 
-The approved configuration must stop public deployment on development pushes. Suitable repository controls include required founder review on the actual `github-pages` deployment environment, with bypass disabled, or a Pages Actions source with explicitly controlled production publication. Confirm the selected source and actual deploy job use the protected environment; configuration text or a workflow reference alone does not prove protection. Never approve or dispatch a public deployment merely to test the gate.
+Use only the existing GitHub connector and repository permissions. The GitHub browser sign-in process has been stopped. At this stage, do not request new browser authentication, repository permissions or production access, create deployment environments, or change GitHub Pages settings. Do not push if it would publish the public site. Preserve all completed commits and report the deployment coupling as the specific blocker without requesting broader access. Routine internal implementation, tests, supporting files and local commits remain authorised.
 
 ## Staging preview
 
@@ -22,4 +22,4 @@ To prepare it locally: `node qa/build-staging-preview.cjs`. Extract/download the
 
 Investigate → Implement → Test → Commit → Push to development branch → Report results.
 
-Stop only for the consequential-action boundary or unavailable credentials/permissions. A push remains blocked if it would publish the public website without explicit deployment approval. After any approved separation change, verify the protection and public-site state before pushing, then verify the remote commit and that no production deployment completed.
+Stop only for the consequential-action boundary or unavailable credentials/permissions. A push remains blocked if it would publish the public website without explicit deployment approval. If a safe no-deployment push can be verified using the access and configuration already available, push to `sitepivot-concept` only and verify the remote commit. Otherwise preserve the work and report the specific blocker.
