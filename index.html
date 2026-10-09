@@ -253,7 +253,8 @@ const LIVE_LAYER={
  flood:1,landslide:2,
  contribution:219,dcp:220,greenfield:222,localProvision:223,apu:225,keySites:226,urbanRelease:227,sic:218
 };
-const API_BASE=(new URLSearchParams(location.search).get('apiBase')||'').replace(/\/$/,'');
+// Server requests stay on this application's origin; links cannot override the destination.
+const API_BASE='';
 const SERVER_API=!!API_BASE||((location.protocol==='https:'||location.protocol==='http:')&&!/github\.io$/i.test(location.hostname));
 async function apiJSON(path,{method='GET',body=null,timeout=8000}={}){
  const ctrl=typeof AbortController!=='undefined'?new AbortController():null,timer=setTimeout(()=>ctrl&&ctrl.abort(),timeout);
