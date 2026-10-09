@@ -1,7 +1,11 @@
-# SitePivot development authority
+# SitePivot founder authority
 
-Read DEVELOPMENT_AUTHORITY.md and FOUNDER_TESTING.md. Routine SitePivot fixes, tests, commits and pushes to sitepivot-development are authorised. Follow Fix → Test → Commit → Push to safe development branch → Founder testing.
+Chris Lewis’s rule of 9 October 2026 supersedes the previous Master Founder Authority Rule and development restrictions. Read DEVELOPMENT_AUTHORITY.md, FOUNDER_TESTING.md and the canonical Notion page before work.
 
-The repository and all branches are public source code. sitepivot-concept remains the public Pages source; do not push repairs there. The Pages build log checks out sitepivot-concept at repository root. Development workflows have contents: read only and no publishing steps. Before pushing, recheck workflow triggers and publishing dependencies; never bypass protections or expose secrets.
+Use BoggedCake/ProjectIQ, branch sitepivot-concept, as the normal working and founder-testing branch. Standing approval covers investigation, code improvements, bug fixes, tests, commits, pushes through the existing GitHub connector and automatic updates to the existing GitHub Pages founder-testing website: https://boggedcake.github.io/ProjectIQ/ . Do not ask for separate approval for those updates. Do not require ZIP downloads, local servers, additional browser authentication or separate staging for ordinary founder testing.
 
-Do not merge main or publish production without Chris Lewis’s explicit approval. Expenditure, commercial commitments, outbound communications, irreversible operations and security-sensitive production changes also require approval. Use existing connector permissions; do not request broader access or browser authentication for routine development. The loopback founder server is the verified local testing method; do not call a branch private or claim an authenticated hosted preview exists.
+Normal process: Fix → Test → Commit → Push to sitepivot-concept → Existing testing website updates → Verify deployed desktop/mobile journeys → Chris tests.
+
+Preserve and reconcile completed work and newer changes. Never reset the repository or discard commits. sitepivot-development remains a historical branch; do not create further branches unnecessarily. The repository and existing testing website are public; do not call them private.
+
+Chris’s explicit approval remains necessary for external sends, commercial agreements, expenditure, disclosure of confidential information/credentials, destructive or irreversible operations, commercial customer launch, merging main or changing the production release process. Never expose secrets or bypass security controls. Updating the approved existing founder-testing website is routine development, not a commercial launch.

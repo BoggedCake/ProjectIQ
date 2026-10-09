@@ -2,7 +2,7 @@ name: SitePivot server data QA
 
 on:
   push:
-    branches: [sitepivot-development]
+    branches: [sitepivot-concept]
     paths:
       - 'api/**'
       - 'index.html'

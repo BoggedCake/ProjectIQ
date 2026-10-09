@@ -1,21 +1,11 @@
 # Founder testing
 
-Development branch: `sitepivot-development`. This repository and its branches are public source code. This branch is not the GitHub Pages publishing source. Do not push repairs to `sitepivot-concept`, which remains the public publishing branch.
+Open https://boggedcake.github.io/ProjectIQ/ on your computer or phone. This is the existing approved SitePivot founder-testing website.
 
-## Run the repaired version on your computer
+Normal working branch: sitepivot-concept. Work fixes and tests changes, commits and pushes through the existing GitHub connector, then GitHub Pages updates the same testing URL. No ZIP download, local server or separate staging is required. If your browser has cached an older version, refresh; Work verifies deployed application files against the new commit before reporting availability.
 
-1. Download the development branch ZIP from https://github.com/BoggedCake/ProjectIQ/archive/refs/heads/sitepivot-development.zip and extract it, or clone that branch.
-2. With Node.js 24 installed, open a terminal in the extracted folder and run `node qa/founder-server.cjs` (no npm install required for the preview).
-3. Open http://127.0.0.1:8080/?fixtures=1 in Chrome or Safari. The amber LOCAL FOUNDER TEST banner identifies the development version. Stop with Ctrl+C.
+Routine updates have standing founder approval. Commercial customer launch, main merges, changes to the production release process and consequential business actions remain approval-required. See DEVELOPMENT_AUTHORITY.md and the canonical Notion rule.
 
-The preview binds only to your computer. No public hosting, tunnel, account or paid service is created. It serves only the four public client files and the existing allowlisted API handlers; repository files and credentials are not served.
+The repository and testing website are public. Never put private credentials or confidential information in public client files. Existing optional local QA utilities remain available for engineering regression tests only.
 
-Fixture properties provide repeatable test data. Test “I want to add another level”, mixed upstairs/downstairs work, frontage and zoning questions, duplex configurations, cost bands and sell/buy changeover. Use browser responsive mode at 390 pixels to check mobile layouts. Actual iPhone microphone/voice quality needs a separate device test; automated playback tests do not establish audible voice quality.
-
-Remove `?fixtures=1` to try live address/planning lookups through the existing API handlers. External public-data availability and any already configured provider credentials affect these results. Licensed market data and neural TTS are not newly activated; browser speech remains the fallback. Local fixture testing does not certify live Delmar parcel evidence.
-
-## Normal development
-
-Fix → Test → Commit → Push to `sitepivot-development` → Founder testing. Re-download the latest branch or pull it, restart the server, and refresh. Never merge into `main`, update the publishing branch or deploy production without explicit approval.
-
-The development CI runs local tests and creates a labelled downloadable artifact only. No Pages action, Pages write permission, deployment environment or public hosting step is present. The existing live-site QA remains restricted to `sitepivot-concept`.
+Test add-level intent and mixed upstairs/downstairs work, property questions, voice completion, the three duplex arrangements, cost assumptions and sell/buy changeover. Fixture testing is available at https://boggedcake.github.io/ProjectIQ/?fixtures=1 ; fixtures are labelled test data. Live properties depend on public data availability. Neural TTS and licensed market providers are not newly activated; browser voice quality depends on the device. Actual iPhone audio still needs founder listening tests.

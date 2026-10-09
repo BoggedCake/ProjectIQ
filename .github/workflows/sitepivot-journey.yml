@@ -1,7 +1,7 @@
 name: SitePivot consumer regression
 on:
   push:
-    branches: [sitepivot-development]
+    branches: [sitepivot-concept]
   workflow_dispatch:
 permissions:
   contents: read

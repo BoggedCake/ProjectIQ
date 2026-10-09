@@ -1,13 +1,13 @@
-# SitePivot development authority
+# SitePivot founder authority
 
-Chris Lewis permanently authorises routine SitePivot investigation, fixes, improvements, supporting files, tests, commits and pushes to the safe development branch sitepivot-development. No separate approval is needed for these routine steps.
+Chris Lewis’s current instruction immediately supersedes the previous Master Founder Authority Rule and all development restrictions introduced because of it.
 
-Canonical policy: https://app.notion.com/p/3f4c5050096e80d885dadafc60623acc
+Canonical rule: https://app.notion.com/p/3f4c5050096e80d885dadafc60623acc
 
-Fix → Test → Commit → Push to sitepivot-development → Founder testing.
+Standing approval covers normal SitePivot investigation, code improvements, bug fixes, testing, supporting files, commits, GitHub connector pushes to sitepivot-concept and updates to the existing founder-testing website https://boggedcake.github.io/ProjectIQ/ . These actions require no repeated founder approval. Keep the existing Pages publishing configuration and streamlined testing process.
 
-The repository and branch are public source code. Public Pages publishing remains on sitepivot-concept at repository root, established from its implicit Pages build log. Preserve that branch and main. Development test and artifact workflows are restricted to sitepivot-development with contents: read and no deployment actions. Existing live-site QA remains on sitepivot-concept. No Pages setting changes or new deployment environments are needed for this separation.
+Fix → Test → Commit → Push to sitepivot-concept → Existing test website updates → Verify desktop/mobile → Chris tests.
 
-Use the existing GitHub connector. Do not request broader permissions or additional browser authentication for routine work. See FOUNDER_TESTING.md for loopback-only browser testing; this is not an authenticated hosted preview.
+Preserve all seven completed sitepivot-development commits and subsequent work. Reconcile newer changes before pushing; never discard commits or reset the repository. No ordinary testing requirement for ZIP files, local servers or separate staging. No additional GitHub browser authentication when the connector can do the work.
 
-Production publishing, main merge, expenditure, commercial commitments, outbound communications, destructive/irreversible operations and security-sensitive or production-credential changes require explicit founder approval. Never expose secrets or bypass protections.
+Chris retains approval over external emails/messages, commercial agreements/commitments, purchases/expenditure, confidential-information or credential disclosure, destructive/irreversible operations, commercial launch to customers, main merges and changes to the production release process. The existing founder-testing website is an approved development/testing destination. Public accessibility does not remove that scoped authorisation. Never expose secrets or bypass repository security.

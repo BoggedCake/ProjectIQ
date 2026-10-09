@@ -51,6 +51,11 @@ jobs:
         env:
           SITEPIVOT_BUILD: ${{ github.sha }}
 
+      - name: Verify repaired founder conversation, voice, duplex and changeover on the deployed site
+        run: node qa/founder-repair-browser.cjs
+        env:
+          SITEPIVOT_URL: https://boggedcake.github.io/ProjectIQ/
+
       - name: Run full deployed desktop and iPhone founder journeys
         run: node qa/deployed-founder.mjs
 

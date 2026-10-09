@@ -1,7 +1,5 @@
 name: SitePivot staging preview artifact
 on:
-  push:
-    branches: [sitepivot-development]
   workflow_dispatch:
 permissions:
   contents: read
