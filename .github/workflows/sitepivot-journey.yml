@@ -36,3 +36,4 @@ jobs:
             journey-results.json
             mobile-qa/
             qa-artifacts/founder-repair/
+            qa-artifacts/property-intelligence/

@@ -70,8 +70,10 @@ for(const q of ['12 Fishbourne Road Allambie Heights NSW 2100','49 Mann Street G
  const t=Date.now();
  try{
    const p=await planningFor(id.property);
+   const assessment=P.assess({...id.property,...p.parcel,planning:p.planning},{type:'duplex'});
+   const semanticPass=!assessment.readyForFeasibility&&assessment.permissibility.status!=='permitted'&&(!p.planning.splitZone||assessment.gaps.some(x=>/crosses more than one zone/.test(x)))&&(!q.startsWith('12 Fishbourne')||(id.lot==='119'&&id.dp==='DP12764'&&Math.abs(p.parcel.area-608.921)<2&&p.parcel.areaEvidence?.state==='conflict'&&assessment.standard.minimumArea===800));
    const contractPass=Array.isArray(p.planning.failedKeys)&&Array.isArray(p.planning.failedSources)&&p.planning.failedKeys.every(k=>p.planning.failedSources.includes(k))&&Array.isArray(p.planning.sepp);
-   out.planning.push({q,pass:!!p.planning.zone&&!!p.planning.instrument&&contractPass,contractPass,frontage:p.parcel.frontage,council:p.planning.councilEvidence,planningMs:Date.now()-t,lga:id.lga,zone:p.planning.zone,instrument:p.planning.instrument,dcp:p.planning.dcpPlans,sepp:p.planning.sepp,area:p.parcel.area,areaEvidence:p.parcel.areaEvidence,identityEvidence:p.parcel.identityEvidence,spatialScope:p.planning.spatialScope,assessment:P.assess({...id.property,...p.parcel,planning:p.planning},{type:'duplex'}),failedKeys:p.planning.failedKeys,errors:p.planning.liveErrors});
+   out.planning.push({q,pass:!!p.planning.zone&&!!p.planning.instrument&&contractPass&&semanticPass,contractPass,semanticPass,frontage:p.parcel.frontage,council:p.planning.councilEvidence,planningMs:Date.now()-t,lga:id.lga,zone:p.planning.zone,instrument:p.planning.instrument,dcp:p.planning.dcpPlans,sepp:p.planning.sepp,area:p.parcel.area,areaEvidence:p.parcel.areaEvidence,identityEvidence:p.parcel.identityEvidence,spatialScope:p.planning.spatialScope,assessment,failedKeys:p.planning.failedKeys,errors:p.planning.liveErrors});
  }catch(e){out.planning.push({q,pass:false,error:e.message})}
 }
 const suggestions=out.identity.map(x=>x.suggestionMs).filter(Number.isFinite).sort((a,b)=>a-b);
