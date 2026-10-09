@@ -1,19 +1,22 @@
 {
-  "started": "2026-10-09T11:07:28.162Z",
+  "testedCommit": "b836516aa261021d1c4f16a3fb6e55f5dc85324a",
+  "runId": 37923227542,
+  "started": "2026-10-09T11:21:42.305Z",
   "pass": true,
   "performance": {
-    "maxSuggestionMs": 245,
-    "medianSuggestionMs": 41,
-    "p95SuggestionMs": 245
+    "maxSuggestionMs": 580,
+    "medianSuggestionMs": 48,
+    "p95SuggestionMs": 580
   },
   "identityCount": 12,
   "planning": [
     {
       "q": "12 Fishbourne Road Allambie Heights NSW 2100",
       "pass": true,
+      "semanticPass": true,
       "area": 608.9212704628922,
       "zone": "R2 · Low Density Residential",
-      "planningMs": 5522,
+      "planningMs": 6141,
       "gaps": [
         "Site area is missing, conflicted or stale; obtain the registered plan or survey.",
         "Confirm LMR catchment and excluded land before applying a state override.",
@@ -23,9 +26,10 @@
     {
       "q": "49 Mann Street Gosford NSW 2250",
       "pass": true,
+      "semanticPass": true,
       "area": 44.0024051495245,
       "zone": "B3 · Commercial Core / SP2 · Infrastructure",
-      "planningMs": 4823,
+      "planningMs": 4893,
       "gaps": [
         "The parcel crosses more than one zone; a mapped development footprint is required."
       ]
@@ -33,12 +37,12 @@
     {
       "q": "84/2-8 Dixon Street Sydney NSW 2000",
       "pass": true,
+      "semanticPass": true,
       "area": null,
       "zone": "SP5 · Metropolitan Centre",
-      "planningMs": 4554,
+      "planningMs": 4309,
       "gaps": [
         "Site area is missing, conflicted or stale; obtain the registered plan or survey.",
-        "Land zoning is unresolved.",
         "No reviewed duplex site-area provision has been resolved for this LEP and zone.",
         "Confirm LMR catchment and excluded land before applying a state override.",
         "The Codes parent-lot area needs the applicable LEP duplex minimum; 400 m² alone is not enough to confirm eligibility.",
@@ -48,9 +52,10 @@
     {
       "q": "2 Civic Place Katoomba NSW 2780",
       "pass": true,
+      "semanticPass": true,
       "area": 9736.908687346135,
       "zone": "R2 · Low Density Residential / SP2 · Infrastructure",
-      "planningMs": 4492,
+      "planningMs": 4876,
       "gaps": [
         "The parcel crosses more than one zone; a mapped development footprint is required."
       ]
@@ -58,9 +63,10 @@
     {
       "q": "135 Byng Street Orange NSW 2800",
       "pass": true,
+      "semanticPass": true,
       "area": 5462.436252353608,
       "zone": "E2 · Commercial Centre / RE1 · Public Recreation / MU1 · Mixed Use",
-      "planningMs": 4763,
+      "planningMs": 4369,
       "gaps": [
         "The parcel crosses more than one zone; a mapped development footprint is required."
       ]
@@ -68,9 +74,10 @@
     {
       "q": "57 Griffiths Street Fairlight NSW 2094",
       "pass": true,
+      "semanticPass": true,
       "area": 415.2424010616006,
       "zone": "R1 · General Residential",
-      "planningMs": 4644,
+      "planningMs": 4284,
       "gaps": [
         "No reviewed duplex site-area provision has been resolved for this LEP and zone.",
         "Confirm LMR catchment and excluded land before applying a state override.",
@@ -81,9 +88,10 @@
     {
       "q": "290 King Street Newcastle NSW 2300",
       "pass": true,
+      "semanticPass": true,
       "area": 10730.17467129718,
       "zone": "MU1 · Mixed Use / E2 · Commercial Centre / RE1 · Public Recreation",
-      "planningMs": 4631,
+      "planningMs": 4305,
       "gaps": [
         "The parcel crosses more than one zone; a mapped development footprint is required."
       ]
@@ -91,9 +99,10 @@
     {
       "q": "41 Burelli Street Wollongong NSW 2500",
       "pass": true,
+      "semanticPass": true,
       "area": 6266.186437238067,
       "zone": "E2 · Commercial Centre / MU1 · Mixed Use / SP2 · Infrastructure",
-      "planningMs": 4482,
+      "planningMs": 3954,
       "gaps": [
         "The parcel crosses more than one zone; a mapped development footprint is required."
       ]
