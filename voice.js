@@ -1,5 +1,13 @@
 (function(root,f){if(typeof module==='object'&&module.exports)module.exports=f();else root.SitePivotVoice=f()})(typeof globalThis!=='undefined'?globalThis:this,function(){'use strict';
 const femaleNames=/Karen|Natasha|Samantha|Serena|Sonia|Libby|Moira|Tessa|Martha|Catherine|Google UK English Female/i;
+function normalizeTranscript(text,options={}){
+ const raw=String(text??''),corrections=[];
+ // Restrict correction to known planning phrases. Preserve street names and ordinary words.
+ const normalized=raw.replace(/\b(?:jewel occupancy|dual occupation)\b/gi,match=>{corrections.push({from:match,to:'dual occupancy'});return'dual occupancy'});
+ const value=Number(options.confidence),confidence=options.confidence!==null&&options.confidence!==undefined&&options.confidence!==''&&Number.isFinite(value)&&value>0&&value<=1?value:null;
+ const alternatives=Array.isArray(options.alternatives)?options.alternatives.map(a=>typeof a==='string'?a:String(a?.transcript??'')).filter(Boolean):[];
+ return{raw,text:normalized,changed:normalized!==raw,corrections,confidence,lowConfidence:corrections.length>0||confidence!==null&&confidence<.65,alternatives};
+}
 function rankedVoices(voices,preferences=[]){const score=v=>{const n=v.name||'',l=(v.lang||'').toLowerCase();return (/natural|neural|premium|enhanced/i.test(n)?1000:0)+(femaleNames.test(n)||/female/i.test(n)?1500:0)+(preferences.some(p=>n.toLowerCase().includes(String(p).toLowerCase()))?250:0)+(l==='en-au'?2000:l==='en-gb'?40:l.startsWith('en')?10:0)};return [...(voices||[])].filter(v=>/^en(?:-|$)/i.test(v.lang||'')).sort((a,b)=>score(b)-score(a))}
 function preferredVoice(voices,preferences){return rankedVoices(voices,preferences)[0]||null}
 function numberWords(value){
@@ -78,4 +86,4 @@ function createPlayer(o={}){
  }
  return{stop,speak,unlock,retry,diagnostics,get speaking(){return speaking},get pending(){return pending},get needsActivation(){return needsActivation},get needsRetry(){return playbackFailed&&!!retryText},get playbackError(){return playbackFailed?diagnostics.lastPlaybackError:null},get activeUtterance(){return utterance}};
 }
-return{preferredVoice,speechText,speechChunks,createPlayer};});
+return{normalizeTranscript,preferredVoice,speechText,speechChunks,createPlayer};});

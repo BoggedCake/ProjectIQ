@@ -1,0 +1,462 @@
+{
+  "source": "https://portal.spatial.nsw.gov.au/server/rest/services/NSW_Land_Parcel_Property_Theme/FeatureServer/5/query?where=1%3D1&geometry=%7B%22rings%22%3A%5B%5B%5B151.26342739606267%2C-33.77243184975777%5D%2C%5B151.26339834454635%2C-33.772566497491425%5D%2C%5B151.26336924699137%2C-33.77270134289538%5D%2C%5B151.26334442541716%2C-33.77281615350973%5D%2C%5B151.26323239427234%2C-33.77279981147398%5D%2C%5B151.26322689882858%2C-33.77279878099596%5D%2C%5B151.26322151118268%2C-33.77279681804728%5D%2C%5B151.26321654574497%2C-33.77279420918297%5D%2C%5B151.26321210806745%2C-33.772790990805674%5D%2C%5B151.26320829921062%2C-33.77278726185624%5D%2C%5B151.26320520563738%2C-33.77278308487259%5D%2C%5B151.26320291156472%2C-33.772778576530264%5D%2C%5B151.2632014416963%2C-33.772773825502554%5D%2C%5B151.2632008589143%2C-33.77276894006439%5D%2C%5B151.26320116321864%2C-33.77276403689127%5D%2C%5B151.26327609281932%2C-33.77241090967987%5D%2C%5B151.26342739606267%2C-33.77243184975777%5D%5D%5D%7D&geometryType=esriGeometryPolygon&inSR=4283&spatialRel=esriSpatialRelIntersects&outFields=*&returnGeometry=true&outSR=4283&f=json",
+  "retrievedAt": "2026-10-09T10:06:16.359Z",
+  "response": {
+    "objectIdFieldName": "rid",
+    "globalIdFieldName": "",
+    "geometryType": "esriGeometryPolygon",
+    "spatialReference": {
+      "wkid": 4283,
+      "latestWkid": 4283
+    },
+    "fields": [
+      {
+        "name": "rid",
+        "alias": "rid",
+        "type": "esriFieldTypeOID"
+      },
+      {
+        "name": "cadid",
+        "alias": "cadid",
+        "type": "esriFieldTypeInteger"
+      },
+      {
+        "name": "createdate",
+        "alias": "createdate",
+        "type": "esriFieldTypeDate",
+        "length": 8
+      },
+      {
+        "name": "modifieddate",
+        "alias": "modifieddate",
+        "type": "esriFieldTypeDate",
+        "length": 8
+      },
+      {
+        "name": "roadnameoid",
+        "alias": "roadnameoid",
+        "type": "esriFieldTypeInteger"
+      },
+      {
+        "name": "roadtype",
+        "alias": "RoadType",
+        "type": "esriFieldTypeSmallInteger"
+      },
+      {
+        "name": "roadcorridortype",
+        "alias": "roadcorridortype",
+        "type": "esriFieldTypeSmallInteger"
+      },
+      {
+        "name": "roadnamelabel",
+        "alias": "roadnamelabel",
+        "type": "esriFieldTypeString",
+        "length": 100
+      },
+      {
+        "name": "classsubtype",
+        "alias": "ClassSubtype",
+        "type": "esriFieldTypeInteger"
+      },
+      {
+        "name": "startdate",
+        "alias": "startdate",
+        "type": "esriFieldTypeDate",
+        "length": 8
+      },
+      {
+        "name": "enddate",
+        "alias": "enddate",
+        "type": "esriFieldTypeDate",
+        "length": 8
+      },
+      {
+        "name": "lastupdate",
+        "alias": "lastupdate",
+        "type": "esriFieldTypeDate",
+        "length": 8
+      },
+      {
+        "name": "msoid",
+        "alias": "msoid",
+        "type": "esriFieldTypeInteger"
+      },
+      {
+        "name": "centroidid",
+        "alias": "centroidid",
+        "type": "esriFieldTypeInteger"
+      },
+      {
+        "name": "shapeuuid",
+        "alias": "shapeuuid",
+        "type": "esriFieldTypeString",
+        "length": 38
+      },
+      {
+        "name": "changetype",
+        "alias": "changetype",
+        "type": "esriFieldTypeString",
+        "length": 2
+      },
+      {
+        "name": "processstate",
+        "alias": "processstate",
+        "type": "esriFieldTypeString",
+        "length": 5
+      },
+      {
+        "name": "urbanity",
+        "alias": "urbanity",
+        "type": "esriFieldTypeString",
+        "length": 2
+      },
+      {
+        "name": "Shape__Length",
+        "alias": "shape_Length",
+        "type": "esriFieldTypeDouble"
+      },
+      {
+        "name": "Shape__Area",
+        "alias": "shape_Area",
+        "type": "esriFieldTypeDouble"
+      },
+      {
+        "name": "lastupdatestring",
+        "alias": "lastupdatestring",
+        "type": "esriFieldTypeString",
+        "length": 50
+      }
+    ],
+    "features": [
+      {
+        "attributes": {
+          "rid": 61994,
+          "cadid": 102189569,
+          "createdate": 749952000000,
+          "modifieddate": 749952000000,
+          "roadnameoid": 17664,
+          "roadtype": 1,
+          "roadcorridortype": 1,
+          "roadnamelabel": "FISHBOURNE RD",
+          "classsubtype": 1,
+          "startdate": 1101501721000,
+          "enddate": 32503680000000,
+          "lastupdate": 1101501721326,
+          "msoid": 621006,
+          "centroidid": null,
+          "shapeuuid": "2e14d576-93d5-33ed-85f7-9e37c8f9268a",
+          "changetype": null,
+          "processstate": null,
+          "urbanity": "U",
+          "Shape__Length": 179.28210791706064,
+          "Shape__Area": 1552.161900443892,
+          "lastupdatestring": null
+        },
+        "geometry": {
+          "rings": [
+            [
+              [
+                151.26334442541716,
+                -33.77281615350973
+              ],
+              [
+                151.26375942237476,
+                -33.77287747531891
+              ],
+              [
+                151.26378937108345,
+                -33.77297409835916
+              ],
+              [
+                151.26381850344814,
+                -33.7730681217684
+              ],
+              [
+                151.26373025295462,
+                -33.77305555445536
+              ],
+              [
+                151.26361412549207,
+                -33.77303871122871
+              ],
+              [
+                151.2635004347097,
+                -33.773022109749796
+              ],
+              [
+                151.26338527405895,
+                -33.77300532905447
+              ],
+              [
+                151.26327032002078,
+                -33.77298861089385
+              ],
+              [
+                151.26320681025305,
+                -33.77297934221202
+              ],
+              [
+                151.26321956633012,
+                -33.77288986344475
+              ],
+              [
+                151.26323239427234,
+                -33.77279981147398
+              ],
+              [
+                151.26334442541716,
+                -33.77281615350973
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "attributes": {
+          "rid": 99962,
+          "cadid": 102189566,
+          "createdate": 749952000000,
+          "modifieddate": 1184053437000,
+          "roadnameoid": null,
+          "roadtype": 2,
+          "roadcorridortype": 1,
+          "roadnamelabel": null,
+          "classsubtype": 1,
+          "startdate": 1184081849000,
+          "enddate": 32503680000000,
+          "lastupdate": 1184082500266,
+          "msoid": 241130,
+          "centroidid": null,
+          "shapeuuid": "72c9602d-d966-3648-bae2-52664aa69084",
+          "changetype": null,
+          "processstate": null,
+          "urbanity": "U",
+          "Shape__Length": 108.72949548684686,
+          "Shape__Area": 762.4677466140241,
+          "lastupdatestring": null
+        },
+        "geometry": {
+          "rings": [
+            [
+              [
+                151.26323239427234,
+                -33.77279981147398
+              ],
+              [
+                151.26321956633012,
+                -33.77288986344475
+              ],
+              [
+                151.26320681025305,
+                -33.77297934221202
+              ],
+              [
+                151.26320063433548,
+                -33.77297894831636
+              ],
+              [
+                151.2631944584179,
+                -33.77297930674273
+              ],
+              [
+                151.26318840714157,
+                -33.772980399756534
+              ],
+              [
+                151.2631826085164,
+                -33.77298220215584
+              ],
+              [
+                151.2631771669716,
+                -33.77298467567114
+              ],
+              [
+                151.26317221837726,
+                -33.77298777736593
+              ],
+              [
+                151.26316785368786,
+                -33.77299144376873
+              ],
+              [
+                151.26316416048917,
+                -33.77299559367353
+              ],
+              [
+                151.26316121962947,
+                -33.77300013840715
+              ],
+              [
+                151.2631590861307,
+                -33.77300499769688
+              ],
+              [
+                151.26315751744764,
+                -33.77301020514516
+              ],
+              [
+                151.2630746815495,
+                -33.7729825960515
+              ],
+              [
+                151.262944990649,
+                -33.772939372060186
+              ],
+              [
+                151.26294868384775,
+                -33.77292110350483
+              ],
+              [
+                151.2629744643735,
+                -33.77279782145662
+              ],
+              [
+                151.2631064684358,
+                -33.77277815463156
+              ],
+              [
+                151.26320116321864,
+                -33.77276403689127
+              ],
+              [
+                151.2632008589143,
+                -33.77276894006439
+              ],
+              [
+                151.2632014416963,
+                -33.772773825502554
+              ],
+              [
+                151.26320291156472,
+                -33.772778576530264
+              ],
+              [
+                151.26320520563738,
+                -33.77278308487259
+              ],
+              [
+                151.26320829921062,
+                -33.77278726185624
+              ],
+              [
+                151.26321210806745,
+                -33.772790990805674
+              ],
+              [
+                151.26321654574497,
+                -33.77279420918297
+              ],
+              [
+                151.26322151118268,
+                -33.77279681804728
+              ],
+              [
+                151.26322689882858,
+                -33.77279878099596
+              ],
+              [
+                151.26323239427234,
+                -33.77279981147398
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "attributes": {
+          "rid": 552243,
+          "cadid": 102189567,
+          "createdate": 749952000000,
+          "modifieddate": 1184053437000,
+          "roadnameoid": 37519,
+          "roadtype": 1,
+          "roadcorridortype": 1,
+          "roadnamelabel": "ORARA RD",
+          "classsubtype": 1,
+          "startdate": 1184081849000,
+          "enddate": 32503680000000,
+          "lastupdate": 1184082533292,
+          "msoid": 584269,
+          "centroidid": null,
+          "shapeuuid": "8cbf1a99-9a21-350c-8f5f-74ba490042ab",
+          "changetype": null,
+          "processstate": null,
+          "urbanity": "U",
+          "Shape__Length": 405.23943174097076,
+          "Shape__Area": 4307.249088204122,
+          "lastupdatestring": null
+        },
+        "geometry": {
+          "rings": [
+            [
+              [
+                151.2634714629189,
+                -33.77149342793834
+              ],
+              [
+                151.26344723310993,
+                -33.77160740569654
+              ],
+              [
+                151.26342325482918,
+                -33.77171983103272
+              ],
+              [
+                151.26339915078427,
+                -33.77183331564685
+              ],
+              [
+                151.26337501080684,
+                -33.771946682500605
+              ],
+              [
+                151.26334931112942,
+                -33.77206758930667
+              ],
+              [
+                151.26332540471398,
+                -33.77218014098285
+              ],
+              [
+                151.26330093235984,
+                -33.77229507737246
+              ],
+              [
+                151.26327609281932,
+                -33.77241090967987
+              ],
+              [
+                151.26320116321864,
+                -33.77276403689127
+              ],
+              [
+                151.2631064684358,
+                -33.77277815463156
+              ],
+              [
+                151.2629744643735,
+                -33.77279782145662
+              ],
+              [
+                151.26300045937202,
+                -33.77267353582025
+              ],
+              [
+                151.26325644441826,
+                -33.77145640669629
+              ],
+              [
+                151.26334640620237,
+                -33.77147189677721
+              ],
+              [
+                151.2634714629189,
+                -33.77149342793834
+              ]
+            ]
+          ]
+        }
+      }
+    ]
+  }
+}

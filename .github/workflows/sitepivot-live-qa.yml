@@ -6,6 +6,9 @@ on:
     paths:
       - 'index.html'
       - 'commercial-engine.js'
+      - 'property-evidence.js'
+      - 'planning-intelligence.js'
+      - 'comparison-engine.js'
       - 'conversation.js'
       - 'voice.js'
       - 'qa/**'
@@ -38,7 +41,12 @@ jobs:
             curl -L -s -o /tmp/sitepivot-engine.js "https://boggedcake.github.io/ProjectIQ/commercial-engine.js?qa=${GITHUB_SHA}"
             curl -L -s -o /tmp/sitepivot-conversation.js "https://boggedcake.github.io/ProjectIQ/conversation.js?qa=${GITHUB_SHA}"
             curl -L -s -o /tmp/sitepivot-voice.js "https://boggedcake.github.io/ProjectIQ/voice.js?qa=${GITHUB_SHA}"
-            if [ "$code" = "200" ] && cmp -s index.html /tmp/sitepivot.html && cmp -s commercial-engine.js /tmp/sitepivot-engine.js && cmp -s conversation.js /tmp/sitepivot-conversation.js && cmp -s voice.js /tmp/sitepivot-voice.js; then
+            modules_match=true
+            for module in property-evidence planning-intelligence comparison-engine; do
+              curl -L -s -o "/tmp/${module}.js" "https://boggedcake.github.io/ProjectIQ/${module}.js?qa=${GITHUB_SHA}"
+              cmp -s "${module}.js" "/tmp/${module}.js" || modules_match=false
+            done
+            if [ "$modules_match" = "true" ] && [ "$code" = "200" ] && cmp -s index.html /tmp/sitepivot.html && cmp -s commercial-engine.js /tmp/sitepivot-engine.js && cmp -s conversation.js /tmp/sitepivot-conversation.js && cmp -s voice.js /tmp/sitepivot-voice.js; then
               echo "Deployed source matches tested branch head"
               exit 0
             fi
@@ -61,3 +69,8 @@ jobs:
 
       - name: Run deployed unified conversation and voice journeys in Chromium and WebKit
         run: node qa/deployed-conversation.mjs
+
+      - name: Verify property planning and comparison repairs across desktop and mobile
+        run: node qa/property-intelligence-browser.cjs
+        env:
+          SITEPIVOT_URL: https://boggedcake.github.io/ProjectIQ/

@@ -1,7 +1,7 @@
 'use strict';
 
 const {councilEvidence}=require('./council');
-const {frontage}=require('../../commercial-engine');
+const {frontage,parcelEvidence}=require('../../property-evidence');
 const UPSTREAM={
   geocoder:'https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer',
   address:'https://portal.spatial.nsw.gov.au/server/rest/services/Hosted/NSW_Address_Point_Formatted/FeatureServer/0',
@@ -89,7 +89,7 @@ async function suggestAddress(q){
   return {suggestions,timingMs:now()-t,provider:'ArcGIS World Geocoder'};
 }
 async function geocode(item){
-  const j=await fetchJson(UPSTREAM.geocoder+'/findAddressCandidates',{params:{SingleLine:item.text||'',magicKey:item.magicKey||'',countryCode:'AUS',category:'Address',maxLocations:3,outFields:'Match_addr,Addr_type,City,Region,Postal',forStorage:'false',outSR:4283},timeout:3500});
+  const j=await fetchJson(UPSTREAM.geocoder+'/findAddressCandidates',{params:{SingleLine:item.text||'',magicKey:item.magicKey||'',countryCode:'AUS',category:'Address',maxLocations:3,outFields:'Match_addr,Addr_type,City,Region,Postal',forStorage:'false',outSR:4283},timeout:8500});
   const list=j.candidates||[];
   const hit=list.find(x=>x?.location&&/New South Wales|\bNSW\b/i.test(String(x.address||'')+' '+String(x.attributes?.Region||'')))||list[0];
   if(!hit?.location)throw new Error('Address coordinates could not be resolved');
@@ -100,7 +100,7 @@ async function authoritativeAddress(candidate,input){
   const j=await arcQuery(UPSTREAM.address.replace('/0',''),0,{
     where,geometry:JSON.stringify(candidate.location),geometryType:'esriGeometryPoint',inSR:4283,spatialRel:'esriSpatialRelIntersects',
     distance:100,units:'esriSRUnit_Meter',
-    outFields:'objectid,formattedaddress,localityname,lganame,cadastralidentifier,pl_ptlotsecpn,streetnumber1,streetnumber2,streetname,streettype,streettypedescription,postcode,complexunitidentifier,complexlevelnumber,ss_addresspointtype,ss_classsubtype,ss_principaladdresstype,ss_addressstringoid,ss_principaladdresssiteoid,ss_propid,ss_sppropid,lot_cadid,ap_gurasid',
+    outFields:'objectid,formattedaddress,localityname,lganame,cadastralidentifier,pl_ptlotsecpn,streetnumber1,streetnumber2,streetname,streettype,streettypedescription,postcode,complexunitidentifier,complexlevelnumber,ss_addresspointtype,ss_classsubtype,ss_principaladdresstype,ss_addressstringoid,ss_principaladdresssiteoid,ss_propid,ss_sppropid,lot_cadid,ap_gurasid,prop_gurasid',
     returnGeometry:'true',outSR:4283,resultRecordCount:100
   },6000);
   const rows=(j.features||[]).filter(f=>f.geometry&&attrs(f).formattedaddress);
@@ -129,7 +129,8 @@ async function resolveProperty(item){
       point:official.geometry||candidate.location,
       addressId:a.objectid||a.ap_gurasid||null,
       cadastralIdentifier:a.cadastralidentifier||a.pl_ptlotsecpn||null,
-      cadid:a.lot_cadid||null,
+      cadid:a.lot_cadid||null,streetName:a.streetname||null,
+      propertyId:a.ss_propid||null,propertyGurasid:a.prop_gurasid||null,streetName:[a.streetname,a.streettype].filter(Boolean).join(' '),
       lot:title.lot,dp:title.dp,title:title.title,
       strata:title.title.startsWith('Strata'),
       unit:a.complexunitidentifier||null,
@@ -139,48 +140,30 @@ async function resolveProperty(item){
     providers:['ArcGIS World Geocoder','NSW Address Point Formatted']
   };
 }
-function ringAreaSqm(ring){
-  if(!ring?.length)return 0;
-  const R=6378137,d=Math.PI/180;let sum=0;
-  for(let i=0;i<ring.length;i++){const [lon1,lat1]=ring[i],[lon2,lat2]=ring[(i+1)%ring.length];sum+=(lon2-lon1)*d*(2+Math.sin(lat1*d)+Math.sin(lat2*d))}
-  return Math.abs(sum*R*R/2);
-}
-function geometryAreaSqm(g){return (g?.rings||[]).reduce((s,r)=>s+ringAreaSqm(r),0)}
-function attrArea(a){
-  const n=+a.planlotarea||0,u=String(a.planlotareaunits||'').toUpperCase();
-  if(!n)return 0;if(/HA|HECT/.test(u))return n*10000;return n;
-}
 async function parcelFor(property){
   const fields='cadid,lotnumber,planlabel,planlotarea,planlotareaunits,lotidstring,classsubtype';
   let fs=[];
-  if(Number.isFinite(+property.cadid)){
+  if(property.cadid!==null&&property.cadid!==undefined&&String(property.cadid)!==''&&Number.isFinite(+property.cadid)){
     const j=await arcQuery(UPSTREAM.cadastre.replace('/8',''),8,{where:'cadid = '+Number(property.cadid),outFields:fields,returnGeometry:'true',outSR:4283,resultRecordCount:20},5000);
-    fs=(j.features||[]).filter(f=>f.geometry?.rings);
+    fs=(j.features||[]).filter(f=>f.geometry?.rings).map(f=>({...f,geometry:{...f.geometry,spatialReference:f.geometry.spatialReference||j.spatialReference||{wkid:4283}}}));
   }
   if(!fs.length&&property.cadastralIdentifier){
     const cid=safe(property.cadastralIdentifier);
     let j=await arcQuery(UPSTREAM.cadastre.replace('/8',''),8,{where:"lotidstring = '"+cid+"'",outFields:fields,returnGeometry:'true',outSR:4283,resultRecordCount:20},5000);
-    fs=(j.features||[]).filter(f=>f.geometry?.rings);
+    fs=(j.features||[]).filter(f=>f.geometry?.rings).map(f=>({...f,geometry:{...f.geometry,spatialReference:f.geometry.spatialReference||j.spatialReference||{wkid:4283}}}));
     if(!fs.length){
       const m=String(property.cadastralIdentifier).match(/^([^/]*)\/[^/]*\/(.+)$/);
       if(m){
         j=await arcQuery(UPSTREAM.cadastre.replace('/8',''),8,{where:"lotnumber = '"+safe(m[1])+"' AND planlabel = '"+safe(m[2])+"'",outFields:fields,returnGeometry:'true',outSR:4283,resultRecordCount:20},5000);
-        fs=(j.features||[]).filter(f=>f.geometry?.rings);
+        fs=(j.features||[]).filter(f=>f.geometry?.rings).map(f=>({...f,geometry:{...f.geometry,spatialReference:f.geometry.spatialReference||j.spatialReference||{wkid:4283}}}));
       }
     }
   }
   if(!fs.length&&property.point){
     const j=await arcQuery(UPSTREAM.cadastre.replace('/8',''),8,{where:'1=1',geometry:property.point.x+','+property.point.y,geometryType:'esriGeometryPoint',inSR:4283,spatialRel:'esriSpatialRelIntersects',outFields:fields,returnGeometry:'true',outSR:4283,resultRecordCount:20},5000);
-    fs=(j.features||[]).filter(f=>f.geometry?.rings);
+    fs=(j.features||[]).filter(f=>f.geometry?.rings).map(f=>({...f,geometry:{...f.geometry,spatialReference:f.geometry.spatialReference||j.spatialReference||{wkid:4283}}}));
   }
-  const geometry=fs.length?{rings:fs.flatMap(f=>f.geometry.rings||[]),spatialReference:{wkid:4283}}:null;
-  const area=fs.reduce((s,f)=>s+(attrArea(attrs(f))||geometryAreaSqm(f.geometry)),0)||null;
-  return {
-    features:fs,geometry,area,
-    lot:unique(fs.map(f=>attrs(f).lotnumber)).join(' + ')||property.lot||null,
-    dp:unique(fs.map(f=>attrs(f).planlabel)).join(' + ')||property.dp||null,
-    parcels:fs.length||null
-  };
+  return parcelEvidence(fs,property,{spatialReference:{wkid:4283},supplementaryAreas:property.supplementaryAreas||[]});
 }
 async function spatial(base,id,geom,type,lga,fields='*',timeout=6000){
   const j=await arcQuery(base,id,{where:'1=1',geometry:JSON.stringify(geom),geometryType:type,inSR:4283,spatialRel:'esriSpatialRelIntersects',outFields:fields,returnGeometry:'false',resultRecordCount:50},timeout);
@@ -230,7 +213,7 @@ async function planningFor(property){
     localIdentify:identify(UPSTREAM.local,property.point)
   };
   const councilPromise=councilEvidence(property,parcel.geometry,arcQuery);
-  const frontagePromise=parcel.geometry?arcQuery(UPSTREAM.cadastre.replace('/8',''),1,{where:'1=1',geometry:JSON.stringify(parcel.geometry),geometryType:'esriGeometryPolygon',inSR:4283,spatialRel:'esriSpatialRelIntersects',distance:30,units:'esriSRUnit_Meter',outFields:'*',returnGeometry:'true',outSR:4283,resultRecordCount:100},3500).then(j=>frontage(parcel.geometry,(j.features||[]).map(f=>({id:String(f.attributes?.roadnameoid||f.attributes?.objectid||''),name:f.attributes?.roadname||'',paths:f.geometry?.paths||[]})),property.streetName||'')).catch(()=>({status:'review',reason:'Official road geometry unavailable.'})):Promise.resolve({status:'review',reason:'Parcel geometry unavailable.'});
+  const frontagePromise=parcel.geometry?arcQuery(UPSTREAM.cadastre.replace('/8',''),5,{where:'1=1',geometry:JSON.stringify(parcel.geometry),geometryType:'esriGeometryPolygon',inSR:4283,spatialRel:'esriSpatialRelIntersects',outFields:'*',returnGeometry:'true',outSR:4283,resultRecordCount:100},3500).then(j=>frontage(parcel.geometry,(j.features||[]).map(f=>({id:String(f.attributes?.roadnameoid||f.attributes?.objectid||''),name:f.attributes?.roadnamelabel||'',geometry:{...f.geometry,spatialReference:f.geometry?.spatialReference||j.spatialReference||{wkid:4283}}})),property.streetName||'')).catch(()=>({status:'review',reason:'Official road geometry unavailable.'})):Promise.resolve({status:'review',reason:'Parcel geometry unavailable.'});
   const keys=Object.keys(jobs),settled=await Promise.allSettled(Object.values(jobs)),data={},errors=parcelError?['parcel: '+parcelError]:[],failed=parcelError?['parcel']:[];
   settled.forEach((r,i)=>{const k=keys[i];if(r.status==='fulfilled')data[k]=r.value;else{data[k]=[];failed.push(k);errors.push(k+': '+(r.reason?.message||'failed'))}});
   const missing=(k,label)=>failed.includes(k)?'Source check did not complete — Needs Review':label;
@@ -242,8 +225,10 @@ async function planningFor(property){
   ]);
   const [council,frontageEvidence]=await Promise.all([councilPromise,frontagePromise]);
   return {
-    parcel:{frontage:frontageEvidence,lot:parcel.lot,dp:parcel.dp,area:parcel.area,parcels:parcel.parcels,geometryResolved:!!parcel.geometry},
+    parcel:{frontage:frontageEvidence,lot:parcel.lot,dp:parcel.dp,area:parcel.area,parcels:parcel.parcels,geometryResolved:!!parcel.geometry,identityEvidence:parcel.identityEvidence||null,areaEvidence:parcel.areaEvidence||null,status:parcel.status||'review'},
     planning:{
+      controls:Object.fromEntries(['zone','lot','height','fsr','heritage','application'].map(k=>[k,(data[k]||[]).map(f=>attrs(f))])),
+      controlSources:{zone:UPSTREAM.primary+'/2',lot:UPSTREAM.primary+'/4',height:UPSTREAM.primary+'/5',fsr:UPSTREAM.primary+'/1',heritage:UPSTREAM.primary+'/0',application:UPSTREAM.primary+'/6'},
       councilEvidence:council,spatialScope:parcel.geometry?'parcel':'address-point',
       instrument:localInstrument,allEpiNames:epis,epiNames:epis,statePolicies,sepp:statePolicies,
       zone:failed.includes('zone')?null:formatZone(data.zone),

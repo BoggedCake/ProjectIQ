@@ -2,13 +2,15 @@
   "name": "sitepivot",
   "private": true,
   "scripts": {
-    "test": "node qa/changeover-regression.cjs && node qa/conversation-founder-regression.cjs && node qa/conversation-founder-api-regression.cjs && node qa/voice-complete-regression.cjs && node qa/cost-recalibration.cjs && node qa/founder-ui-regression.cjs && node qa/conversation-provider-regression.cjs && node qa/conversation-regression.cjs && node qa/conversation-ui-regression.cjs && node qa/voice-adapter-regression.cjs && node qa/voice-reliability-regression.cjs && node qa/voice-ui-regression.cjs && node qa/voice-server-regression.cjs && node qa/commercial-regression.cjs && node qa/intake-component-regression.cjs && node qa/intake-ui-regression.cjs && node qa/provider-contract-regression.cjs && node qa/consumer-commercial.cjs && node qa/model-regression.cjs && node qa/async-regression.cjs && node qa/journey.cjs",
+    "test": "npm run test:property && node qa/changeover-regression.cjs && node qa/conversation-founder-regression.cjs && node qa/conversation-founder-api-regression.cjs && node qa/voice-complete-regression.cjs && node qa/cost-recalibration.cjs && node qa/founder-ui-regression.cjs && node qa/conversation-provider-regression.cjs && node qa/conversation-regression.cjs && node qa/conversation-ui-regression.cjs && node qa/voice-adapter-regression.cjs && node qa/voice-reliability-regression.cjs && node qa/voice-ui-regression.cjs && node qa/voice-server-regression.cjs && node qa/commercial-regression.cjs && node qa/intake-component-regression.cjs && node qa/intake-ui-regression.cjs && node qa/provider-contract-regression.cjs && node qa/consumer-commercial.cjs && node qa/model-regression.cjs && node qa/async-regression.cjs && node qa/journey.cjs",
     "test:deployed": "node qa/deployed-founder.mjs",
     "test:mobile": "node qa/mobile-journey.cjs",
     "test:live": "node qa/live-smoke.mjs",
     "test:providers": "node qa/serverless-smoke.cjs",
     "test:voice": "node qa/voice-complete-regression.cjs && node qa/voice-adapter-regression.cjs && node qa/voice-reliability-regression.cjs && node qa/voice-ui-regression.cjs && node qa/voice-server-regression.cjs && node qa/voice-browser.cjs",
-    "founder:preview": "node qa/founder-server.cjs"
+    "founder:preview": "node qa/founder-server.cjs",
+    "test:property": "node qa/property-accuracy-regression.cjs && node qa/planning-intelligence-regression.cjs && node qa/property-conversation-regression.cjs && node qa/comparison-pathway-regression.cjs && node qa/property-intelligence-ui.cjs",
+    "test:unit": "npm run test:property && node qa/changeover-regression.cjs && node qa/conversation-founder-regression.cjs && node qa/conversation-founder-api-regression.cjs && node qa/voice-complete-regression.cjs && node qa/cost-recalibration.cjs && node qa/founder-ui-regression.cjs && node qa/conversation-provider-regression.cjs && node qa/conversation-regression.cjs && node qa/conversation-ui-regression.cjs && node qa/voice-adapter-regression.cjs && node qa/voice-reliability-regression.cjs && node qa/voice-ui-regression.cjs && node qa/voice-server-regression.cjs && node qa/commercial-regression.cjs && node qa/intake-component-regression.cjs && node qa/intake-ui-regression.cjs && node qa/provider-contract-regression.cjs && node qa/consumer-commercial.cjs && node qa/model-regression.cjs && node qa/async-regression.cjs"
   },
   "devDependencies": {
     "jsdom": "30.1.2",

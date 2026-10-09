@@ -1,0 +1,268 @@
+{
+  "source": "https://portal.spatial.nsw.gov.au/server/rest/services/NSW_Land_Parcel_Property_Theme/FeatureServer/12/query?where=propid+%3D+913020&outFields=*&returnGeometry=true&outSR=4283&f=json",
+  "retrievedAt": "2026-10-09T10:45:07.956Z",
+  "response": {
+    "objectIdFieldName": "RID",
+    "globalIdFieldName": "",
+    "geometryType": "esriGeometryPolygon",
+    "spatialReference": {
+      "wkid": 4283,
+      "latestWkid": 4283
+    },
+    "fields": [
+      {
+        "name": "RID",
+        "alias": "RID",
+        "type": "esriFieldTypeOID"
+      },
+      {
+        "name": "createdate",
+        "alias": "createdate",
+        "type": "esriFieldTypeDate",
+        "length": 8
+      },
+      {
+        "name": "gurasid",
+        "alias": "gurasid",
+        "type": "esriFieldTypeInteger"
+      },
+      {
+        "name": "principaladdresssiteoid",
+        "alias": "principaladdresssiteoid",
+        "type": "esriFieldTypeInteger"
+      },
+      {
+        "name": "propertytype",
+        "alias": "PropertyType",
+        "type": "esriFieldTypeInteger"
+      },
+      {
+        "name": "valnetpropertystatus",
+        "alias": "valnetpropertystatus",
+        "type": "esriFieldTypeInteger"
+      },
+      {
+        "name": "valnetpropertytype",
+        "alias": "valnetpropertytype",
+        "type": "esriFieldTypeInteger"
+      },
+      {
+        "name": "dissolveparcelcount",
+        "alias": "dissolveparcelcount",
+        "type": "esriFieldTypeInteger"
+      },
+      {
+        "name": "valnetlotcount",
+        "alias": "valnetlotcount",
+        "type": "esriFieldTypeInteger"
+      },
+      {
+        "name": "valnetworkflowid",
+        "alias": "valnetworkflowid",
+        "type": "esriFieldTypeInteger"
+      },
+      {
+        "name": "propid",
+        "alias": "propid",
+        "type": "esriFieldTypeInteger"
+      },
+      {
+        "name": "superlot",
+        "alias": "superlot",
+        "type": "esriFieldTypeString",
+        "length": 1
+      },
+      {
+        "name": "housenumber",
+        "alias": "housenumber",
+        "type": "esriFieldTypeString",
+        "length": 20
+      },
+      {
+        "name": "address",
+        "alias": "address",
+        "type": "esriFieldTypeString",
+        "length": 100
+      },
+      {
+        "name": "startdate",
+        "alias": "startdate",
+        "type": "esriFieldTypeDate",
+        "length": 8
+      },
+      {
+        "name": "enddate",
+        "alias": "enddate",
+        "type": "esriFieldTypeDate",
+        "length": 8
+      },
+      {
+        "name": "lastupdate",
+        "alias": "lastupdate",
+        "type": "esriFieldTypeDate",
+        "length": 8
+      },
+      {
+        "name": "msoid",
+        "alias": "msoid",
+        "type": "esriFieldTypeInteger"
+      },
+      {
+        "name": "centroidid",
+        "alias": "centroidid",
+        "type": "esriFieldTypeInteger"
+      },
+      {
+        "name": "shapeuuid",
+        "alias": "shapeuuid",
+        "type": "esriFieldTypeString",
+        "length": 38
+      },
+      {
+        "name": "changetype",
+        "alias": "changetype",
+        "type": "esriFieldTypeString",
+        "length": 2
+      },
+      {
+        "name": "processstate",
+        "alias": "processstate",
+        "type": "esriFieldTypeString",
+        "length": 5
+      },
+      {
+        "name": "urbanity",
+        "alias": "urbanity",
+        "type": "esriFieldTypeString",
+        "length": 2
+      },
+      {
+        "name": "principaladdresstype",
+        "alias": "principaladdresstype",
+        "type": "esriFieldTypeInteger"
+      },
+      {
+        "name": "addressstringoid",
+        "alias": "addressstringoid",
+        "type": "esriFieldTypeInteger"
+      },
+      {
+        "name": "Shape__Length",
+        "alias": "shape_Length",
+        "type": "esriFieldTypeDouble"
+      },
+      {
+        "name": "Shape__Area",
+        "alias": "shape_Area",
+        "type": "esriFieldTypeDouble"
+      }
+    ],
+    "features": [
+      {
+        "attributes": {
+          "RID": 2121274,
+          "createdate": 1135036800000,
+          "gurasid": 51302920,
+          "principaladdresssiteoid": 1777309,
+          "propertytype": 1,
+          "valnetpropertystatus": 2,
+          "valnetpropertytype": 2,
+          "dissolveparcelcount": 1,
+          "valnetlotcount": 1,
+          "valnetworkflowid": null,
+          "propid": 913020,
+          "superlot": "N",
+          "housenumber": "12",
+          "address": "12 FISHBOURNE ROAD ALLAMBIE HEIGHTS",
+          "startdate": 1208518704000,
+          "enddate": 32503680000000,
+          "lastupdate": 1208518704944,
+          "msoid": 1801539,
+          "centroidid": null,
+          "shapeuuid": "8c05b5a4-c695-3966-8b61-3ad1c7c6eee4",
+          "changetype": "I",
+          "processstate": null,
+          "urbanity": "U",
+          "principaladdresstype": 1,
+          "addressstringoid": 3387684,
+          "Shape__Length": 136.5751234146238,
+          "Shape__Area": 883.517090596789
+        },
+        "geometry": {
+          "rings": [
+            [
+              [
+                151.26342739606267,
+                -33.77243184975777
+              ],
+              [
+                151.26339834454635,
+                -33.772566497491425
+              ],
+              [
+                151.26336924699137,
+                -33.77270134289538
+              ],
+              [
+                151.26334442541716,
+                -33.77281615350973
+              ],
+              [
+                151.26323239427234,
+                -33.77279981147398
+              ],
+              [
+                151.26322689882858,
+                -33.77279878099596
+              ],
+              [
+                151.26322151118268,
+                -33.77279681804728
+              ],
+              [
+                151.26321654574497,
+                -33.77279420918297
+              ],
+              [
+                151.26321210806745,
+                -33.772790990805674
+              ],
+              [
+                151.26320829921062,
+                -33.77278726185624
+              ],
+              [
+                151.26320520563738,
+                -33.77278308487259
+              ],
+              [
+                151.26320291156472,
+                -33.772778576530264
+              ],
+              [
+                151.2632014416963,
+                -33.772773825502554
+              ],
+              [
+                151.2632008589143,
+                -33.77276894006439
+              ],
+              [
+                151.26320116321864,
+                -33.77276403689127
+              ],
+              [
+                151.26327609281932,
+                -33.77241090967987
+              ],
+              [
+                151.26342739606267,
+                -33.77243184975777
+              ]
+            ]
+          ]
+        }
+      }
+    ]
+  }
+}

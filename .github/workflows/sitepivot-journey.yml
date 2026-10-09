@@ -24,6 +24,7 @@ jobs:
           QA_OUTPUT: journey-results.json
       - run: node qa/founder-server-regression.cjs
       - run: SITEPIVOT_FOUNDER_PREVIEW=1 node qa/founder-repair-browser.cjs
+      - run: node qa/property-intelligence-browser.cjs
       - run: node qa/mobile-journey.cjs
       - run: node qa/conversation-browser.cjs
       - run: node qa/voice-browser.cjs
