@@ -48,7 +48,7 @@ Browser source requests have a short exact-query cache and explicit progress. A 
 
 ## 8. Regression and independent review
 
-The final non-browser suite passed 201 checks (exit 0). Browser results and deployed verification are recorded below. Independent review reproduced four Important defects: stale rejected proposals, unsuitable replacement recommendations, blank configuration follow-ups and aligned polygon overlap. Each was covered by a failing regression and fixed. The reviewer also identified road-name/CRS propagation and downsizing inspection arithmetic, which were repaired.
+The final non-browser suite passed 202 checks (exit 0). Browser results and deployed verification are recorded below. Independent review reproduced four Important defects: stale rejected proposals, unsuitable replacement recommendations, blank configuration follow-ups and aligned polygon overlap. Each was covered by a failing regression and fixed. The reviewer also identified road-name/CRS propagation and downsizing inspection arithmetic, which were repaired.
 
 Two local Playwright installation attempts failed with truncated0MiB archives. Full local `npm test` therefore reached the missing-browser-binary error; it was not reported as passed. The first connector release accidentally omitted the two new runtime modules and failed CI. The corrective commit included them, and the local/remote complete source-tree hashes were compared. Superseded CI runs were cancelled by branch concurrency. Final CI and deployed acceptance remain required before release availability is asserted.
 
@@ -66,6 +66,8 @@ Founder checks: resolve12FishbourneRoad; inspect the608.9/847 discrepancy; confi
 
 ## Release verification appendix
 
-Verified runtime checkpoint: `9a0c67493df1cefcab0cf90b34ad1205214786ed`. GitHub consumer regression (37921784598), live QA (37921784423), server-data QA (37921784329), and Pages (37921784839) all completed successfully. These include Chromium/WebKit property journeys at 390, 430 and 1280 pixels, plus existing mobile/conversation/voice journeys. The final local non-browser suite passed 201 checks with exit 0.
+Verified runtime checkpoint: `9a0c67493df1cefcab0cf90b34ad1205214786ed`. GitHub consumer regression (37921784598), live QA (37921784423), server-data QA (37921784329), and Pages (37921784839) all completed successfully. These include Chromium/WebKit property journeys at 390, 430 and 1280 pixels, plus existing mobile/conversation/voice journeys. The final local non-browser suite passed 202 checks with exit 0.
 
 The following commit adds two planning evidence regressions, semantic assertions to regional probes, runtime cache version 3, and preservation of property-journey screenshots. Its final CI and deployed verification will be reported with the release SHA; this report does not imply physical iPhone audio verification.
+
+Live UI additionally reproduced “Forget the duplex. I want to open my kitchen and living room.” retaining the rejected duplex. The exact sentence failed a new regression before repair. Dismissal clauses are now excluded from semantic project interpretation while the raw user message remains preserved; the replacement renovation clears the prior proposal. Runtime asset version 4 prevents mixed cached modules.
