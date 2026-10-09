@@ -22,6 +22,8 @@ jobs:
       - run: npm test
         env:
           QA_OUTPUT: journey-results.json
+      - run: node qa/founder-server-regression.cjs
+      - run: SITEPIVOT_FOUNDER_PREVIEW=1 node qa/founder-repair-browser.cjs
       - run: node qa/mobile-journey.cjs
       - run: node qa/conversation-browser.cjs
       - run: node qa/voice-browser.cjs
@@ -32,3 +34,4 @@ jobs:
           path: |
             journey-results.json
             mobile-qa/
+            qa-artifacts/founder-repair/
