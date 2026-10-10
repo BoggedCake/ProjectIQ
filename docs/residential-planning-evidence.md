@@ -18,17 +18,10 @@ The plan excludes Dee Why Town Centre, Warriewood Valley Release Area and French
 
 ## Exact property evidence gaps
 
-The authoritative address/parcel/zone/LEP/area for **16 Eileen Street, North Balgowlah** must be independently established through NSW spatial responses. No official indexed address result was returned by this research. Market pages conflict (471 m² versus462 m²) and are not controlling cadastral evidence. A mapped471.4 m² value must retain source geometry/measurement provenance, not claim survey/title area.
+Subsequent independent official spatial retrieval resolved **16 Eileen Street, North Balgowlah** to property911436, cadastral lot61 DP11915, cadid102174177. Its associated geographic polygon calculates471.3665m² indicative GIS area; the plan-area field is null. Whole-parcel controls return R2 / Warringah LEP2011, height8.5m, mapped subdivision minimum600m² and a completed empty FSR result. Dated raw response captures and exact query URLs are retained in qa/fixtures/fsr-evidence and documented in residential-fsr-evidence.md. Market pages conflicting between471m² and462m² were not used as controlling cadastral evidence. Survey/title area, LMR walking/exclusions and any lawful alternative remain unresolved.
 
 Latest founder images IMG_2864–IMG_2872 were resolved and read from the supplied file collection. IMG_2866 contains the application's471.4/Warringah800 conclusion, which is product output rather than independent validation. IMG_2870 shows a300 m² Lot Size Map figure and unresolved LEP/site-area conclusion, but its OCR contains no visible property address. These images do not identify a verified Balgowlah FSR fixture. Do not invent that address or substitute an unrelated example.
 
-## Retrieval references for this run
+## Evidence refresh limits
 
-- Warringah official indexed: turn64search0; full open error turn65view1.
-- Council current policy: turn70search0.
-- Department summary: turn65view2 / turn66view2.
-- Walking guidance: turn71search1 / turn71search4.
-- Contributions index: turn65search0 / turn66view3; PDF scope/exemptions turn66view1; rates turn67view0; administration turn67view1.
-- Legislation403: turn70view0 (Housing PDF), turn70view1 (Regulation208).
-
-Another agent's official spatial retrieval can close property gaps; these legal/guidance facts alone cannot establish the site's catchment or exclusions.
+The indexed official provision and current council/Department guidance corroborate the ordinary standard, but full current legislation retrieval returned403 in this environment. The spatial evidence closes address/parcel/mapping gaps; it does not establish consent, the legal walking catchment, exclusions, variation/savings applicability or a supported alternative pathway.

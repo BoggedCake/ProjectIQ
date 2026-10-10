@@ -46,7 +46,7 @@ The **whole parcel polygon** query to FSR layer1 successfully returned an empty 
 
 `node qa/residential-fsr-regression.cjs` covers browser/CommonJS parity, official mapped captures across five scopes, the official Eileen completed parcel absence and geographic area, unknown/failed/malformed/truncated retrieval, current versus legacy council names, ambiguous ratios, zero, sentinel and nonnumeric renderer values, and explicit modification state.
 
-The full `npm test` run reached and passed property/planning/conversation tests, then stopped at the shared cost test `qa/cost-recalibration.cjs:16` (expected3576228, actualundefined). That failure is outside this FSR change and must be resolved/rechecked by the integration owner before claiming a passing full suite.
+The full `npm test` run reached and passed property/planning/conversation tests, then stopped at the shared cost test `qa/cost-recalibration.cjs:16` (expected3576228, actualundefined). This integration failure was subsequently resolved: arithmetic regressions now supply explicit exploratory or synthetic completed-pathway evidence, rather than bypassing the eligibility gate. The final verification register is in residential-repair-2026-10-10.md.
 
 ## Address-specific mapped acceptance captures
 
