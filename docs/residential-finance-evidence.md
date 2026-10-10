@@ -12,7 +12,7 @@ No licensed pricing, paid data, loan application, settings or production deploym
 
 ## Engine contract
 
-`financeSchedule(input)` returns `status:'indicative'`, monthly `rows`, finance interest and cost, land debt/equity, construction borrowing/equity, settlement repayment, peak debt, assumptions and sensitivities. Invalid input returns `status:'review'` with a reason and no numeric output.
+`financeSchedule(input)` returns `status:'indicative'`, monthly `rows`, finance interest and cost, land debt/equity, construction borrowing/equity, settlement repayment, peak debt, assumptions and sensitivities. Negative land equity is permitted when existing debt exceeds current value; this is arithmetic, not a lender offer. Invalid input returns `status:'review'` with a reason and no numeric output.
 
 Inputs:
 

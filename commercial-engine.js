@@ -78,7 +78,8 @@ const CONTRIBUTION_PLAN={id:'northern-beaches-s7.12-2024',source:'https://www.no
 function assessContributions(i={}){
  const unknown=reason=>({status:'unknown',amount:null,method:null,decisionReady:false,reason,asOf:'2026-10-10'});
  if(!i||typeof i!=='object'||Array.isArray(i))return unknown('Confirm the applicable local contributions plan or provide an explicit allowance.');
- if(i.section711Applies===true&&i.method==='s7.12'||Array.isArray(i.methods)&&i.methods.includes('s7.11')&&i.methods.includes('s7.12'))return unknown('Section 7.11 and section 7.12 are alternatives for the same development; verify the applicable plan.');
+ if(i.section711Applies===true&&i.method==='s7.12'||i.section712Applies===true&&i.method==='s7.11'||Array.isArray(i.methods)&&i.methods.includes('s7.11')&&i.methods.includes('s7.12'))return unknown('Section 7.11 and section 7.12 are alternatives for the same development; verify the applicable plan.');
+ if(i.status==='not-applicable')return i.source&&i.reason?{...i,amount:0,decisionReady:true,label:'Contribution not applicable — verified scope',asOf:'2026-10-10'}:unknown('A not-applicable assessment needs its source and parcel-specific reason.');
  if(i.status==='verified-exemption')return i.source&&i.reason?{...i,amount:0,decisionReady:true,label:'Verified contribution exemption',asOf:'2026-10-10'}:unknown('An exemption needs its source and parcel-specific reason.');
  if(['user-allowance','provisional'].includes(i.status))return numeric(i.amount)&&+i.amount>=0?{...i,amount:+i.amount,decisionReady:false,label:i.status==='user-allowance'?'Explicit user contribution allowance — unverified':'Provisional contribution allowance — verify plan and indexation',asOf:'2026-10-10'}:unknown('Supply a nonnegative contribution allowance.');
  if(i.status!=='verified-plan'||i.planApplicable!==true||!i.source||!['s7.11','s7.12'].includes(i.method))return unknown('Contribution plan, parcel applicability, exemption and statutory calculation basis remain unverified.');
@@ -97,7 +98,7 @@ function financeSchedule(i={}){
  const review=reason=>({status:'review',reason,version:FINANCE_ASSUMPTION.version});
  const land=i.land??0,delivery=i.delivery??0,landDebt=i.landDebt??(i.landDebtRatio!=null?land*i.landDebtRatio:0),ratio=i.constructionBorrowingRatio??.7,rate=i.interestRate??FINANCE_ASSUMPTION.interestRate;
  const timing={preconstructionMonths:i.preconstructionMonths??3,constructionMonths:i.constructionMonths??12,settlementMonths:i.settlementMonths??3,delayMonths:i.delayMonths??0};
- if([land,delivery,landDebt].some(v=>!numeric(v)||+v<0)||+landDebt>+land)return review('Confirm nonnegative land value, delivery spend and explicit land debt no greater than land value.');
+ if([land,delivery,landDebt].some(v=>!numeric(v)||+v<0))return review('Confirm nonnegative land value, delivery spend and explicit outstanding land debt.');
  if([ratio,rate,i.landDebtRatio??0].some(v=>!numeric(v)||+v<0||+v>1))return review('Confirm borrowing ratios and annual interest rate between zero and one.');
  if(Object.values(timing).some(v=>!Number.isInteger(+v)||+v<0||+v>600)||+timing.constructionMonths<1)return review('Confirm whole months for preconstruction, construction, settlement and delay; construction must be at least one month.');
  Object.keys(timing).forEach(k=>timing[k]=+timing[k]);

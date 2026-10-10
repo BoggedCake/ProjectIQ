@@ -15,7 +15,7 @@ assert.ok(f.sensitivities.delayPlus3.interest>f.interest);
 const cap=E.financeSchedule({...base,capitaliseInterest:true}); assert.ok(cap.interest>f.interest);
 near(cap.repaymentAtSettlement,cap.landDebt+cap.constructionBorrowing+cap.interest);
 const cash=E.financeSchedule({...base,constructionBorrowingRatio:0}); near(cash.interest,0); near(cash.financeCost,20000);
-assert.equal(E.financeSchedule({...base,landDebt:2000000}).status,'review');
+assert.equal(E.financeSchedule({...base,landDebt:2000000}).landEquity,-1000000);
 assert.equal(E.financeSchedule({...base,constructionMonths:-1}).status,'review');
 assert.equal(E.financeSchedule({...base,drawWeights:[1,2]}).status,'review');
 assert.equal(E.assessContributions().status,'unknown'); assert.equal(E.assessContributions().amount,null);
@@ -42,3 +42,8 @@ near(double.lines.authorityContributions,30000);
 const residualInput={...input,eligibility:{readyForFeasibility:true},landDebtRatio:.5};
 const r=E.feasibility(residualInput),r2=E.feasibility({...residualInput,land:r.residualLandValue}); near(r2.profitOnCost,.2);
 console.log('PASS residential finance, contribution gates and monthly reconciliation');
+
+assert.equal(E.assessContributions({status:'not-applicable'}).amount,null);
+assert.equal(E.assessContributions({status:'not-applicable',source:'Synthetic assessment',reason:'Outside the applicable scheme'}).amount,0);
+assert.equal(E.assessContributions({status:'verified-plan',method:'s7.11',section712Applies:true,source:'Synthetic',planApplicable:true,amount:5000}).amount,null);
+const underwaterLand=E.financeSchedule({land:1000000,landDebt:1200000,delivery:500000});assert.equal(underwaterLand.status,'indicative');assert.equal(underwaterLand.landEquity,-200000);assert.ok(underwaterLand.interest>0);

@@ -27,6 +27,8 @@ The Northern Beaches2024 s7.12 public plan supplies nil/0.5%/1% bands on the who
 
 Development finance9.5% is a dated, editable illustrative modelling assumption informed by a primary public lender minimum8.5%; it is not an average, current lender offer or approval. Default construction funding70% and phase3/12/3 months are editable assumptions. Existing land debt is not inferred from property value. Principal repayment is not a project cost, establishment fees are separate, delivered building soft costs/contingency remain included once. No paid services introduced.
 
+The live founder journey additionally reproduced a profile-confirmation control being replaced by background rendering. The form now keeps its DOM controls while the same property still needs confirmation, preserving edits and clicks. Follow-up regressions cover verified contribution non-applicability and outstanding land debt exceeding current land value without treating lender approval as known.
+
 ## Verification status
 
 All unit/integration regression suites, security preparation regressions, working-tree secret scan and static package checks passed before push. Independent review found and resolved stale/loading/split-zone proof acceptance, incomplete proof, proposal identity mismatch, hidden unsupported completed values, moving state persistence and negative-equity funding omissions.
