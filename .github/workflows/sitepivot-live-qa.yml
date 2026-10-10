@@ -32,10 +32,12 @@ jobs:
         with:
           node-version: '24'
       - name: Install browser test runtime
+        id: runtime
         run: |
           npm ci
           npx playwright install --with-deps chromium webkit
       - name: Wait for GitHub Pages deployment
+        id: deployed
         run: |
           for i in {1..18}; do
             code=$(curl -L -s -o /tmp/sitepivot.html -w "%{http_code}" "https://boggedcake.github.io/ProjectIQ/?qa=${GITHUB_SHA}")
@@ -56,27 +58,33 @@ jobs:
           echo "Site was not reachable in time"
           exit 1
       - name: Run deployed browser smoke test
+        if: ${{ !cancelled() && steps.runtime.outcome == 'success' && steps.deployed.outcome == 'success' }}
         run: node qa/live-smoke.mjs
         env:
           SITEPIVOT_BUILD: ${{ github.sha }}
 
       - name: Verify repaired founder conversation, voice, duplex and changeover on the deployed site
+        if: ${{ !cancelled() && steps.runtime.outcome == 'success' && steps.deployed.outcome == 'success' }}
         run: node qa/founder-repair-browser.cjs
         env:
           SITEPIVOT_URL: https://boggedcake.github.io/ProjectIQ/
 
       - name: Run full deployed desktop and iPhone founder journeys
+        if: ${{ !cancelled() && steps.runtime.outcome == 'success' && steps.deployed.outcome == 'success' }}
         run: node qa/deployed-founder.mjs
 
       - name: Run deployed unified conversation and voice journeys in Chromium and WebKit
+        if: ${{ !cancelled() && steps.runtime.outcome == 'success' && steps.deployed.outcome == 'success' }}
         run: node qa/deployed-conversation.mjs
 
       - name: Verify property planning and comparison repairs across desktop and mobile
+        if: ${{ !cancelled() && steps.runtime.outcome == 'success' && steps.deployed.outcome == 'success' }}
         run: node qa/property-intelligence-browser.cjs
         env:
           SITEPIVOT_URL: https://boggedcake.github.io/ProjectIQ/
 
       - name: Verify real residential founder addresses in desktop and mobile Chromium and WebKit
+        if: ${{ !cancelled() && steps.runtime.outcome == 'success' && steps.deployed.outcome == 'success' }}
         run: node qa/residential-browser.cjs
         env:
           SITEPIVOT_URL: https://boggedcake.github.io/ProjectIQ/

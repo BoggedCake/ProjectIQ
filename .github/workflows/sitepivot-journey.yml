@@ -2,6 +2,7 @@ name: SitePivot consumer regression
 on:
   push:
     branches: [sitepivot-concept]
+    paths-ignore: ['docs/**']
   workflow_dispatch:
 permissions:
   contents: read
@@ -19,16 +20,25 @@ jobs:
           node-version: '24'
       - run: npm ci
       - run: npx playwright install --with-deps chromium webkit
+        id: browsers
       - run: npm test
+        if: ${{ !cancelled() && steps.browsers.outcome == 'success' }}
         env:
           QA_OUTPUT: journey-results.json
       - run: node qa/founder-server-regression.cjs
+        if: ${{ !cancelled() && steps.browsers.outcome == 'success' }}
       - run: SITEPIVOT_FOUNDER_PREVIEW=1 node qa/founder-repair-browser.cjs
+        if: ${{ !cancelled() && steps.browsers.outcome == 'success' }}
       - run: node qa/residential-browser.cjs
+        if: ${{ !cancelled() && steps.browsers.outcome == 'success' }}
       - run: node qa/property-intelligence-browser.cjs
+        if: ${{ !cancelled() && steps.browsers.outcome == 'success' }}
       - run: node qa/mobile-journey.cjs
+        if: ${{ !cancelled() && steps.browsers.outcome == 'success' }}
       - run: node qa/conversation-browser.cjs
+        if: ${{ !cancelled() && steps.browsers.outcome == 'success' }}
       - run: node qa/voice-browser.cjs
+        if: ${{ !cancelled() && steps.browsers.outcome == 'success' }}
       - uses: actions/upload-artifact@v4
         if: always()
         with:
