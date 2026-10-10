@@ -3,9 +3,15 @@
 const labels={loanBalance:'Outstanding loan balance',buildingPest:'Building and pest inspection',finance:'Replacement project finance costs',holding:'Replacement project holding costs',futureProjectCost:'Replacement future project cost',keepProjectCost:'Current property project cost',keepFinance:'Current property project finance',keepHolding:'Current property holding / ownership costs'};
 const money=n=>E.formatMoney(n),known=n=>n!==null&&n!==undefined&&n!=='';
 function evaluate(input={}){
- const amounts={},unknowns=[],keepBaselineAvailable=input.eligibility==null||input.eligibility.readyForFeasibility===true;
+ const amounts={},unknowns=[],excludedCosts=[],keepBaselineAvailable=input.eligibility==null||input.eligibility.readyForFeasibility===true;
+ const optionalHomeCosts=['finance','holding','futureProjectCost'];
  for(const [key,label]of Object.entries(labels)){
-  const value=key==='keepProjectCost'&&!keepBaselineAvailable?null:input[key];if(!known(value)){amounts[key]=null;unknowns.push(label);continue}
+  const value=key==='keepProjectCost'&&!keepBaselineAvailable?null:input[key];if(!known(value)){
+   // An existing home can be bought without undertaking a replacement project.
+   // Explicitly disclose excluded project allowances; site development stays unknown.
+   if(input.replacementType==='home'&&optionalHomeCosts.includes(key)){amounts[key]=0;excludedCosts.push(key);continue}
+   amounts[key]=null;unknowns.push(label);continue
+  }
   if(!Number.isFinite(+value)||+value<0)return{status:'review',reason:'Confirm a valid non-negative '+label.toLowerCase()+'.',unknowns};
   amounts[key]=+value;
  }
@@ -61,6 +67,6 @@ function evaluate(input={}){
   'Have a planner review each replacement property against your planning criteria before committing.',
   'Agree the buy / sell sequence, settlement timing and any bridging risk with your agent, conveyancer and lender.'
  ];
- return{status:'indicative',changeover,transactionGap:changeover.change,transactionCosts,transactionCostsKnown,availableEquity,mortgagePayoutShortfall,equityApplied,replacementExpenditure,totalProjectExpenditure,replacementFunding,netSaleEquity,keepBaselineAvailable,capitalNeededAfterLoan:fundingGap===null?null:Math.max(0,fundingGap),releasedEquityAfterPurchase:fundingGap===null?null:Math.max(0,-fundingGap),costs:{...amounts,transactionCost:transactionCosts,transactionCosts,transactionCostsKnown,moveKnownCost,keepKnownCost,keepTotalCost:keepBaselineAvailable?completeSum(['keepProjectCost','keepFinance','keepHolding']):null},unknowns,comparisonComplete,costAdvantage:comparisonComplete?difference:null,recommendation:{pathway,summary,reason},replacementCriteria,nextSteps,assumptions:{transactionAllowances:changeover.assumptions,providedCosts:Object.keys(labels).filter(key=>amounts[key]!==null),costPeriod:'Compare both options over the same period and project scope.',tax:'Tax implications are unquantified; obtain advice for your circumstances.',funding:'Funding includes any existing mortgage payout shortfall separately from project expenditure. Equity and the capital gap are arithmetic only, not available cash or borrowing approval.',values:'Sale and purchase values are user inputs, not verified market appraisals.'}};
+ return{status:'indicative',changeover,transactionGap:changeover.change,transactionCosts,transactionCostsKnown,availableEquity,mortgagePayoutShortfall,equityApplied,replacementExpenditure,totalProjectExpenditure,replacementFunding,netSaleEquity,keepBaselineAvailable,capitalNeededAfterLoan:fundingGap===null?null:Math.max(0,fundingGap),releasedEquityAfterPurchase:fundingGap===null?null:Math.max(0,-fundingGap),costs:{...amounts,transactionCost:transactionCosts,transactionCosts,transactionCostsKnown,moveKnownCost,keepKnownCost,keepTotalCost:keepBaselineAvailable?completeSum(['keepProjectCost','keepFinance','keepHolding']):null},unknowns,comparisonComplete,costAdvantage:comparisonComplete?difference:null,recommendation:{pathway,summary,reason},replacementCriteria,nextSteps,assumptions:{transactionAllowances:changeover.assumptions,providedCosts:Object.keys(labels).filter(key=>amounts[key]!==null&&!excludedCosts.includes(key)),excludedCosts,replacementScope:excludedCosts.length?'Existing home purchase: '+excludedCosts.map(key=>labels[key]).join(', ')+' excluded because no allowance was entered. Add an allowance if planned.':input.replacementType==='home'?'Existing home purchase including all entered replacement project allowances.':'Replacement site project allowances must be entered or verified; omitted values remain unknown.',costPeriod:'Compare both options over the same period and project scope.',tax:'Tax implications are unquantified; obtain advice for your circumstances.',funding:'Funding includes any existing mortgage payout shortfall separately from project expenditure. Equity and the capital gap are arithmetic only, not available cash or borrowing approval.',values:'Sale and purchase values are user inputs, not verified market appraisals.'}};
 }
 return{evaluate};});

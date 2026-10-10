@@ -19,6 +19,13 @@ function numberWords(value){
 }
 function speechText(text){
  let t=String(text||'').replace(/https?:\/\/\S+/g,'').replace(/(?:sources?|provider|confidence(?: code)?|evidence[- ]state|rate[- ]card(?: ID)?|internal ID|property ID|conversation ID|updated|checked|last verified)\s*:[^\n.!?]*(?:[.!?]|$)/gi,'').replace(/\b(?:Verified|Indicative|Needs Review|Unavailable)\b/gi,'').replace(/\b\d{4}-\d{2}-\d{2}(?:T\S+)?\b/g,'').replace(/\b\d{1,2}[\/-]\d{1,2}[\/-]\d{4}\b/g,'').replace(/\b\d{1,2}\s+(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s+\d{4}\b/gi,'').replace(/\b\d+(?:\.\d+)?%\s*confidence/gi,'');
+ // Restrict street suffixes to numbered addresses so St in Saint names and Dr titles survive.
+ const streets={av:'Avenue',ave:'Avenue',st:'Street',rd:'Road',dr:'Drive',ct:'Court',pl:'Place',cres:'Crescent',pde:'Parade',tce:'Terrace',hwy:'Highway',cl:'Close',ln:'Lane',cct:'Circuit'};
+ t=t.replace(/\b(\d+[a-z]?(?:\s*\/\s*\d+[a-z]?)?\s+(?:[a-z][a-z'’.-]*\s+){1,8})(Av|Ave|St|Rd|Dr|Ct|Pl|Cres|Pde|Tce|Hwy|Cl|Ln|Cct)\b(?=[ \t]*(?:,|[.!?;]|\n|$)|[ \t]+(?:[a-z][a-z'’.-]*[ \t]+){1,6}(?:NSW|VIC|QLD|SA|WA|TAS|NT|ACT)\s+\d{4}\b)/gi,(_,address,suffix)=>address+streets[suffix.toLowerCase()]);
+ const states={NSW:'New South Wales',VIC:'Victoria',QLD:'Queensland',SA:'South Australia',WA:'Western Australia',TAS:'Tasmania',NT:'Northern Territory',ACT:'Australian Capital Territory'};
+ // Convert postcode digits before the general number pass, preserving zeros such as NT 0800.
+ t=t.replace(/\b(NSW|VIC|QLD|SA|WA|TAS|NT|ACT|New South Wales|Victoria|Queensland|South Australia|Western Australia|Tasmania|Northern Territory|Australian Capital Territory)\s+(\d{4})\b/gi,(_,state,postcode)=>(states[state.toUpperCase()]||state)+' '+[...postcode].map(d=>numberWords(d)).join(' '));
+ t=t.replace(/\bR([12])\b/gi,(code,n,offset,source)=>{const label=n==='1'?'General Residential':'Low Density Residential';const follows=new RegExp('^\\s*(?:[-–—:(]\\s*)?'+label+'\\b','i').test(source.slice(offset+code.length));return 'R '+numberWords(n)+(follows?'':' '+label)});
  t=t.replace(/\b(m²|m2|sqm)\b|\bm²/gi,'square metres').replace(/\b([\d.]+)\s*m\b/gi,'$1 metres').replace(/\b(?:LEP|LMR|FSR|DCP|CDC|DA|SEPP)\b/g,acronym=>acronym.split('').join('-')).replace(/\bNSW\b/g,'New South Wales').replace(/\bLGA\b/g,'local government area').replace(/(\d)\s*[-–—]\s*(?=\d)/g,'$1 to ').replace(/([\d.]+)\s*:\s*1\b/g,'$1 to 1').replace(/%/g,' percent');
  t=t.replace(/(?:AUD\s*|A?\$)(\d[\d,]*(?:\.\d+)?)/g,(_,n)=>numberWords(n)+' dollars').replace(/\b\d+(?:,\d{3})*(?:\.\d+)?\b/g,n=>numberWords(n));
  return t.split(/\n+/).map(p=>p.replace(/\s+/g,' ').trim()).filter(Boolean).join('\n\n').replace(/^[\s.,;:]+/,'').trim();

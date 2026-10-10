@@ -94,6 +94,11 @@ jobs:
         run: node qa/duplex-browser.cjs
         env:
           SITEPIVOT_URL: https://boggedcake.github.io/ProjectIQ/
+      - name: Verify deployed financial UI using labelled regression fixtures across desktop and mobile
+        if: ${{ !cancelled() && steps.runtime.outcome == 'success' && steps.deployed.outcome == 'success' }}
+        run: node qa/master-financial-browser.cjs
+        env:
+          SITEPIVOT_URL: https://boggedcake.github.io/ProjectIQ/
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -101,3 +106,4 @@ jobs:
           path: |
             qa-artifacts/residential/
             qa-artifacts/duplex/
+            qa-artifacts/financial/
