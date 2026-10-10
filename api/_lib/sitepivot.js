@@ -2,6 +2,7 @@
 
 const {councilEvidence}=require('./council');
 const {frontage,parcelEvidence}=require('../../property-evidence');
+const FSR=require('../../fsr-evidence');
 const UPSTREAM={
   geocoder:'https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer',
   address:'https://portal.spatial.nsw.gov.au/server/rest/services/Hosted/NSW_Address_Point_Formatted/FeatureServer/0',
@@ -167,7 +168,10 @@ async function parcelFor(property){
 }
 async function spatial(base,id,geom,type,lga,fields='*',timeout=6000){
   const j=await arcQuery(base,id,{where:'1=1',geometry:JSON.stringify(geom),geometryType:type,inSR:4283,spatialRel:'esriSpatialRelIntersects',outFields:fields,returnGeometry:'false',resultRecordCount:50},timeout);
-  let fs=j.features||[];if(lga)fs=fs.filter(f=>sameLga(attrs(f),lga));return fs;
+  if(!Array.isArray(j.features)||j.exceededTransferLimit)throw new Error('Official spatial query did not return a complete feature set');
+  // Primary EPI polygons already establish spatial applicability. Legacy council
+  // names must not remove an intersecting LEP control following amalgamations.
+  let fs=j.features;if(lga&&base!==UPSTREAM.primary)fs=fs.filter(f=>sameLga(attrs(f),lga));return fs;
 }
 async function identify(base,point,timeout=6000){
   const d=.015,x=+point.x,y=+point.y;
@@ -175,7 +179,6 @@ async function identify(base,point,timeout=6000){
 }
 function rowLabels(fs,keys=['LAY_CLASS','SYM_CODE','H_NAME','H_ID']){return unique((fs||[]).map(f=>first(attrs(f),keys)))}
 function formatZone(fs){return unique(fs.map(f=>{const a=attrs(f);return [first(a,['SYM_CODE','ZONE','ZONE_CODE']),first(a,['LAY_CLASS','ZONE_NAME'])].filter(Boolean).join(' · ')||null})).join(' / ')||null}
-function formatFsr(fs){return unique(fs.map(f=>{const v=first(attrs(f),['FSR','MAX_FSR','LAY_CLASS']);if(v===null)return null;return /^\d+(\.\d+)?$/.test(String(v))?String(v)+':1':String(v)})).join(' / ')||null}
 function formatHeight(fs){return unique(fs.map(f=>{const a=attrs(f),v=first(a,['MAX_B_H','MAX_HEIGHT','LAY_CLASS']),u=first(a,['UNITS']);if(v===null)return null;return /^\d+(\.\d+)?$/.test(String(v))?String(v)+' '+(u||'m'):String(v)})).join(' / ')||null}
 function formatLot(fs){return unique(fs.map(f=>{const a=attrs(f),v=first(a,['LOT_SIZE','MIN_LOT_SIZE','LAY_CLASS']),u=first(a,['UNITS']);if(v===null)return null;return /^\d+(\.\d+)?$/.test(String(v))?new Intl.NumberFormat('en-AU').format(+v)+' '+(u||'m²'):String(v)})).join(' / ')||null}
 function trigger(fs,empty){const x=rowLabels(fs);return x.length?x.join(' / '):empty}
@@ -224,6 +227,7 @@ async function planningFor(property){
     ...(data.sepp||[]).map(r=>r.attributes?.EPI_NAME||r.attributes?.['EPI Name']||r.layerName).filter(Boolean)
   ]);
   const [council,frontageEvidence]=await Promise.all([councilPromise,frontagePromise]);
+  const fsrEvidence=FSR.resolve({records:data.fsr,error:failed.includes('fsr')?'Official FSR retrieval failed':null,parcelResolved:!!parcel.geometry,queryComplete:!failed.includes('fsr'),instrument:localInstrument,source:UPSTREAM.primary+'/1',checkedAt:new Date().toISOString()});
   return {
     parcel:{frontage:frontageEvidence,lot:parcel.lot,dp:parcel.dp,area:parcel.area,parcels:parcel.parcels,geometryResolved:!!parcel.geometry,identityEvidence:parcel.identityEvidence||null,areaEvidence:parcel.areaEvidence||null,status:parcel.status||'review'},
     planning:{
@@ -232,7 +236,7 @@ async function planningFor(property){
       councilEvidence:council,spatialScope:parcel.geometry?'parcel':'address-point',
       instrument:localInstrument,allEpiNames:epis,epiNames:epis,statePolicies,sepp:statePolicies,
       zone:failed.includes('zone')?null:formatZone(data.zone),
-      fsr:failed.includes('fsr')?null:formatFsr(data.fsr),
+      fsr:fsrEvidence.value,fsrEvidence,
       height:failed.includes('height')?null:formatHeight(data.height),
       minLot:failed.includes('lot')?null:formatLot(data.lot),
       heritage:data.heritage.length?trigger(data.heritage):missing('heritage','No mapped EPI heritage overlap returned'),

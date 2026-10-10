@@ -9,6 +9,7 @@ on:
       - 'commercial-engine.js'
       - 'property-evidence.js'
       - 'planning-intelligence.js'
+      - 'fsr-evidence.js'
       - 'comparison-engine.js'
       - 'qa/**'
       - 'package*.json'

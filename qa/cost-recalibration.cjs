@@ -1,5 +1,7 @@
 'use strict';
 const assert=require('node:assert/strict'),E=require('../commercial-engine');
+// Supported planning + explicit synthetic exemption evidence isolate arithmetic, not live eligibility.
+const supported={eligibility:{readyForFeasibility:true},contributions:{status:'verified-exemption',source:'Regression fixture: council exemption assessment',reason:'Synthetic confirmed exemption solely for arithmetic reconciliation'}};
 const input={area:440,quality:'premium',configuration:'two-storey-basement',projectType:'duplex',dwellingCount:2,region:'NSW'};
 const c=E.deliveredCost(input);
 assert.ok(Array.isArray(c.components),'actual cost components must be available');
@@ -12,8 +14,8 @@ assert.equal(taller.configurationDetails.aboveGroundLevels,3);assert.equal(talle
 assert.ok(c.constructionMid<c.mid,'hard works must exclude consultants, fees and contingency');
 assert.ok(c.siteUnknowns.includes('Ground conditions and groundwater'));
 assert.equal(E.deliveredCost({...input,land:10000000,prestige:true}).mid,c.mid);
-const f=E.feasibility({cost:c,land:1000000,products:[{count:2,value:3000000}],extras:{professional:1e6,approvals:1e6,contingency:1e6,externalWorks:1e6,demolition:70000},interestRate:0,financeEstablishment:0,holding:0,sellingPct:0,marketing:0,legal:0,taxPct:0});
-assert.equal(f.total,1000000+c.mid+70000);assert.deepEqual(Object.keys(f.lines),['demolition']);
+const f=E.feasibility({...supported,cost:c,land:1000000,products:[{count:2,value:3000000}],extras:{professional:1e6,approvals:1e6,contingency:1e6,externalWorks:1e6,demolition:70000},interestRate:0,financeEstablishment:0,holding:0,sellingPct:0,marketing:0,legal:0,taxPct:0});
+assert.equal(f.total,1000000+c.mid+70000);assert.deepEqual(Object.keys(f.lines),['demolition','authorityContributions']);
 assert.equal(E.deliveryComposition(c).reduce((s,l)=>s+l.amount,0),c.mid);
 assert.equal(E.deliveredCost({...input,basementArea:500}).status,'review');assert.equal(E.deliveredCost({...input,quality:'garbage'}).status,'review');
 assert.equal(E.deliveredCost({...input,projectType:'apartment'}).status,'review');

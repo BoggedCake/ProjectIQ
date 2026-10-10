@@ -19,7 +19,7 @@ function numberWords(value){
 }
 function speechText(text){
  let t=String(text||'').replace(/https?:\/\/\S+/g,'').replace(/(?:sources?|provider|confidence(?: code)?|evidence[- ]state|rate[- ]card(?: ID)?|internal ID|property ID|conversation ID|updated|checked|last verified)\s*:[^\n.!?]*(?:[.!?]|$)/gi,'').replace(/\b(?:Verified|Indicative|Needs Review|Unavailable)\b/gi,'').replace(/\b\d{4}-\d{2}-\d{2}(?:T\S+)?\b/g,'').replace(/\b\d{1,2}[\/-]\d{1,2}[\/-]\d{4}\b/g,'').replace(/\b\d{1,2}\s+(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s+\d{4}\b/gi,'').replace(/\b\d+(?:\.\d+)?%\s*confidence/gi,'');
- t=t.replace(/\b(m²|m2|sqm)\b|\bm²/gi,'square metres').replace(/\b([\d.]+)\s*m\b/gi,'$1 metres').replace(/\bFSR\b/g,'floor space ratio').replace(/\bNSW\b/g,'New South Wales').replace(/\bLGA\b/g,'local government area').replace(/\bCDC\b/g,'complying development certificate').replace(/\bDA\b/g,'development application').replace(/(\d)\s*[-–—]\s*(?=\d)/g,'$1 to ').replace(/([\d.]+)\s*:\s*1\b/g,'$1 to 1').replace(/%/g,' percent');
+ t=t.replace(/\b(m²|m2|sqm)\b|\bm²/gi,'square metres').replace(/\b([\d.]+)\s*m\b/gi,'$1 metres').replace(/\b(?:LEP|LMR|FSR|DCP|CDC|DA|SEPP)\b/g,acronym=>acronym.split('').join('-')).replace(/\bNSW\b/g,'New South Wales').replace(/\bLGA\b/g,'local government area').replace(/(\d)\s*[-–—]\s*(?=\d)/g,'$1 to ').replace(/([\d.]+)\s*:\s*1\b/g,'$1 to 1').replace(/%/g,' percent');
  t=t.replace(/(?:AUD\s*|A?\$)(\d[\d,]*(?:\.\d+)?)/g,(_,n)=>numberWords(n)+' dollars').replace(/\b\d+(?:,\d{3})*(?:\.\d+)?\b/g,n=>numberWords(n));
  return t.split(/\n+/).map(p=>p.replace(/\s+/g,' ').trim()).filter(Boolean).join('\n\n').replace(/^[\s.,;:]+/,'').trim();
 }

@@ -71,10 +71,89 @@ function deliveredCost(input={}){
  const totals=bands.map(k=>components.reduce((sum,l)=>sum+l[k],0)),unknowns=['Ground conditions and groundwater','Rock, contamination and spoil disposal','Access and neighbouring support requirements','Major service upgrades and authority contributions'];
  return{...r,area,areaBreakdown:{aboveGround:above,basement:+basementArea,source:input.basementArea==null&&config.basementLevels?'Assumed equal floor plates; replace with measured area split':'User total/split'},dwellingCount:+dwellings,liftCount:+liftCount,low:totals[0],mid:totals[1],high:totals[2],rateLow:totals[0]/area,rateMid:totals[1]/area,rateHigh:totals[2]/area,constructionLow:hard[0],constructionMid:hard[1],constructionHigh:hard[2],components,professionalPct:0,approvalsPct:0,externalPct:0,contingencyPct:0,demolition:0,complexity:1,siteUnknowns:unknowns,assumptions:['Both dwellings included in total constructed area','Sydney comparator; ordinary conditions assumed pending geotechnical, survey and builder review','Basement shell includes excavation; no second basement uplift','No pool, exceptional rock/water, demolition or contributions included','4 levels assumes one lift per dwelling; 3 levels assumes stairs unless lifts explicitly selected','No future escalation automatically added; reprice at tender']};
 }
-function feasibility(i={}){const bounded={holdingMonths:[0,600],interestRate:[0,1],landDebtRatio:[0,1],constructionDrawdown:[0,1],sellingPct:[0,1],taxPct:[0,1],targetProfitOnCost:[0,10],financeEstablishment:[0,Infinity],holding:[0,Infinity],marketing:[0,Infinity],legal:[0,Infinity]};for(const[k,[lo,hi]]of Object.entries(bounded))if(i[k]!=null&&(!numeric(i[k])||+i[k]<lo||+i[k]>hi))return{status:'review',reason:'Confirm valid finance, timing and commercial cost assumptions.'};if(!positive(i.land)||!positive(i.cost?.mid)||!i.products?.length||i.products.some(p=>!positive(p.value)||!Number.isInteger(+p.count)||+p.count<1))return{status:'review',reason:'Confirm land/current-property value, delivered cost and sold evidence or explicit user assumptions for each finished product.'};const grv=i.products.reduce((a,p)=>a+p.value*p.count,0),land=+i.land,delivery=i.cost.mid,lines={};for(const [key,val]of Object.entries(i.extras||{})){if(['demolition','professional','approvals','externalWorks','contingency','authorityContributions'].includes(key)&&(i.cost.excludedCosts||[]).includes(key)&&numeric(val)&&+val>=0)lines[key]=+val}
- for(const [key,val]of Object.entries(i.extras||{})){if((i.cost.excludedCosts||[]).includes(key)&&['demolition','professional','approvals','externalWorks','contingency','authorityContributions'].includes(key)&&(!numeric(val)||+val<0))return{status:'review',reason:'Confirm nonnegative excluded-cost allowances.'};}
- const extras=Object.values(lines).reduce((a,b)=>a+b,0),years=(i.holdingMonths??18)/12,interest=i.interestRate??.07,landDebt=i.landDebtRatio??.7,draw=i.constructionDrawdown??.5,finance=(land*landDebt+(delivery+extras)*draw)*interest*years,establishment=i.financeEstablishment??20000,holding=i.holding??15000,selling=grv*(i.sellingPct??.025),marketing=i.marketing??10000,legal=i.legal??30000,taxSensitivity=grv*(i.taxPct??.04),nonLand=delivery+extras+(delivery+extras)*draw*interest*years+establishment+holding+selling+marketing+legal+taxSensitivity,landFactor=1+landDebt*interest*years,total=land+delivery+extras+finance+establishment+holding+selling+marketing+legal+taxSensitivity,profit=grv-total,target=i.targetProfitOnCost??.2,residual=(grv/(1+target)-nonLand)/landFactor;
- return{status:'indicative',costVersion:i.cost.version,deliveryBand:'mid',ignoredIncludedExtras:Object.keys(i.extras||{}).filter(key=>(i.cost.includedCosts||[]).includes(key)),grv,site:land,delivery,lines,finance,financeEstablishment:establishment,holding,selling,marketing,legal,taxSensitivity,total,profit,margin:profit,profitOnCost:profit/total,profitOnGrv:profit/grv,marginPct:profit/grv,residualLandValue:residual,holdingMonths:years*12,interestRate:interest,targetProfitOnCost:target,assumptions:{landDebtRatio:landDebt,constructionDrawdown:draw},note:'Simple staged drawdown sensitivity; financing terms, timing, excluded allowances and net GST/tax adjustment require professional confirmation. Residual assumes retained existing land (no acquisition duty), fixed construction costs and the stated target profit on cost.'}}
+const FINANCE_ASSUMPTION={version:'development-finance-2026-10-10-v1',asOf:'2026-10-10',interestRate:.095,label:'Illustrative development finance assumption, not a lender quote',source:'https://www.crowdproperty.com.au/developers/development-finance',sourceContext:'Public lender terms: rates from 8.50%, establishment fees from 1.65% including GST, terms up to 24 months, milestone drawdowns. The working 9.5% assumption is not that advertised minimum or an offered rate.'};
+const CONTRIBUTION_PLAN={id:'northern-beaches-s7.12-2024',source:'https://www.northernbeaches.nsw.gov.au/media/65178',asOf:'2026-10-10',commenced:'2024-10-19',exclusions:['Warriewood Valley Release Area','Frenchs Forest Town Centre','Dee Why Town Centre']};
+// A verified plan needs parcel-specific applicability and a statutory cost basis.
+// Allowances remain explicitly provisional; missing evidence never means zero.
+function assessContributions(i={}){
+ const unknown=reason=>({status:'unknown',amount:null,method:null,decisionReady:false,reason,asOf:'2026-10-10'});
+ if(!i||typeof i!=='object'||Array.isArray(i))return unknown('Confirm the applicable local contributions plan or provide an explicit allowance.');
+ if(i.section711Applies===true&&i.method==='s7.12'||Array.isArray(i.methods)&&i.methods.includes('s7.11')&&i.methods.includes('s7.12'))return unknown('Section 7.11 and section 7.12 are alternatives for the same development; verify the applicable plan.');
+ if(i.status==='verified-exemption')return i.source&&i.reason?{...i,amount:0,decisionReady:true,label:'Verified contribution exemption',asOf:'2026-10-10'}:unknown('An exemption needs its source and parcel-specific reason.');
+ if(['user-allowance','provisional'].includes(i.status))return numeric(i.amount)&&+i.amount>=0?{...i,amount:+i.amount,decisionReady:false,label:i.status==='user-allowance'?'Explicit user contribution allowance — unverified':'Provisional contribution allowance — verify plan and indexation',asOf:'2026-10-10'}:unknown('Supply a nonnegative contribution allowance.');
+ if(i.status!=='verified-plan'||i.planApplicable!==true||!i.source||!['s7.11','s7.12'].includes(i.method))return unknown('Contribution plan, parcel applicability, exemption and statutory calculation basis remain unverified.');
+ let amount=i.amount,rate=i.rate;
+ if(i.method==='s7.12'&&i.planId===CONTRIBUTION_PLAN.id){
+  if(!numeric(i.approvedDevelopmentCost)||+i.approvedDevelopmentCost<0)return unknown('Confirm the section 208 cost summary basis; delivered construction cost is not automatically the statutory basis.');
+  const cost=+i.approvedDevelopmentCost;rate=cost<=100000?0:cost<=200000?.005:.01;
+  amount=cost*rate;
+ }else if(i.method==='s7.12'&&amount==null&&numeric(i.approvedDevelopmentCost)&&+i.approvedDevelopmentCost>=0&&numeric(rate)&&+rate>=0&&+rate<=1)amount=+i.approvedDevelopmentCost*+rate;
+ if(!numeric(amount)||+amount<0)return unknown('Confirm the applicable plan amount and credits/indexation; no generic per-dwelling levy is assumed.');
+ if(i.indexationFactor!=null&&(!positive(i.indexationFactor)))return unknown('Confirm a positive plan indexation factor.');
+ amount=+amount*(i.indexationFactor??1);
+ return{...i,amount,rate:rate??null,decisionReady:true,label:'Verified '+i.method+' plan assessment',asOf:'2026-10-10',note:'Verify indexation at payment and other distinct infrastructure charges; section 7.11 and 7.12 are not added together.'};
+}
+function financeSchedule(i={}){
+ const review=reason=>({status:'review',reason,version:FINANCE_ASSUMPTION.version});
+ const land=i.land??0,delivery=i.delivery??0,landDebt=i.landDebt??(i.landDebtRatio!=null?land*i.landDebtRatio:0),ratio=i.constructionBorrowingRatio??.7,rate=i.interestRate??FINANCE_ASSUMPTION.interestRate;
+ const timing={preconstructionMonths:i.preconstructionMonths??3,constructionMonths:i.constructionMonths??12,settlementMonths:i.settlementMonths??3,delayMonths:i.delayMonths??0};
+ if([land,delivery,landDebt].some(v=>!numeric(v)||+v<0)||+landDebt>+land)return review('Confirm nonnegative land value, delivery spend and explicit land debt no greater than land value.');
+ if([ratio,rate,i.landDebtRatio??0].some(v=>!numeric(v)||+v<0||+v>1))return review('Confirm borrowing ratios and annual interest rate between zero and one.');
+ if(Object.values(timing).some(v=>!Number.isInteger(+v)||+v<0||+v>600)||+timing.constructionMonths<1)return review('Confirm whole months for preconstruction, construction, settlement and delay; construction must be at least one month.');
+ Object.keys(timing).forEach(k=>timing[k]=+timing[k]);
+ const months=Object.values(timing).reduce((a,b)=>a+b,0);if(months>600)return review('Confirm total project duration of 600 months or less.');
+ if(i.capitaliseInterest!=null&&typeof i.capitaliseInterest!=='boolean')return review('Confirm whether interest is capitalised or paid monthly.');
+ const capitalise=i.capitaliseInterest??true,fee=i.financeEstablishment??20000;
+ if(!numeric(fee)||+fee<0)return review('Confirm a nonnegative establishment fee paid from equity.');
+ const raw=i.drawWeights??Array.from({length:timing.constructionMonths},()=>1);
+ if(!Array.isArray(raw)||raw.length!==timing.constructionMonths||raw.some(v=>!numeric(v)||+v<0)||!raw.some(v=>+v>0))return review('Draw weights must match build months and contain nonnegative milestone weights with a positive sum.');
+ const sum=raw.reduce((a,b)=>a+ +b,0),weights=raw.map(v=>+v/sum),principal=+delivery* +ratio;
+ const calculate=(annualRate,extraDelay=0)=>{
+  let balance=+landDebt,interest=0,peakDebt=balance,repayment=0,cumulativeDraw=0;
+  const rows=[],n=months+extraDelay;
+  for(let month=1;month<=n;month++){
+   const buildIndex=month-timing.preconstructionMonths-1,building=buildIndex>=0&&buildIndex<timing.constructionMonths;
+   const phase=month<=timing.preconstructionMonths?'preconstruction':building?'construction':month<=timing.preconstructionMonths+timing.constructionMonths+timing.delayMonths+extraDelay?'delay':'settlement';
+   const openingDebt=balance,spend=building?+delivery*weights[buildIndex]:0,draw=spend* +ratio;
+   cumulativeDraw+=draw;
+   // Mid-month milestone draw convention; opening balance accrues for full month.
+   const monthlyInterest=(openingDebt+draw/2)*annualRate/12;
+   interest+=monthlyInterest;balance+=draw+(capitalise?monthlyInterest:0);peakDebt=Math.max(peakDebt,balance);
+   const debtBeforeRepayment=balance,settlementRepayment=month===n?balance:0;
+   if(settlementRepayment){repayment=settlementRepayment;balance=0;}
+   rows.push({month,phase,openingDebt,constructionSpend:spend,constructionDraw:draw,cumulativeConstructionDraw:cumulativeDraw,equityContribution:spend-draw+(capitalise?0:monthlyInterest)+(month===1?+fee:0),establishmentFee:month===1?+fee:0,interest:monthlyInterest,capitalisedInterest:capitalise?monthlyInterest:0,cashInterest:capitalise?0:monthlyInterest,debtBeforeRepayment,settlementRepayment,closingDebt:balance});
+  }
+  return{rows,interest,financeCost:interest+ +fee,peakDebt,repaymentAtSettlement:repayment};
+ };
+ const result=calculate(+rate),summary=x=>({interest:x.interest,financeCost:x.financeCost,repaymentAtSettlement:x.repaymentAtSettlement});
+ return{status:'indicative',...result,version:FINANCE_ASSUMPTION.version,assumption:{...FINANCE_ASSUMPTION,label:i.interestRate!=null?'User annual development finance rate — confirm terms':FINANCE_ASSUMPTION.label},interestRate:+rate,landDebt:+landDebt,landEquity:+land- +landDebt,constructionBorrowing:principal,constructionEquity:+delivery-principal,financeEstablishment:+fee,capitaliseInterest:capitalise,holdingMonths:months,timing,drawWeights:weights,constructionBorrowingRatio:+ratio,sensitivities:{rateMinus2:summary(calculate(Math.max(0,+rate-.02))),ratePlus2:summary(calculate(Math.min(1,+rate+.02))),delayPlus3:summary(calculate(+rate,3)),delayPlus6:summary(calculate(+rate,6))},warnings:months>24?['Project exceeds the cited lender’s advertised maximum 24-month term; refinance/extension not priced.']:[],note:'Land equity is retained-property opportunity value; explicit land debt is outstanding at start. Delivery is drawn progressively in normalised milestone weights with mid-month interest. Establishment fees are paid from equity, never counted as principal. Debt principal is repaid at final settlement and is not a second project cost. Monthly cash interest is paid from equity when not capitalised. Borrowing ratio and timing are illustrative funding assumptions, not lender approval; ancillary project costs are equity funded.'};
+}
+function feasibility(i={}){
+ const review=reason=>({status:'review',decisionReady:false,reason});
+ if(i.eligibility?.readyForFeasibility!==true&&i.exploratory!==true)return review('Planning eligibility must be ready for feasibility, or this calculation must be explicitly exploratory.');
+ const bounded={holdingMonths:[0,600],interestRate:[0,1],landDebtRatio:[0,1],constructionDrawdown:[0,1],sellingPct:[0,1],taxPct:[0,1],targetProfitOnCost:[0,10],financeEstablishment:[0,Infinity],holding:[0,Infinity],marketing:[0,Infinity],legal:[0,Infinity]};
+ for(const[k,[lo,hi]]of Object.entries(bounded))if(i[k]!=null&&(!numeric(i[k])||+i[k]<lo||+i[k]>hi))return review('Confirm valid finance, timing and commercial cost assumptions.');
+ if(!positive(i.land)||!positive(i.cost?.mid)||!Array.isArray(i.products)||!i.products.length||i.products.some(p=>!positive(p.value)||!Number.isInteger(+p.count)||+p.count<1))return review('Confirm land/current-property value, delivered cost and sold evidence or explicit user assumptions for each finished product.');
+ const contributionInput=i.contributions??(i.extras&&Object.prototype.hasOwnProperty.call(i.extras,'authorityContributions')?{status:'user-allowance',amount:i.extras.authorityContributions}:{}),contributions=assessContributions(contributionInput);
+ if(contributions.amount===null)return{...review('Contributions are unresolved: '+contributions.reason),contributions};
+ const grv=i.products.reduce((a,p)=>a+ +p.value* +p.count,0),land=+i.land,delivery=+i.cost.mid,lines={};
+ for(const[key,val]of Object.entries(i.extras||{}))if(key!=='authorityContributions'&&['demolition','professional','approvals','externalWorks','contingency'].includes(key)&&(i.cost.excludedCosts||[]).includes(key)){
+  if(!numeric(val)||+val<0)return review('Confirm nonnegative excluded-cost allowances.');lines[key]=+val;
+ }
+ lines.authorityContributions=contributions.amount;
+ const extras=Object.values(lines).reduce((a,b)=>a+b,0);
+ // holdingMonths remains a supported explicit total; otherwise use phase durations.
+ const financeInput={...i,land,delivery,settlementMonths:i.settlementMonths??(i.holdingMonths!=null?+i.holdingMonths-(i.preconstructionMonths??3)-(i.constructionMonths??12)-(i.delayMonths??0):3)};
+ const schedule=financeSchedule(financeInput);if(schedule.status==='review')return review(schedule.reason);
+ const finance=schedule.interest,establishment=schedule.financeEstablishment,holding=+(i.holding??15000),selling=grv*(i.sellingPct??.025),marketing=+(i.marketing??10000),legal=+(i.legal??30000),taxSensitivity=grv*(i.taxPct??.04),target=+(i.targetProfitOnCost??.2);
+ const other=delivery+extras+establishment+holding+selling+marketing+legal+taxSensitivity,total=land+other+finance,profit=grv-total;
+ // Interest is affine in land where a debt ratio is supplied, fixed otherwise.
+ const zero=financeSchedule({...financeInput,land:0,landDebt:0,landDebtRatio:0}).interest;
+ const landInterestFactor=i.landDebt==null&&i.landDebtRatio!=null?(finance-zero)/land:0;
+ const fixedFinance=landInterestFactor?zero:finance,residual=(grv/(1+target)-other-fixedFinance)/(1+landInterestFactor);
+ const exploratory=i.exploratory===true,decisionReady=!exploratory&&contributions.decisionReady;
+ return{status:exploratory?'exploratory':'indicative',decisionReady,costVersion:i.cost.version,deliveryBand:'mid',ignoredIncludedExtras:Object.keys(i.extras||{}).filter(key=>(i.cost.includedCosts||[]).includes(key)),grv,site:land,delivery,lines,contributions,finance,financeSchedule:schedule,financeEstablishment:establishment,holding,selling,marketing,legal,taxSensitivity,total,profit,margin:profit,profitOnCost:profit/total,profitOnGrv:profit/grv,marginPct:profit/grv,residualLandValue:residual,holdingMonths:schedule.holdingMonths,interestRate:schedule.interestRate,targetProfitOnCost:target,assumptions:{landDebt:schedule.landDebt,landEquity:schedule.landEquity,constructionBorrowingRatio:schedule.constructionBorrowingRatio,capitaliseInterest:schedule.capitaliseInterest,contributionStatus:contributions.status},sensitivities:Object.fromEntries(Object.entries(schedule.sensitivities).map(([k,v])=>[k,{...v,total:total-finance+v.interest,profit:grv-total+finance-v.interest}])),note:(exploratory?'Exploratory scenario; planning eligibility is not established. ':'')+(contributions.decisionReady?'':'Contribution amount is an explicit unverified allowance; decision readiness is withheld. ')+'Monthly progressive development finance, not a lender quote. Debt principal is not double-counted as a cost. Residual assumes retained existing land without acquisition duty, fixed delivery and other costs, stated target profit on cost and unchanged explicit debt (or stated debt ratio). Separate net GST/tax adjustment and professional review required.'};
+}
 function roomArea(rooms={},override){if(positive(override))return{area:+override,version:'rooms-2026-10-06-v1',source:'User area override',needsConfirmation:false};let area=0;for(const[k,v]of Object.entries(rooms))area+=(ROOMS[k]||0)*Math.max(0,+v||0);return{area:area||null,version:'rooms-2026-10-06-v1',source:'Room allowances including circulation within each allowance',needsConfirmation:!area||!!rooms.other}}
 const DUTY_SOURCE='https://www.revenue.nsw.gov.au/taxes-duties-levies-royalties/transfer-duty/understanding-transfer-duty/calculate-transfer-duty';
 const DUTY_VERSIONS=[
@@ -174,4 +253,4 @@ function renovationCost({components=[],extent='replace',quality='premium',comple
 }
 function deliveryComposition(cost){if(!positive(cost?.mid))return[];if(!Array.isArray(cost.components))return[{label:'Delivered total — breakdown unavailable',amount:cost.mid,share:1,version:cost.version||VERSION,source:'No measured component breakdown supplied'}];return cost.components.filter(l=>l.mid>0).map(l=>({...l,amount:l.mid,share:l.mid/cost.mid,version:cost.version||VERSION,source:l.source||'Actual working cost component; included once in delivered total'}))}
 
-return{COST_CONFIGS,nswTransferDuty,DUTY_VERSIONS,interpretIntent,normalizeIntent,RENOVATION_LABELS,RENOVATION_COMPONENTS,renovationCost,deliveryComposition,rateCard,deliveredCost,feasibility,roomArea,ROOMS,moveComparison,parseMoney,formatMoney,frontage};});
+return{COST_CONFIGS,nswTransferDuty,DUTY_VERSIONS,interpretIntent,normalizeIntent,RENOVATION_LABELS,RENOVATION_COMPONENTS,renovationCost,deliveryComposition,rateCard,deliveredCost,feasibility,financeSchedule,assessContributions,FINANCE_ASSUMPTION,CONTRIBUTION_PLAN,roomArea,ROOMS,moveComparison,parseMoney,formatMoney,frontage};});
