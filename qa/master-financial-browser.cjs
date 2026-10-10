@@ -52,7 +52,7 @@ const near=(actual,expected,label)=>assert.ok(Number.isFinite(actual)&&Math.abs(
     near(f.currentMonthlyRepayment,monthly(1900000,.0615,25),'current 25-year repayment');
     near(f.monthlyRepayment.total,monthly(1900000,.0615,25)+monthly(f.funding.newBorrowing,.0615,30),'split loan monthly repayment');
     near(r.monthlyRepayment.total,monthly(2752287,.0615,30),'replacement 30-year repayment');
-    assert.equal(f.accommodationCost,48000);assert.ok(f.financeCost>0);
+    assert.equal(f.accommodationCost,48000);assert.ok(f.financeCost>0);near(state.assessment.comparison.costs.keepFinance,f.financeCost,'comparison uses shared finance');near(state.assessment.comparison.costs.keepHolding,f.holdingCost+f.accommodationCost,'comparison uses shared living costs');assert.equal(state.assessment.comparison.comparisonComplete,true);
     near(f.incrementalProjectCost,state.assessment.cost.mid+48000+f.financeCost,'works expenditure includes accommodation and finance once');
     for(const year of [1,5,10]){assert.ok(Number.isFinite(f.projections[year].balance));assert.ok(Number.isFinite(r.projections[year].interest))}
     const text=await page.locator('#consumerResult').innerText();for(const value of ['$252,287','$720,000','$3,472,287','$2,752,287','$48,000'])assert.ok(text.includes(value),value);
