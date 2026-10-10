@@ -35,3 +35,6 @@ const inverseMixed=C.residentialFinance({...base,repaymentType:'pi',termYears:2,
 console.log('Residential mortgage and development reconciliation regression passed');
 
 const expiry=C.residentialFinance({...base,repaymentType:'io',ioMonths:12,newRepaymentType:'pi'});near(expiry.monthlyRepayment.total,2540.47446886);near(expiry.monthlyRepayment.total,expiry.rows[12].existingRepayment+expiry.rows[12].newRepayment);near(expiry.postIOMonthlyRepayment.total,2540.47446886);
+
+const cashPrincipal=C.residentialFinance({projectCost:120000,existingBalance:0,annualRate:0,existingRate:0,termYears:10,constructionMonths:12,borrowingType:'mortgage'});near(cashPrincipal.financeCost,0);near(cashPrincipal.incrementalDebtPayments,12000);near(cashPrincipal.additionalCashRequired,12000);near(cashPrincipal.cashShortfall,12000);near(cashPrincipal.projectCashRequirement,132000);near(cashPrincipal.incrementalProjectCost,120000);
+const fixedOffset=C.residentialFinance({...base,projectCost:50000,offsetBalance:100000,offsetContribution:50000});assert.ok(fixedOffset.financeCost>0);near(fixedOffset.incrementalDebtPayments,0);near(fixedOffset.additionalCashRequired,0);
