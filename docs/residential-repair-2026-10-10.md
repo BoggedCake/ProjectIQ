@@ -29,6 +29,8 @@ Development finance9.5% is a dated, editable illustrative modelling assumption i
 
 The live founder journey additionally reproduced a profile-confirmation control being replaced by background rendering. The form now keeps its DOM controls while the same property still needs confirmation, preserving edits and clicks. Follow-up regressions cover verified contribution non-applicability and outstanding land debt exceeding current land value without treating lender approval as known.
 
+The deployed moving-only journey identified unset optional home-purchase allowances obscuring the funding total. These now display editable, disclosed zero exclusions, while replacement development costs remain unknown. Moving-only scope/assessment starts with selling, purchase and funding, without a rejected duplex or room-selection baseline. For a $2m sale, $2.5m purchase and $800k mortgage, working transaction expenses $190,787 and equity $1,137,500 reconcile to $1,490,787 additional funding. A successfully completed unmapped FSR result no longer generates a contradictory missing-data warning.
+
 ## Verification status
 
 All unit/integration regression suites, security preparation regressions, working-tree secret scan and static package checks passed before push. Independent review found and resolved stale/loading/split-zone proof acceptance, incomplete proof, proposal identity mismatch, hidden unsupported completed values, moving state persistence and negative-equity funding omissions.
