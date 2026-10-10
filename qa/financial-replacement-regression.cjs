@@ -53,3 +53,5 @@ assert.equal(unsupported.keepBaselineAvailable,false);
 assert.equal(unsupported.costs.keepTotalCost,null);
 assert.equal(unsupported.replacementFunding,2752287);
 console.log('PASS ready-home replacement costs, excluded optional allowances, preserved inputs and unknown funding guards');
+
+const saving=Q.evaluate({...founder,keepFinance:-10000,keepFinanceIsModelledNet:true});assert.equal(saving.status,"indicative");assert.equal(saving.costs.keepTotalCost,900000);assert.equal(Q.evaluate({...founder,keepFinance:-10000}).status,"review");

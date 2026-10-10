@@ -12,7 +12,7 @@ function evaluate(input={}){
    if(input.replacementType==='home'&&optionalHomeCosts.includes(key)){amounts[key]=0;excludedCosts.push(key);continue}
    amounts[key]=null;unknowns.push(label);continue
   }
-  if(!Number.isFinite(+value)||+value<0)return{status:'review',reason:'Confirm a valid non-negative '+label.toLowerCase()+'.',unknowns};
+  if(!Number.isFinite(+value)||(+value<0&&!(key==='keepFinance'&&input.keepFinanceIsModelledNet===true)))return{status:'review',reason:'Confirm a valid non-negative '+label.toLowerCase()+'.',unknowns};
   amounts[key]=+value;
  }
  // Keep finance outside transaction costs so each supplied allowance is added once.
