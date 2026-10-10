@@ -1,0 +1,11 @@
+# Commercial consumer journey implementation
+
+Approved source: attached Pasted markdown(4).md. Execute on sitepivot-concept only; preserve all previous regression assertions and planning/identity confidence states.
+
+1. Add a shared pure commercial module and test all-in rate inclusions, explicit midpoints, configuration, exclusions, financing/cashflow, product GRV, residual land arithmetic, opt-in move arithmetic and versioned room area assumptions. Preserve legacy homeowner costing until its semantics are independently changed.
+2. Add server-only market and structured-intent adapters with validation, timeouts, provenance and explicit unconfigured/provider-failed responses. Never expose credentials or call ChatGPT connectors from the browser. Use sold evidence only for ranges; keep listing context separate.
+3. Add cadastral/road geometry frontage derivation and an LGA council hazard registry. Support shared boundaries/corner frontage and separate clear/affected/unavailable/manual evidence; prioritize the official Northern Beaches GIS services. A lack of tested accessible services remains a provider blocker, not a clean result.
+4. Add early voice/text intent confirmation, editable manual fallback, room selection and advanced area override, development configuration, optional move assumptions, whole-dollar currency fields and a five-section consumer assessment. Preserve technical detail controls and all old journey selectors where those controls still serve the approved product.
+5. Add pure, async and Chromium acceptance cases. Keep every current test and rerun local model/async, complete Chromium pathways, real provider checks and exact deployed browser QA after implementation and every meaningful follow-up fix. Check console/requests/DOM and document external provider limits.
+
+Rate values other than the approved $6,800/m² example remain versioned indicative assumptions requiring QS confirmation. A custom configuration cannot yield a cost until an explicit rate is supplied. Feasibility tax treatment and duty eligibility require confirmation; assumptions stay editable and disclosed. Intent extraction requires a configured server-side AI provider; manual selections remain usable when it is unavailable.

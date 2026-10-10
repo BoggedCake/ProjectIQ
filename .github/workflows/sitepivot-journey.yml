@@ -1,0 +1,58 @@
+name: SitePivot consumer regression
+on:
+  push:
+    branches: [sitepivot-concept]
+    paths-ignore: ['docs/**']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: sitepivot-consumer-regression-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  consumer-journey:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium webkit
+        id: browsers
+      - run: npm test
+        if: ${{ !cancelled() && steps.browsers.outcome == 'success' }}
+        env:
+          QA_OUTPUT: journey-results.json
+      - run: node qa/founder-server-regression.cjs
+        if: ${{ !cancelled() && steps.browsers.outcome == 'success' }}
+      - run: SITEPIVOT_FOUNDER_PREVIEW=1 node qa/founder-repair-browser.cjs
+        if: ${{ !cancelled() && steps.browsers.outcome == 'success' }}
+      - run: node qa/duplex-browser.cjs
+        if: ${{ !cancelled() && steps.browsers.outcome == 'success' }}
+      - run: node qa/residential-browser.cjs
+        if: ${{ !cancelled() && steps.browsers.outcome == 'success' }}
+      - name: Verify financial inputs, repayments and reports with labelled regression fixtures
+        run: node qa/master-financial-browser.cjs
+        if: ${{ !cancelled() && steps.browsers.outcome == 'success' }}
+      - run: node qa/property-intelligence-browser.cjs
+        if: ${{ !cancelled() && steps.browsers.outcome == 'success' }}
+      - run: node qa/mobile-journey.cjs
+        if: ${{ !cancelled() && steps.browsers.outcome == 'success' }}
+      - run: node qa/conversation-browser.cjs
+        if: ${{ !cancelled() && steps.browsers.outcome == 'success' }}
+      - run: node qa/voice-browser.cjs
+        if: ${{ !cancelled() && steps.browsers.outcome == 'success' }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: consumer-journey-results
+          path: |
+            journey-results.json
+            mobile-qa/
+            qa-artifacts/founder-repair/
+            qa-artifacts/property-intelligence/
+            qa-artifacts/residential/
+            qa-artifacts/financial/
+            qa-artifacts/duplex/

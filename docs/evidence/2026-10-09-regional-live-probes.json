@@ -1,0 +1,84 @@
+{
+  "checkedAt": "2026-10-09T10:54:56.504Z",
+  "initialTimeoutProbe": [
+    {
+      "requested": "12 Fishbourne Road Allambie Heights NSW 2100",
+      "error": "This operation was aborted",
+      "ms": 3503
+    },
+    {
+      "requested": "49 Mann Street Gosford NSW 2250",
+      "error": "This operation was aborted",
+      "ms": 3501
+    },
+    {
+      "requested": "84/2-8 Dixon Street Sydney NSW 2000",
+      "error": "This operation was aborted",
+      "ms": 3500
+    },
+    {
+      "requested": "2 Civic Place Katoomba NSW 2780",
+      "error": "This operation was aborted",
+      "ms": 3500
+    },
+    {
+      "requested": "135 Byng Street Orange NSW 2800",
+      "error": "This operation was aborted",
+      "ms": 3500
+    }
+  ],
+  "cases": [
+    {
+      "requested": "12 Fishbourne Road Allambie Heights NSW 2100",
+      "error": "This operation was aborted",
+      "ms": 13563
+    },
+    {
+      "requested": "49 Mann Street Gosford NSW 2250",
+      "error": "This operation was aborted",
+      "ms": 8504
+    },
+    {
+      "requested": "84/2-8 Dixon Street Sydney NSW 2000",
+      "error": "This operation was aborted",
+      "ms": 13538
+    },
+    {
+      "requested": "2 Civic Place Katoomba NSW 2780",
+      "error": "This operation was aborted",
+      "ms": 13534
+    },
+    {
+      "requested": "135 Byng Street Orange NSW 2800",
+      "error": "This operation was aborted",
+      "ms": 8501
+    }
+  ],
+  "environmentProxyProbe": [
+    {
+      "requested": "12 Fishbourne Road Allambie Heights NSW 2100",
+      "error": "This operation was aborted",
+      "ms": 14421
+    },
+    {
+      "requested": "49 Mann Street Gosford NSW 2250",
+      "error": "This operation was aborted",
+      "ms": 14335
+    },
+    {
+      "requested": "84/2-8 Dixon Street Sydney NSW 2000",
+      "error": "This operation was aborted",
+      "ms": 8503
+    },
+    {
+      "requested": "2 Civic Place Katoomba NSW 2780",
+      "error": "This operation was aborted",
+      "ms": 14407
+    },
+    {
+      "requested": "135 Byng Street Orange NSW 2800",
+      "error": "This operation was aborted",
+      "ms": 14412
+    }
+  ]
+}

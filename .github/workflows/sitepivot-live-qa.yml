@@ -1,0 +1,109 @@
+name: SitePivot live QA
+
+on:
+  push:
+    branches: [sitepivot-concept]
+    paths:
+      - 'index.html'
+      - 'commercial-engine.js'
+      - 'property-evidence.js'
+      - 'planning-intelligence.js'
+      - 'fsr-evidence.js'
+      - 'zoning-evidence.js'
+      - 'comparison-engine.js'
+      - 'conversation.js'
+      - 'voice.js'
+      - 'qa/**'
+      - '.github/workflows/sitepivot-live-qa.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+concurrency:
+  group: sitepivot-live-qa
+  cancel-in-progress: true
+
+jobs:
+  live-qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Install browser test runtime
+        id: runtime
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium webkit
+      - name: Wait for GitHub Pages deployment
+        id: deployed
+        run: |
+          for i in {1..18}; do
+            code=$(curl -L -s -o /tmp/sitepivot.html -w "%{http_code}" "https://boggedcake.github.io/ProjectIQ/?qa=${GITHUB_SHA}")
+            curl -L -s -o /tmp/sitepivot-engine.js "https://boggedcake.github.io/ProjectIQ/commercial-engine.js?qa=${GITHUB_SHA}"
+            curl -L -s -o /tmp/sitepivot-conversation.js "https://boggedcake.github.io/ProjectIQ/conversation.js?qa=${GITHUB_SHA}"
+            curl -L -s -o /tmp/sitepivot-voice.js "https://boggedcake.github.io/ProjectIQ/voice.js?qa=${GITHUB_SHA}"
+            modules_match=true
+            for module in property-evidence planning-intelligence comparison-engine fsr-evidence zoning-evidence; do
+              curl -L -s -o "/tmp/${module}.js" "https://boggedcake.github.io/ProjectIQ/${module}.js?qa=${GITHUB_SHA}"
+              cmp -s "${module}.js" "/tmp/${module}.js" || modules_match=false
+            done
+            if [ "$modules_match" = "true" ] && [ "$code" = "200" ] && cmp -s index.html /tmp/sitepivot.html && cmp -s commercial-engine.js /tmp/sitepivot-engine.js && cmp -s conversation.js /tmp/sitepivot-conversation.js && cmp -s voice.js /tmp/sitepivot-voice.js; then
+              echo "Deployed source matches tested branch head"
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "Site was not reachable in time"
+          exit 1
+      - name: Run deployed browser smoke test
+        if: ${{ !cancelled() && steps.runtime.outcome == 'success' && steps.deployed.outcome == 'success' }}
+        run: node qa/live-smoke.mjs
+        env:
+          SITEPIVOT_BUILD: ${{ github.sha }}
+
+      - name: Verify repaired founder conversation, voice, duplex and changeover on the deployed site
+        if: ${{ !cancelled() && steps.runtime.outcome == 'success' && steps.deployed.outcome == 'success' }}
+        run: node qa/founder-repair-browser.cjs
+        env:
+          SITEPIVOT_URL: https://boggedcake.github.io/ProjectIQ/
+
+      - name: Run full deployed desktop and iPhone founder journeys
+        if: ${{ !cancelled() && steps.runtime.outcome == 'success' && steps.deployed.outcome == 'success' }}
+        run: node qa/deployed-founder.mjs
+
+      - name: Run deployed unified conversation and voice journeys in Chromium and WebKit
+        if: ${{ !cancelled() && steps.runtime.outcome == 'success' && steps.deployed.outcome == 'success' }}
+        run: node qa/deployed-conversation.mjs
+
+      - name: Verify property planning and comparison repairs across desktop and mobile
+        if: ${{ !cancelled() && steps.runtime.outcome == 'success' && steps.deployed.outcome == 'success' }}
+        run: node qa/property-intelligence-browser.cjs
+        env:
+          SITEPIVOT_URL: https://boggedcake.github.io/ProjectIQ/
+
+      - name: Verify real residential founder addresses in desktop and mobile Chromium and WebKit
+        if: ${{ !cancelled() && steps.runtime.outcome == 'success' && steps.deployed.outcome == 'success' }}
+        run: node qa/residential-browser.cjs
+        env:
+          SITEPIVOT_URL: https://boggedcake.github.io/ProjectIQ/
+      - name: Verify distinct DA and CDC opportunities on the real duplex founder properties
+        if: ${{ !cancelled() && steps.runtime.outcome == 'success' && steps.deployed.outcome == 'success' }}
+        run: node qa/duplex-browser.cjs
+        env:
+          SITEPIVOT_URL: https://boggedcake.github.io/ProjectIQ/
+      - name: Verify deployed financial UI using labelled regression fixtures across desktop and mobile
+        if: ${{ !cancelled() && steps.runtime.outcome == 'success' && steps.deployed.outcome == 'success' }}
+        run: node qa/master-financial-browser.cjs
+        env:
+          SITEPIVOT_URL: https://boggedcake.github.io/ProjectIQ/
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: residential-founder-results
+          path: |
+            qa-artifacts/residential/
+            qa-artifacts/duplex/
+            qa-artifacts/financial/

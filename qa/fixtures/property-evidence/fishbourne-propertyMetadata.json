@@ -1,0 +1,1382 @@
+{
+  "source": "https://portal.spatial.nsw.gov.au/server/rest/services/NSW_Land_Parcel_Property_Theme/FeatureServer/12?f=json",
+  "retrievedAt": "2026-10-09T10:05:19.608Z",
+  "response": {
+    "currentVersion": 10.91,
+    "cimVersion": "2.9.0",
+    "id": 12,
+    "name": "Property",
+    "type": "Feature Layer",
+    "parentLayer": null,
+    "defaultVisibility": true,
+    "minScale": 100000,
+    "maxScale": 0,
+    "canScaleSymbols": false,
+    "geometryType": "esriGeometryPolygon",
+    "description": "",
+    "copyrightText": "",
+    "editFieldsInfo": null,
+    "ownershipBasedAccessControlForFeatures": null,
+    "syncCanReturnChanges": false,
+    "relationships": [],
+    "isDataVersioned": false,
+    "isDataArchived": false,
+    "infoInEstimates": [
+      "extent",
+      "count"
+    ],
+    "isDataBranchVersioned": false,
+    "isDataReplicaTracked": false,
+    "isCoGoEnabled": false,
+    "supportsRollbackOnFailureParameter": true,
+    "archivingInfo": {
+      "supportsQueryWithHistoricMoment": false,
+      "startArchivingMoment": -1
+    },
+    "supportsStatistics": true,
+    "supportsExceedsLimitStatistics": true,
+    "supportsAdvancedQueries": true,
+    "supportsValidateSQL": true,
+    "supportsCoordinatesQuantization": true,
+    "supportsQuantizationEditMode": true,
+    "supportsCalculate": true,
+    "supportsASyncCalculate": true,
+    "supportsDatumTransformation": true,
+    "advancedQueryCapabilities": {
+      "supportsPagination": true,
+      "supportsTrueCurve": true,
+      "supportsQueryWithDistance": true,
+      "supportsReturningQueryExtent": true,
+      "supportsStatistics": true,
+      "supportsPercentileStatistics": true,
+      "supportsHavingClause": true,
+      "supportsOrderBy": true,
+      "supportsDistinct": true,
+      "supportsCountDistinct": true,
+      "supportsQueryWithResultType": true,
+      "supportsReturningGeometryCentroid": true,
+      "supportsSqlExpression": true,
+      "supportsQueryWithDatumTransformation": true,
+      "supportsLod": false,
+      "supportsQueryWithLodSR": false,
+      "supportsQueryAnalytic": false
+    },
+    "advancedEditingCapabilities": {
+      "supportedSqlFormatsInCalculate": [
+        "standard"
+      ],
+      "supportsAsyncApplyEdits": true
+    },
+    "hasGeometryProperties": true,
+    "geometryProperties": {
+      "shapeAreaFieldName": "Shape__Area",
+      "shapeLengthFieldName": "Shape__Length",
+      "units": "esriMeters"
+    },
+    "hasMetadata": true,
+    "extent": {
+      "xmin": 15695971.703500003,
+      "ymin": -4500719.260499999,
+      "xmax": 17709213.067500003,
+      "ymax": -3268784.9516250007,
+      "spatialReference": {
+        "wkid": 102100,
+        "latestWkid": 3857,
+        "xyTolerance": 0.001,
+        "zTolerance": 0.001,
+        "mTolerance": 0.001,
+        "falseX": -20037700,
+        "falseY": -30241100,
+        "xyUnits": 10000,
+        "falseZ": -100000,
+        "zUnits": 10000,
+        "falseM": -100000,
+        "mUnits": 10000
+      }
+    },
+    "sourceSpatialReference": {
+      "wkid": 102100,
+      "latestWkid": 3857,
+      "xyTolerance": 0.002,
+      "zTolerance": 0.002,
+      "mTolerance": 0.002,
+      "falseX": -20037700,
+      "falseY": -30241100,
+      "xyUnits": 8000,
+      "falseZ": -100000,
+      "zUnits": 8000,
+      "falseM": -100000,
+      "mUnits": 10000
+    },
+    "drawingInfo": {
+      "renderer": {
+        "type": "uniqueValue",
+        "field1": "PropertyType",
+        "defaultSymbol": {
+          "type": "esriSFS",
+          "style": "esriSFSSolid",
+          "color": [
+            130,
+            130,
+            130,
+            255
+          ],
+          "outline": {
+            "type": "esriSLS",
+            "style": "esriSLSSolid",
+            "color": [
+              110,
+              110,
+              110,
+              255
+            ],
+            "width": 0.7
+          }
+        },
+        "defaultLabel": "<all other values>",
+        "uniqueValueInfos": [
+          {
+            "symbol": {
+              "type": "esriSFS",
+              "style": "esriSFSSolid",
+              "color": [
+                206,
+                199,
+                252,
+                255
+              ],
+              "outline": {
+                "type": "esriSLS",
+                "style": "esriSLSSolid",
+                "color": [
+                  110,
+                  110,
+                  110,
+                  255
+                ],
+                "width": 0.7
+              }
+            },
+            "value": "1",
+            "label": "Property"
+          },
+          {
+            "symbol": {
+              "type": "esriSFS",
+              "style": "esriSFSSolid",
+              "color": [
+                182,
+                252,
+                183,
+                255
+              ],
+              "outline": {
+                "type": "esriSLS",
+                "style": "esriSLSSolid",
+                "color": [
+                  110,
+                  110,
+                  110,
+                  255
+                ],
+                "width": 0.7
+              }
+            },
+            "value": "2",
+            "label": "Crown"
+          },
+          {
+            "symbol": {
+              "type": "esriSFS",
+              "style": "esriSFSSolid",
+              "color": [
+                252,
+                209,
+                184,
+                255
+              ],
+              "outline": {
+                "type": "esriSLS",
+                "style": "esriSLSSolid",
+                "color": [
+                  110,
+                  110,
+                  110,
+                  255
+                ],
+                "width": 0.7
+              }
+            },
+            "value": "3",
+            "label": "NationalPark"
+          },
+          {
+            "symbol": {
+              "type": "esriSFS",
+              "style": "esriSFSSolid",
+              "color": [
+                192,
+                252,
+                251,
+                255
+              ],
+              "outline": {
+                "type": "esriSLS",
+                "style": "esriSLSSolid",
+                "color": [
+                  110,
+                  110,
+                  110,
+                  255
+                ],
+                "width": 0.7
+              }
+            },
+            "value": "4",
+            "label": "StateForest"
+          },
+          {
+            "symbol": {
+              "type": "esriSFS",
+              "style": "esriSFSSolid",
+              "color": [
+                252,
+                179,
+                200,
+                255
+              ],
+              "outline": {
+                "type": "esriSLS",
+                "style": "esriSLSSolid",
+                "color": [
+                  110,
+                  110,
+                  110,
+                  255
+                ],
+                "width": 0.7
+              }
+            },
+            "value": "5",
+            "label": "Other"
+          },
+          {
+            "symbol": {
+              "type": "esriSFS",
+              "style": "esriSFSSolid",
+              "color": [
+                252,
+                245,
+                182,
+                255
+              ],
+              "outline": {
+                "type": "esriSLS",
+                "style": "esriSLSSolid",
+                "color": [
+                  110,
+                  110,
+                  110,
+                  255
+                ],
+                "width": 0.7
+              }
+            },
+            "value": "6",
+            "label": "Incomplete"
+          }
+        ],
+        "fieldDelimiter": ",",
+        "authoringInfo": {
+          "colorRamp": {
+            "type": "multipart",
+            "colorRamps": [
+              {
+                "type": "algorithmic",
+                "algorithm": "esriCIELabAlgorithm",
+                "fromColor": [
+                  252,
+                  202,
+                  247,
+                  255
+                ],
+                "toColor": [
+                  252,
+                  202,
+                  247,
+                  255
+                ]
+              },
+              {
+                "type": "algorithmic",
+                "algorithm": "esriCIELabAlgorithm",
+                "fromColor": [
+                  189,
+                  252,
+                  184,
+                  255
+                ],
+                "toColor": [
+                  189,
+                  252,
+                  184,
+                  255
+                ]
+              },
+              {
+                "type": "algorithmic",
+                "algorithm": "esriCIELabAlgorithm",
+                "fromColor": [
+                  187,
+                  238,
+                  252,
+                  255
+                ],
+                "toColor": [
+                  187,
+                  238,
+                  252,
+                  255
+                ]
+              },
+              {
+                "type": "algorithmic",
+                "algorithm": "esriCIELabAlgorithm",
+                "fromColor": [
+                  252,
+                  223,
+                  184,
+                  255
+                ],
+                "toColor": [
+                  252,
+                  223,
+                  184,
+                  255
+                ]
+              },
+              {
+                "type": "algorithmic",
+                "algorithm": "esriCIELabAlgorithm",
+                "fromColor": [
+                  182,
+                  183,
+                  252,
+                  255
+                ],
+                "toColor": [
+                  182,
+                  183,
+                  252,
+                  255
+                ]
+              },
+              {
+                "type": "algorithmic",
+                "algorithm": "esriCIELabAlgorithm",
+                "fromColor": [
+                  252,
+                  192,
+                  194,
+                  255
+                ],
+                "toColor": [
+                  252,
+                  192,
+                  194,
+                  255
+                ]
+              },
+              {
+                "type": "algorithmic",
+                "algorithm": "esriCIELabAlgorithm",
+                "fromColor": [
+                  194,
+                  252,
+                  226,
+                  255
+                ],
+                "toColor": [
+                  194,
+                  252,
+                  226,
+                  255
+                ]
+              },
+              {
+                "type": "algorithmic",
+                "algorithm": "esriCIELabAlgorithm",
+                "fromColor": [
+                  250,
+                  252,
+                  184,
+                  255
+                ],
+                "toColor": [
+                  250,
+                  252,
+                  184,
+                  255
+                ]
+              },
+              {
+                "type": "algorithmic",
+                "algorithm": "esriCIELabAlgorithm",
+                "fromColor": [
+                  207,
+                  212,
+                  252,
+                  255
+                ],
+                "toColor": [
+                  207,
+                  212,
+                  252,
+                  255
+                ]
+              },
+              {
+                "type": "algorithmic",
+                "algorithm": "esriCIELabAlgorithm",
+                "fromColor": [
+                  237,
+                  252,
+                  215,
+                  255
+                ],
+                "toColor": [
+                  237,
+                  252,
+                  215,
+                  255
+                ]
+              },
+              {
+                "type": "algorithmic",
+                "algorithm": "esriCIELabAlgorithm",
+                "fromColor": [
+                  252,
+                  182,
+                  210,
+                  255
+                ],
+                "toColor": [
+                  252,
+                  182,
+                  210,
+                  255
+                ]
+              },
+              {
+                "type": "algorithmic",
+                "algorithm": "esriCIELabAlgorithm",
+                "fromColor": [
+                  252,
+                  220,
+                  210,
+                  255
+                ],
+                "toColor": [
+                  252,
+                  220,
+                  210,
+                  255
+                ]
+              },
+              {
+                "type": "algorithmic",
+                "algorithm": "esriCIELabAlgorithm",
+                "fromColor": [
+                  235,
+                  187,
+                  252,
+                  255
+                ],
+                "toColor": [
+                  235,
+                  187,
+                  252,
+                  255
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "scaleSymbols": true,
+      "transparency": 0,
+      "labelingInfo": null
+    },
+    "hasM": false,
+    "hasZ": false,
+    "allowGeometryUpdates": false,
+    "allowTrueCurvesUpdates": true,
+    "onlyAllowTrueCurveUpdatesByTrueCurveClients": true,
+    "hasAttachments": false,
+    "supportsApplyEditsWithGlobalIds": false,
+    "htmlPopupType": "esriServerHTMLPopupTypeAsHTMLText",
+    "objectIdField": "RID",
+    "globalIdField": "",
+    "displayField": "createdate",
+    "typeIdField": "propertytype",
+    "subtypeField": "",
+    "fields": [
+      {
+        "name": "RID",
+        "type": "esriFieldTypeOID",
+        "alias": "RID",
+        "domain": null,
+        "editable": false,
+        "nullable": false,
+        "defaultValue": null,
+        "modelName": "RID"
+      },
+      {
+        "name": "createdate",
+        "type": "esriFieldTypeDate",
+        "alias": "createdate",
+        "domain": null,
+        "editable": true,
+        "nullable": true,
+        "length": 8,
+        "defaultValue": null,
+        "modelName": "createdate"
+      },
+      {
+        "name": "gurasid",
+        "type": "esriFieldTypeInteger",
+        "alias": "gurasid",
+        "domain": {
+          "type": "range",
+          "name": "DmG_GURASID_Range",
+          "description": "",
+          "range": [
+            0,
+            999999999
+          ],
+          "mergePolicy": "esriMPTDefaultValue",
+          "splitPolicy": "esriSPTDefaultValue"
+        },
+        "editable": true,
+        "nullable": false,
+        "defaultValue": null,
+        "modelName": "gurasid"
+      },
+      {
+        "name": "principaladdresssiteoid",
+        "type": "esriFieldTypeInteger",
+        "alias": "principaladdresssiteoid",
+        "domain": null,
+        "editable": true,
+        "nullable": true,
+        "defaultValue": null,
+        "modelName": "principaladdresssiteoid"
+      },
+      {
+        "name": "propertytype",
+        "type": "esriFieldTypeInteger",
+        "alias": "PropertyType",
+        "domain": null,
+        "editable": true,
+        "nullable": false,
+        "defaultValue": 1,
+        "modelName": "PropertyType"
+      },
+      {
+        "name": "valnetpropertystatus",
+        "type": "esriFieldTypeInteger",
+        "alias": "valnetpropertystatus",
+        "domain": {
+          "type": "codedValue",
+          "name": "DmG_ValNetPropertyStatus",
+          "description": "",
+          "codedValues": [
+            {
+              "name": "CANCELLD",
+              "code": 1
+            },
+            {
+              "name": "CURRENT",
+              "code": 2
+            },
+            {
+              "name": "PROFORMA",
+              "code": 3
+            },
+            {
+              "name": "SKELETON",
+              "code": 4
+            }
+          ],
+          "mergePolicy": "esriMPTDefaultValue",
+          "splitPolicy": "esriSPTDefaultValue"
+        },
+        "editable": true,
+        "nullable": true,
+        "defaultValue": null,
+        "modelName": "valnetpropertystatus"
+      },
+      {
+        "name": "valnetpropertytype",
+        "type": "esriFieldTypeInteger",
+        "alias": "valnetpropertytype",
+        "domain": {
+          "type": "codedValue",
+          "name": "DmG_ValNetPropertyType",
+          "description": "",
+          "codedValues": [
+            {
+              "name": "NONVAL",
+              "code": 1
+            },
+            {
+              "name": "NORMAL",
+              "code": 2
+            },
+            {
+              "name": "STRATA",
+              "code": 3
+            },
+            {
+              "name": "UNDERSP",
+              "code": 4
+            }
+          ],
+          "mergePolicy": "esriMPTDefaultValue",
+          "splitPolicy": "esriSPTDefaultValue"
+        },
+        "editable": true,
+        "nullable": true,
+        "defaultValue": null,
+        "modelName": "valnetpropertytype"
+      },
+      {
+        "name": "dissolveparcelcount",
+        "type": "esriFieldTypeInteger",
+        "alias": "dissolveparcelcount",
+        "domain": null,
+        "editable": true,
+        "nullable": true,
+        "defaultValue": null,
+        "modelName": "dissolveparcelcount"
+      },
+      {
+        "name": "valnetlotcount",
+        "type": "esriFieldTypeInteger",
+        "alias": "valnetlotcount",
+        "domain": null,
+        "editable": true,
+        "nullable": true,
+        "defaultValue": null,
+        "modelName": "valnetlotcount"
+      },
+      {
+        "name": "valnetworkflowid",
+        "type": "esriFieldTypeInteger",
+        "alias": "valnetworkflowid",
+        "domain": null,
+        "editable": true,
+        "nullable": true,
+        "defaultValue": null,
+        "modelName": "valnetworkflowid"
+      },
+      {
+        "name": "propid",
+        "type": "esriFieldTypeInteger",
+        "alias": "propid",
+        "domain": null,
+        "editable": true,
+        "nullable": true,
+        "defaultValue": null,
+        "modelName": "propid"
+      },
+      {
+        "name": "superlot",
+        "type": "esriFieldTypeString",
+        "alias": "superlot",
+        "domain": null,
+        "editable": true,
+        "nullable": true,
+        "length": 1,
+        "defaultValue": null,
+        "modelName": "superlot"
+      },
+      {
+        "name": "housenumber",
+        "type": "esriFieldTypeString",
+        "alias": "housenumber",
+        "domain": null,
+        "editable": true,
+        "nullable": true,
+        "length": 20,
+        "defaultValue": null,
+        "modelName": "housenumber"
+      },
+      {
+        "name": "address",
+        "type": "esriFieldTypeString",
+        "alias": "address",
+        "domain": null,
+        "editable": true,
+        "nullable": true,
+        "length": 100,
+        "defaultValue": null,
+        "modelName": "address"
+      },
+      {
+        "name": "startdate",
+        "type": "esriFieldTypeDate",
+        "alias": "startdate",
+        "domain": null,
+        "editable": true,
+        "nullable": true,
+        "length": 8,
+        "defaultValue": null,
+        "modelName": "startdate"
+      },
+      {
+        "name": "enddate",
+        "type": "esriFieldTypeDate",
+        "alias": "enddate",
+        "domain": null,
+        "editable": true,
+        "nullable": true,
+        "length": 8,
+        "defaultValue": null,
+        "modelName": "enddate"
+      },
+      {
+        "name": "lastupdate",
+        "type": "esriFieldTypeDate",
+        "alias": "lastupdate",
+        "domain": null,
+        "editable": true,
+        "nullable": true,
+        "length": 8,
+        "defaultValue": null,
+        "modelName": "lastupdate"
+      },
+      {
+        "name": "msoid",
+        "type": "esriFieldTypeInteger",
+        "alias": "msoid",
+        "domain": null,
+        "editable": true,
+        "nullable": true,
+        "defaultValue": null,
+        "modelName": "msoid"
+      },
+      {
+        "name": "centroidid",
+        "type": "esriFieldTypeInteger",
+        "alias": "centroidid",
+        "domain": null,
+        "editable": true,
+        "nullable": true,
+        "defaultValue": null,
+        "modelName": "centroidid"
+      },
+      {
+        "name": "shapeuuid",
+        "type": "esriFieldTypeString",
+        "alias": "shapeuuid",
+        "domain": null,
+        "editable": true,
+        "nullable": true,
+        "length": 38,
+        "defaultValue": null,
+        "modelName": "shapeuuid"
+      },
+      {
+        "name": "changetype",
+        "type": "esriFieldTypeString",
+        "alias": "changetype",
+        "domain": null,
+        "editable": true,
+        "nullable": true,
+        "length": 2,
+        "defaultValue": null,
+        "modelName": "changetype"
+      },
+      {
+        "name": "processstate",
+        "type": "esriFieldTypeString",
+        "alias": "processstate",
+        "domain": null,
+        "editable": true,
+        "nullable": true,
+        "length": 5,
+        "defaultValue": null,
+        "modelName": "processstate"
+      },
+      {
+        "name": "urbanity",
+        "type": "esriFieldTypeString",
+        "alias": "urbanity",
+        "domain": null,
+        "editable": true,
+        "nullable": true,
+        "length": 2,
+        "defaultValue": null,
+        "modelName": "urbanity"
+      },
+      {
+        "name": "principaladdresstype",
+        "type": "esriFieldTypeInteger",
+        "alias": "principaladdresstype",
+        "domain": {
+          "type": "codedValue",
+          "name": "DmG_PrincipalAddressType",
+          "description": "",
+          "codedValues": [
+            {
+              "name": "Primary",
+              "code": 1
+            },
+            {
+              "name": "Secondary",
+              "code": 2
+            },
+            {
+              "name": "Alternate",
+              "code": 3
+            },
+            {
+              "name": "Unknown",
+              "code": 4
+            }
+          ],
+          "mergePolicy": "esriMPTDefaultValue",
+          "splitPolicy": "esriSPTDefaultValue"
+        },
+        "editable": true,
+        "nullable": true,
+        "defaultValue": null,
+        "modelName": "principaladdresstype"
+      },
+      {
+        "name": "addressstringoid",
+        "type": "esriFieldTypeInteger",
+        "alias": "addressstringoid",
+        "domain": null,
+        "editable": true,
+        "nullable": true,
+        "defaultValue": null,
+        "modelName": "addressstringoid"
+      },
+      {
+        "name": "Shape__Length",
+        "type": "esriFieldTypeDouble",
+        "alias": "shape_Length",
+        "domain": null,
+        "editable": false,
+        "nullable": true,
+        "defaultValue": null,
+        "modelName": "shape_Length"
+      },
+      {
+        "name": "Shape__Area",
+        "type": "esriFieldTypeDouble",
+        "alias": "shape_Area",
+        "domain": null,
+        "editable": false,
+        "nullable": true,
+        "defaultValue": null,
+        "modelName": "shape_Area"
+      }
+    ],
+    "geometryField": {
+      "name": "shape",
+      "type": "esriFieldTypeGeometry",
+      "alias": "Shape",
+      "domain": null,
+      "editable": false,
+      "nullable": true,
+      "defaultValue": null,
+      "modelName": "Shape"
+    },
+    "indexes": [
+      {
+        "name": "FDO_RID",
+        "fields": "RID",
+        "isAscending": true,
+        "isUnique": true,
+        "description": ""
+      },
+      {
+        "name": "I49principaladdr",
+        "fields": "principaladdresstype",
+        "isAscending": true,
+        "isUnique": false,
+        "description": ""
+      },
+      {
+        "name": "I49centroidid",
+        "fields": "centroidid",
+        "isAscending": true,
+        "isUnique": false,
+        "description": ""
+      },
+      {
+        "name": "I49msoid",
+        "fields": "msoid",
+        "isAscending": true,
+        "isUnique": false,
+        "description": ""
+      },
+      {
+        "name": "I49lastupdate",
+        "fields": "lastupdate",
+        "isAscending": true,
+        "isUnique": false,
+        "description": ""
+      },
+      {
+        "name": "I49enddate",
+        "fields": "enddate",
+        "isAscending": true,
+        "isUnique": false,
+        "description": ""
+      },
+      {
+        "name": "I49address",
+        "fields": "address",
+        "isAscending": true,
+        "isUnique": false,
+        "description": ""
+      },
+      {
+        "name": "I49propid",
+        "fields": "propid",
+        "isAscending": true,
+        "isUnique": false,
+        "description": ""
+      },
+      {
+        "name": "I49gurasid",
+        "fields": "gurasid",
+        "isAscending": true,
+        "isUnique": false,
+        "description": ""
+      },
+      {
+        "name": "I49addressstring",
+        "fields": "addressstringoid",
+        "isAscending": true,
+        "isUnique": false,
+        "description": ""
+      },
+      {
+        "name": "I49changetype",
+        "fields": "changetype",
+        "isAscending": true,
+        "isUnique": false,
+        "description": ""
+      },
+      {
+        "name": "I49shapeuuid",
+        "fields": "shapeuuid",
+        "isAscending": true,
+        "isUnique": false,
+        "description": ""
+      },
+      {
+        "name": "I49urbanity",
+        "fields": "urbanity",
+        "isAscending": true,
+        "isUnique": false,
+        "description": ""
+      },
+      {
+        "name": "I49processstate",
+        "fields": "processstate",
+        "isAscending": true,
+        "isUnique": false,
+        "description": ""
+      },
+      {
+        "name": "I49superlot",
+        "fields": "superlot",
+        "isAscending": true,
+        "isUnique": false,
+        "description": ""
+      },
+      {
+        "name": "I49housenumber",
+        "fields": "housenumber",
+        "isAscending": true,
+        "isUnique": false,
+        "description": ""
+      },
+      {
+        "name": "principlaaddresssiteoid_idx",
+        "fields": "principaladdresssiteoid",
+        "isAscending": true,
+        "isUnique": false,
+        "description": ""
+      },
+      {
+        "name": "urbanity_idx",
+        "fields": "urbanity",
+        "isAscending": true,
+        "isUnique": false,
+        "description": ""
+      },
+      {
+        "name": "FDO_shape",
+        "fields": "shape",
+        "isAscending": true,
+        "isUnique": false,
+        "description": ""
+      }
+    ],
+    "datesInUnknownTimezone": false,
+    "dateFieldsTimeReference": {
+      "timeZone": "UTC",
+      "respectsDaylightSaving": false
+    },
+    "preferredTimeReference": null,
+    "types": [
+      {
+        "id": 1,
+        "name": "Property",
+        "domains": {
+          "gurasid": {
+            "type": "inherited"
+          },
+          "valnetpropertystatus": {
+            "type": "inherited"
+          },
+          "valnetpropertytype": {
+            "type": "inherited"
+          },
+          "principaladdresstype": {
+            "type": "inherited"
+          }
+        },
+        "templates": [
+          {
+            "name": "1",
+            "description": "",
+            "prototype": {
+              "attributes": {
+                "principaladdresstype": null,
+                "addressstringoid": null,
+                "createdate": null,
+                "gurasid": 0,
+                "principaladdresssiteoid": null,
+                "propertytype": 1,
+                "valnetpropertystatus": null,
+                "valnetpropertytype": null,
+                "dissolveparcelcount": null,
+                "valnetlotcount": null,
+                "valnetworkflowid": null,
+                "propid": null,
+                "superlot": null,
+                "housenumber": null,
+                "address": null,
+                "startdate": null,
+                "enddate": null,
+                "lastupdate": null,
+                "msoid": null,
+                "centroidid": null,
+                "shapeuuid": null,
+                "changetype": null,
+                "processstate": null,
+                "urbanity": null
+              }
+            },
+            "drawingTool": "esriFeatureEditToolPolygon"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "name": "Crown",
+        "domains": {
+          "gurasid": {
+            "type": "inherited"
+          },
+          "valnetpropertystatus": {
+            "type": "inherited"
+          },
+          "valnetpropertytype": {
+            "type": "inherited"
+          },
+          "principaladdresstype": {
+            "type": "inherited"
+          }
+        },
+        "templates": [
+          {
+            "name": "2",
+            "description": "",
+            "prototype": {
+              "attributes": {
+                "principaladdresstype": null,
+                "addressstringoid": null,
+                "createdate": null,
+                "gurasid": 0,
+                "principaladdresssiteoid": null,
+                "propertytype": 1,
+                "valnetpropertystatus": null,
+                "valnetpropertytype": null,
+                "dissolveparcelcount": null,
+                "valnetlotcount": null,
+                "valnetworkflowid": null,
+                "propid": null,
+                "superlot": null,
+                "housenumber": null,
+                "address": null,
+                "startdate": null,
+                "enddate": null,
+                "lastupdate": null,
+                "msoid": null,
+                "centroidid": null,
+                "shapeuuid": null,
+                "changetype": null,
+                "processstate": null,
+                "urbanity": null
+              }
+            },
+            "drawingTool": "esriFeatureEditToolPolygon"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "name": "NationalPark",
+        "domains": {
+          "gurasid": {
+            "type": "inherited"
+          },
+          "valnetpropertystatus": {
+            "type": "inherited"
+          },
+          "valnetpropertytype": {
+            "type": "inherited"
+          },
+          "principaladdresstype": {
+            "type": "inherited"
+          }
+        },
+        "templates": [
+          {
+            "name": "3",
+            "description": "",
+            "prototype": {
+              "attributes": {
+                "principaladdresstype": null,
+                "addressstringoid": null,
+                "createdate": null,
+                "gurasid": 0,
+                "principaladdresssiteoid": null,
+                "propertytype": 1,
+                "valnetpropertystatus": null,
+                "valnetpropertytype": null,
+                "dissolveparcelcount": null,
+                "valnetlotcount": null,
+                "valnetworkflowid": null,
+                "propid": null,
+                "superlot": null,
+                "housenumber": null,
+                "address": null,
+                "startdate": null,
+                "enddate": null,
+                "lastupdate": null,
+                "msoid": null,
+                "centroidid": null,
+                "shapeuuid": null,
+                "changetype": null,
+                "processstate": null,
+                "urbanity": null
+              }
+            },
+            "drawingTool": "esriFeatureEditToolPolygon"
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "name": "StateForest",
+        "domains": {
+          "gurasid": {
+            "type": "inherited"
+          },
+          "valnetpropertystatus": {
+            "type": "inherited"
+          },
+          "valnetpropertytype": {
+            "type": "inherited"
+          },
+          "principaladdresstype": {
+            "type": "inherited"
+          }
+        },
+        "templates": [
+          {
+            "name": "4",
+            "description": "",
+            "prototype": {
+              "attributes": {
+                "principaladdresstype": null,
+                "addressstringoid": null,
+                "createdate": null,
+                "gurasid": 0,
+                "principaladdresssiteoid": null,
+                "propertytype": 1,
+                "valnetpropertystatus": null,
+                "valnetpropertytype": null,
+                "dissolveparcelcount": null,
+                "valnetlotcount": null,
+                "valnetworkflowid": null,
+                "propid": null,
+                "superlot": null,
+                "housenumber": null,
+                "address": null,
+                "startdate": null,
+                "enddate": null,
+                "lastupdate": null,
+                "msoid": null,
+                "centroidid": null,
+                "shapeuuid": null,
+                "changetype": null,
+                "processstate": null,
+                "urbanity": null
+              }
+            },
+            "drawingTool": "esriFeatureEditToolPolygon"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "name": "Other",
+        "domains": {
+          "gurasid": {
+            "type": "inherited"
+          },
+          "valnetpropertystatus": {
+            "type": "inherited"
+          },
+          "valnetpropertytype": {
+            "type": "inherited"
+          },
+          "principaladdresstype": {
+            "type": "inherited"
+          }
+        },
+        "templates": [
+          {
+            "name": "5",
+            "description": "",
+            "prototype": {
+              "attributes": {
+                "principaladdresstype": null,
+                "addressstringoid": null,
+                "createdate": null,
+                "gurasid": 0,
+                "principaladdresssiteoid": null,
+                "propertytype": 1,
+                "valnetpropertystatus": null,
+                "valnetpropertytype": null,
+                "dissolveparcelcount": null,
+                "valnetlotcount": null,
+                "valnetworkflowid": null,
+                "propid": null,
+                "superlot": null,
+                "housenumber": null,
+                "address": null,
+                "startdate": null,
+                "enddate": null,
+                "lastupdate": null,
+                "msoid": null,
+                "centroidid": null,
+                "shapeuuid": null,
+                "changetype": null,
+                "processstate": null,
+                "urbanity": null
+              }
+            },
+            "drawingTool": "esriFeatureEditToolPolygon"
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "name": "Incomplete",
+        "domains": {
+          "gurasid": {
+            "type": "inherited"
+          },
+          "valnetpropertystatus": {
+            "type": "inherited"
+          },
+          "valnetpropertytype": {
+            "type": "inherited"
+          },
+          "principaladdresstype": {
+            "type": "inherited"
+          }
+        },
+        "templates": [
+          {
+            "name": "6",
+            "description": "",
+            "prototype": {
+              "attributes": {
+                "principaladdresstype": null,
+                "addressstringoid": null,
+                "createdate": null,
+                "gurasid": 0,
+                "principaladdresssiteoid": null,
+                "propertytype": 1,
+                "valnetpropertystatus": null,
+                "valnetpropertytype": null,
+                "dissolveparcelcount": null,
+                "valnetlotcount": null,
+                "valnetworkflowid": null,
+                "propid": null,
+                "superlot": null,
+                "housenumber": null,
+                "address": null,
+                "startdate": null,
+                "enddate": null,
+                "lastupdate": null,
+                "msoid": null,
+                "centroidid": null,
+                "shapeuuid": null,
+                "changetype": null,
+                "processstate": null,
+                "urbanity": null
+              }
+            },
+            "drawingTool": "esriFeatureEditToolPolygon"
+          }
+        ]
+      }
+    ],
+    "templates": [],
+    "maxRecordCount": 2000,
+    "supportedQueryFormats": "JSON, geoJSON, PBF",
+    "supportedExportFormats": "sqlite,filegdb",
+    "capabilities": "Query",
+    "useStandardizedQueries": true,
+    "supportedSpatialRelationships": [
+      "esriSpatialRelIntersects",
+      "esriSpatialRelContains",
+      "esriSpatialRelCrosses",
+      "esriSpatialRelEnvelopeIntersects",
+      "esriSpatialRelIndexIntersects",
+      "esriSpatialRelOverlaps",
+      "esriSpatialRelTouches",
+      "esriSpatialRelWithin",
+      "esriSpatialRelRelation"
+    ],
+    "standardMaxRecordCount": 4000,
+    "tileMaxRecordCount": 4000,
+    "standardMaxRecordCountNoGeometry": 32000,
+    "maxRecordCountFactor": 1,
+    "serviceItemId": "01de8834e88a45a1a673b120aa00c82e"
+  }
+}

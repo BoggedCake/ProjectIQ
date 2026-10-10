@@ -1,0 +1,36 @@
+name: SitePivot server data QA
+
+on:
+  push:
+    branches: [sitepivot-concept]
+    paths:
+      - 'api/**'
+      - 'index.html'
+      - 'commercial-engine.js'
+      - 'property-evidence.js'
+      - 'planning-intelligence.js'
+      - 'fsr-evidence.js'
+      - 'zoning-evidence.js'
+      - 'comparison-engine.js'
+      - 'qa/**'
+      - 'package*.json'
+      - '.github/workflows/sitepivot-server-qa.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+concurrency:
+  group: sitepivot-server-data-qa-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  data-qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Test NSW address, identity and planning providers server-side
+        run: node qa/serverless-smoke.cjs

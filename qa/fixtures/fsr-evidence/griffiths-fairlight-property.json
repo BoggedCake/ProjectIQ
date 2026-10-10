@@ -1,0 +1,638 @@
+{
+  "address": {
+    "source": "https://portal.spatial.nsw.gov.au/server/rest/services/Hosted/NSW_Address_Point_Formatted/FeatureServer/0/query?where=streetnumber1+%3D+%2757%27+AND+UPPER%28streetname%29+%3D+%27GRIFFITHS%27+AND+UPPER%28localityname%29+%3D+%27FAIRLIGHT%27&outFields=formattedaddress%2Clocalityname%2Ccadastralidentifier%2Clot_cadid%2Clganame%2Css_propid&returnGeometry=true&outSR=4283&f=json",
+    "retrievedAt": "2026-10-10T01:10:30.620009+00:00",
+    "response": {
+      "hasZ": false,
+      "features": [
+        {
+          "attributes": {
+            "localityname": "FAIRLIGHT",
+            "lot_cadid": 102195437,
+            "ss_propid": 742613,
+            "formattedaddress": "57 GRIFFITHS ST, FAIRLIGHT NSW 2094",
+            "cadastralidentifier": "32//DP1729",
+            "lganame": "NORTHERN BEACHES"
+          },
+          "geometry": {
+            "x": 151.27256919430255,
+            "y": -33.793387644085556
+          }
+        }
+      ],
+      "exceededTransferLimit": false,
+      "hasM": false,
+      "objectIdFieldName": "objectid",
+      "fields": [
+        {
+          "visible": true,
+          "defaultValue": null,
+          "length": 200,
+          "type": "esriFieldTypeString",
+          "modelName": "formattedaddress",
+          "name": "formattedaddress",
+          "alias": "Formatted Address"
+        },
+        {
+          "visible": true,
+          "defaultValue": null,
+          "length": 200,
+          "type": "esriFieldTypeString",
+          "modelName": "localityname",
+          "name": "localityname",
+          "alias": "Locality"
+        },
+        {
+          "visible": true,
+          "defaultValue": null,
+          "length": 200,
+          "type": "esriFieldTypeString",
+          "modelName": "cadastralidentifier",
+          "name": "cadastralidentifier",
+          "alias": "Lot / Section / Plan"
+        },
+        {
+          "visible": true,
+          "defaultValue": null,
+          "type": "esriFieldTypeInteger",
+          "modelName": "lot_cadid",
+          "name": "lot_cadid",
+          "alias": "Cadastre ID (Lot)"
+        },
+        {
+          "visible": true,
+          "defaultValue": null,
+          "length": 60,
+          "type": "esriFieldTypeString",
+          "modelName": "lganame",
+          "name": "lganame",
+          "alias": "Local Government Area"
+        },
+        {
+          "visible": true,
+          "defaultValue": null,
+          "type": "esriFieldTypeInteger",
+          "modelName": "ss_propid",
+          "name": "ss_propid",
+          "alias": "Property ID"
+        }
+      ],
+      "spatialReference": {
+        "latestWkid": 4283,
+        "wkid": 4283
+      },
+      "geometryType": "esriGeometryPoint"
+    }
+  },
+  "parcel": {
+    "source": "https://portal.spatial.nsw.gov.au/server/rest/services/NSW_Land_Parcel_Property_Theme/FeatureServer/8/query?where=cadid+%3D+102195437&outFields=%2A&returnGeometry=true&outSR=4283&f=json",
+    "retrievedAt": "2026-10-10T01:10:42.652464+00:00",
+    "response": {
+      "objectIdFieldName": "objectid",
+      "globalIdFieldName": "",
+      "geometryType": "esriGeometryPolygon",
+      "spatialReference": {
+        "wkid": 4283,
+        "latestWkid": 4283
+      },
+      "fields": [
+        {
+          "name": "objectid",
+          "alias": "OBJECTID",
+          "type": "esriFieldTypeOID"
+        },
+        {
+          "name": "cadid",
+          "alias": "cadid",
+          "type": "esriFieldTypeInteger"
+        },
+        {
+          "name": "createdate",
+          "alias": "createdate",
+          "type": "esriFieldTypeDate",
+          "length": 8
+        },
+        {
+          "name": "modifieddate",
+          "alias": "modifieddate",
+          "type": "esriFieldTypeDate",
+          "length": 8
+        },
+        {
+          "name": "controllingauthorityoid",
+          "alias": "controllingauthorityoid",
+          "type": "esriFieldTypeInteger"
+        },
+        {
+          "name": "planoid",
+          "alias": "planoid",
+          "type": "esriFieldTypeInteger"
+        },
+        {
+          "name": "plannumber",
+          "alias": "plannumber",
+          "type": "esriFieldTypeInteger"
+        },
+        {
+          "name": "planlabel",
+          "alias": "planlabel",
+          "type": "esriFieldTypeString",
+          "length": 15
+        },
+        {
+          "name": "itstitlestatus",
+          "alias": "ITSTitleStatus",
+          "type": "esriFieldTypeSmallInteger"
+        },
+        {
+          "name": "itslotid",
+          "alias": "itslotid",
+          "type": "esriFieldTypeInteger"
+        },
+        {
+          "name": "stratumlevel",
+          "alias": "StratumLevel",
+          "type": "esriFieldTypeSmallInteger"
+        },
+        {
+          "name": "hasstratum",
+          "alias": "HasStratum",
+          "type": "esriFieldTypeSmallInteger"
+        },
+        {
+          "name": "classsubtype",
+          "alias": "ClassSubtype",
+          "type": "esriFieldTypeInteger"
+        },
+        {
+          "name": "lotnumber",
+          "alias": "lotnumber",
+          "type": "esriFieldTypeString",
+          "length": 6
+        },
+        {
+          "name": "sectionnumber",
+          "alias": "sectionnumber",
+          "type": "esriFieldTypeString",
+          "length": 3
+        },
+        {
+          "name": "planlotarea",
+          "alias": "planlotarea",
+          "type": "esriFieldTypeDouble"
+        },
+        {
+          "name": "planlotareaunits",
+          "alias": "planlotareaunits",
+          "type": "esriFieldTypeString",
+          "length": 6
+        },
+        {
+          "name": "startdate",
+          "alias": "startdate",
+          "type": "esriFieldTypeDate",
+          "length": 8
+        },
+        {
+          "name": "enddate",
+          "alias": "enddate",
+          "type": "esriFieldTypeDate",
+          "length": 8
+        },
+        {
+          "name": "lastupdate",
+          "alias": "lastupdate",
+          "type": "esriFieldTypeDate",
+          "length": 8
+        },
+        {
+          "name": "msoid",
+          "alias": "msoid",
+          "type": "esriFieldTypeInteger"
+        },
+        {
+          "name": "centroidid",
+          "alias": "centroidid",
+          "type": "esriFieldTypeInteger"
+        },
+        {
+          "name": "shapeuuid",
+          "alias": "shapeuuid",
+          "type": "esriFieldTypeString",
+          "length": 38
+        },
+        {
+          "name": "changetype",
+          "alias": "changetype",
+          "type": "esriFieldTypeString",
+          "length": 2
+        },
+        {
+          "name": "lotidstring",
+          "alias": "lotidstring",
+          "type": "esriFieldTypeString",
+          "length": 50
+        },
+        {
+          "name": "processstate",
+          "alias": "processstate",
+          "type": "esriFieldTypeString",
+          "length": 5
+        },
+        {
+          "name": "urbanity",
+          "alias": "urbanity",
+          "type": "esriFieldTypeString",
+          "length": 2
+        },
+        {
+          "name": "Shape__Length",
+          "alias": "shape_Length",
+          "type": "esriFieldTypeDouble"
+        },
+        {
+          "name": "Shape__Area",
+          "alias": "shape_Area",
+          "type": "esriFieldTypeDouble"
+        }
+      ],
+      "features": [
+        {
+          "attributes": {
+            "objectid": 1256366,
+            "cadid": 102195437,
+            "createdate": 749952000000,
+            "modifieddate": 749952000000,
+            "controllingauthorityoid": 2,
+            "planoid": 72543,
+            "plannumber": 1729,
+            "planlabel": "DP1729",
+            "itstitlestatus": 1,
+            "itslotid": 452629,
+            "stratumlevel": 0,
+            "hasstratum": 1,
+            "classsubtype": 1,
+            "lotnumber": "32",
+            "sectionnumber": null,
+            "planlotarea": null,
+            "planlotareaunits": null,
+            "startdate": 1101498230000,
+            "enddate": 32503680000000,
+            "lastupdate": 1101498230344,
+            "msoid": 360425,
+            "centroidid": null,
+            "shapeuuid": "6f6cc171-5f17-3888-866a-d2f73b1e9675",
+            "changetype": "I",
+            "lotidstring": "32//DP1729",
+            "processstate": null,
+            "urbanity": "U",
+            "Shape__Length": 110.93835897552655,
+            "Shape__Area": 602.7878851369691
+          },
+          "geometry": {
+            "rings": [
+              [
+                [
+                  151.27266451723227,
+                  -33.79324814667928
+                ],
+                [
+                  151.27260386747585,
+                  -33.79354765158407
+                ],
+                [
+                  151.27247386216507,
+                  -33.79352650483701
+                ],
+                [
+                  151.2725326389341,
+                  -33.7932275830966
+                ],
+                [
+                  151.27266451723227,
+                  -33.79324814667928
+                ]
+              ]
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "pointFsr": {
+    "source": "https://mapprod3.environment.nsw.gov.au/arcgis/rest/services/Planning/EPI_Primary_Planning_Layers/MapServer/1/query?where=1%3D1&geometry=%7B%22x%22%3A+151.27256919430255%2C+%22y%22%3A+-33.793387644085556%7D&geometryType=esriGeometryPoint&inSR=4283&spatialRel=esriSpatialRelIntersects&outFields=%2A&returnGeometry=false&f=json",
+    "retrievedAt": "2026-10-10T01:10:49.113747+00:00",
+    "response": {
+      "displayFieldName": "EPI_NAME",
+      "fieldAliases": {
+        "OBJECTID": "OBJECTID",
+        "EPI_NAME": "EPI_NAME",
+        "LGA_NAME": "LGA_NAME",
+        "PUBLISHED_DATE": "PUBLISHED_DATE",
+        "COMMENCED_DATE": "COMMENCED_DATE",
+        "CURRENCY_DATE": "CURRENCY_DATE",
+        "AMENDMENT": "AMENDMENT",
+        "MAP_TYPE": "MAP_TYPE",
+        "MAP_NAME": "MAP_NAME",
+        "LAY_NAME": "LAY_NAME",
+        "LAY_CLASS": "LAY_CLASS",
+        "SYM_CODE": "SYM_CODE",
+        "FSR": "FSR",
+        "LEGIS_REF_AREA": "LEGIS_REF_AREA",
+        "LEGIS_REF_CLAUSE": "LEGIS_REF_CLAUSE",
+        "LEGIS_REF_VALUE": "LEGIS_REF_VALUE",
+        "PCO_REF_KEY": "PCO_REF_KEY",
+        "EPI_TYPE": "EPI_TYPE"
+      },
+      "fields": [
+        {
+          "name": "OBJECTID",
+          "type": "esriFieldTypeOID",
+          "alias": "OBJECTID"
+        },
+        {
+          "name": "EPI_NAME",
+          "type": "esriFieldTypeString",
+          "alias": "EPI_NAME",
+          "length": 150
+        },
+        {
+          "name": "LGA_NAME",
+          "type": "esriFieldTypeString",
+          "alias": "LGA_NAME",
+          "length": 50
+        },
+        {
+          "name": "PUBLISHED_DATE",
+          "type": "esriFieldTypeDate",
+          "alias": "PUBLISHED_DATE",
+          "length": 8
+        },
+        {
+          "name": "COMMENCED_DATE",
+          "type": "esriFieldTypeDate",
+          "alias": "COMMENCED_DATE",
+          "length": 8
+        },
+        {
+          "name": "CURRENCY_DATE",
+          "type": "esriFieldTypeDate",
+          "alias": "CURRENCY_DATE",
+          "length": 8
+        },
+        {
+          "name": "AMENDMENT",
+          "type": "esriFieldTypeString",
+          "alias": "AMENDMENT",
+          "length": 150
+        },
+        {
+          "name": "MAP_TYPE",
+          "type": "esriFieldTypeString",
+          "alias": "MAP_TYPE",
+          "length": 4
+        },
+        {
+          "name": "MAP_NAME",
+          "type": "esriFieldTypeString",
+          "alias": "MAP_NAME",
+          "length": 100
+        },
+        {
+          "name": "LAY_NAME",
+          "type": "esriFieldTypeString",
+          "alias": "LAY_NAME",
+          "length": 100
+        },
+        {
+          "name": "LAY_CLASS",
+          "type": "esriFieldTypeString",
+          "alias": "LAY_CLASS",
+          "length": 100
+        },
+        {
+          "name": "SYM_CODE",
+          "type": "esriFieldTypeInteger",
+          "alias": "SYM_CODE"
+        },
+        {
+          "name": "FSR",
+          "type": "esriFieldTypeDouble",
+          "alias": "FSR"
+        },
+        {
+          "name": "LEGIS_REF_AREA",
+          "type": "esriFieldTypeString",
+          "alias": "LEGIS_REF_AREA",
+          "length": 50
+        },
+        {
+          "name": "LEGIS_REF_CLAUSE",
+          "type": "esriFieldTypeString",
+          "alias": "LEGIS_REF_CLAUSE",
+          "length": 50
+        },
+        {
+          "name": "LEGIS_REF_VALUE",
+          "type": "esriFieldTypeString",
+          "alias": "LEGIS_REF_VALUE",
+          "length": 50
+        },
+        {
+          "name": "PCO_REF_KEY",
+          "type": "esriFieldTypeString",
+          "alias": "PCO_REF_KEY",
+          "length": 50
+        },
+        {
+          "name": "EPI_TYPE",
+          "type": "esriFieldTypeString",
+          "alias": "EPI_TYPE",
+          "length": 5
+        }
+      ],
+      "features": [
+        {
+          "attributes": {
+            "OBJECTID": 163947,
+            "EPI_NAME": "Manly Local Environmental Plan 2013",
+            "LGA_NAME": "NORTHERN BEACHES",
+            "PUBLISHED_DATE": 1365120000000,
+            "COMMENCED_DATE": 1366329600000,
+            "CURRENCY_DATE": 1659657600000,
+            "AMENDMENT": null,
+            "MAP_TYPE": "FSR",
+            "MAP_NAME": "Floor Space Ratio Map",
+            "LAY_NAME": "Maximum Floor Space Ratio (n:1)",
+            "LAY_CLASS": "0.6-0.64",
+            "SYM_CODE": 6,
+            "FSR": 0.6,
+            "LEGIS_REF_AREA": null,
+            "LEGIS_REF_CLAUSE": "Clause 4.4",
+            "LEGIS_REF_VALUE": null,
+            "PCO_REF_KEY": "2013-140",
+            "EPI_TYPE": "LEP"
+          }
+        }
+      ]
+    }
+  },
+  "parcelFsr": {
+    "source": "https://mapprod3.environment.nsw.gov.au/arcgis/rest/services/Planning/EPI_Primary_Planning_Layers/MapServer/1/query?where=1%3D1&geometry=%7B%22rings%22%3A+%5B%5B%5B151.27266451723227%2C+-33.79324814667928%5D%2C+%5B151.27260386747585%2C+-33.79354765158407%5D%2C+%5B151.27247386216507%2C+-33.79352650483701%5D%2C+%5B151.2725326389341%2C+-33.7932275830966%5D%2C+%5B151.27266451723227%2C+-33.79324814667928%5D%5D%5D%7D&geometryType=esriGeometryPolygon&inSR=4283&spatialRel=esriSpatialRelIntersects&outFields=%2A&returnGeometry=false&f=json",
+    "retrievedAt": "2026-10-10T01:10:55.889673+00:00",
+    "response": {
+      "displayFieldName": "EPI_NAME",
+      "fieldAliases": {
+        "OBJECTID": "OBJECTID",
+        "EPI_NAME": "EPI_NAME",
+        "LGA_NAME": "LGA_NAME",
+        "PUBLISHED_DATE": "PUBLISHED_DATE",
+        "COMMENCED_DATE": "COMMENCED_DATE",
+        "CURRENCY_DATE": "CURRENCY_DATE",
+        "AMENDMENT": "AMENDMENT",
+        "MAP_TYPE": "MAP_TYPE",
+        "MAP_NAME": "MAP_NAME",
+        "LAY_NAME": "LAY_NAME",
+        "LAY_CLASS": "LAY_CLASS",
+        "SYM_CODE": "SYM_CODE",
+        "FSR": "FSR",
+        "LEGIS_REF_AREA": "LEGIS_REF_AREA",
+        "LEGIS_REF_CLAUSE": "LEGIS_REF_CLAUSE",
+        "LEGIS_REF_VALUE": "LEGIS_REF_VALUE",
+        "PCO_REF_KEY": "PCO_REF_KEY",
+        "EPI_TYPE": "EPI_TYPE"
+      },
+      "fields": [
+        {
+          "name": "OBJECTID",
+          "type": "esriFieldTypeOID",
+          "alias": "OBJECTID"
+        },
+        {
+          "name": "EPI_NAME",
+          "type": "esriFieldTypeString",
+          "alias": "EPI_NAME",
+          "length": 150
+        },
+        {
+          "name": "LGA_NAME",
+          "type": "esriFieldTypeString",
+          "alias": "LGA_NAME",
+          "length": 50
+        },
+        {
+          "name": "PUBLISHED_DATE",
+          "type": "esriFieldTypeDate",
+          "alias": "PUBLISHED_DATE",
+          "length": 8
+        },
+        {
+          "name": "COMMENCED_DATE",
+          "type": "esriFieldTypeDate",
+          "alias": "COMMENCED_DATE",
+          "length": 8
+        },
+        {
+          "name": "CURRENCY_DATE",
+          "type": "esriFieldTypeDate",
+          "alias": "CURRENCY_DATE",
+          "length": 8
+        },
+        {
+          "name": "AMENDMENT",
+          "type": "esriFieldTypeString",
+          "alias": "AMENDMENT",
+          "length": 150
+        },
+        {
+          "name": "MAP_TYPE",
+          "type": "esriFieldTypeString",
+          "alias": "MAP_TYPE",
+          "length": 4
+        },
+        {
+          "name": "MAP_NAME",
+          "type": "esriFieldTypeString",
+          "alias": "MAP_NAME",
+          "length": 100
+        },
+        {
+          "name": "LAY_NAME",
+          "type": "esriFieldTypeString",
+          "alias": "LAY_NAME",
+          "length": 100
+        },
+        {
+          "name": "LAY_CLASS",
+          "type": "esriFieldTypeString",
+          "alias": "LAY_CLASS",
+          "length": 100
+        },
+        {
+          "name": "SYM_CODE",
+          "type": "esriFieldTypeInteger",
+          "alias": "SYM_CODE"
+        },
+        {
+          "name": "FSR",
+          "type": "esriFieldTypeDouble",
+          "alias": "FSR"
+        },
+        {
+          "name": "LEGIS_REF_AREA",
+          "type": "esriFieldTypeString",
+          "alias": "LEGIS_REF_AREA",
+          "length": 50
+        },
+        {
+          "name": "LEGIS_REF_CLAUSE",
+          "type": "esriFieldTypeString",
+          "alias": "LEGIS_REF_CLAUSE",
+          "length": 50
+        },
+        {
+          "name": "LEGIS_REF_VALUE",
+          "type": "esriFieldTypeString",
+          "alias": "LEGIS_REF_VALUE",
+          "length": 50
+        },
+        {
+          "name": "PCO_REF_KEY",
+          "type": "esriFieldTypeString",
+          "alias": "PCO_REF_KEY",
+          "length": 50
+        },
+        {
+          "name": "EPI_TYPE",
+          "type": "esriFieldTypeString",
+          "alias": "EPI_TYPE",
+          "length": 5
+        }
+      ],
+      "features": [
+        {
+          "attributes": {
+            "OBJECTID": 163947,
+            "EPI_NAME": "Manly Local Environmental Plan 2013",
+            "LGA_NAME": "NORTHERN BEACHES",
+            "PUBLISHED_DATE": 1365120000000,
+            "COMMENCED_DATE": 1366329600000,
+            "CURRENCY_DATE": 1659657600000,
+            "AMENDMENT": null,
+            "MAP_TYPE": "FSR",
+            "MAP_NAME": "Floor Space Ratio Map",
+            "LAY_NAME": "Maximum Floor Space Ratio (n:1)",
+            "LAY_CLASS": "0.6-0.64",
+            "SYM_CODE": 6,
+            "FSR": 0.6,
+            "LEGIS_REF_AREA": null,
+            "LEGIS_REF_CLAUSE": "Clause 4.4",
+            "LEGIS_REF_VALUE": null,
+            "PCO_REF_KEY": "2013-140",
+            "EPI_TYPE": "LEP"
+          }
+        }
+      ]
+    }
+  }
+}
