@@ -1,7 +1,7 @@
 'use strict';
 const {chromium,webkit}=require('playwright'),assert=require('node:assert/strict'),fs=require('fs'),path=require('path');
 const root=path.join(__dirname,'..'),out=path.join(root,'qa-artifacts/residential');fs.mkdirSync(out,{recursive:true});
-const live=!!process.env.SITEPIVOT_URL,server=live?null:require('./founder-server').createServer();
+const live=!!process.env.SITEPIVOT_URL,server=live?null:require('./founder-server.cjs').createServer();
 (async()=>{if(server)await new Promise(r=>server.listen(0,'127.0.0.1',r));const base=process.env.SITEPIVOT_URL||`http://127.0.0.1:${server.address().port}/`,results=[];
 for(const engine of [chromium,webkit]){const browser=await engine.launch();for(const width of [390,1280]){const page=await browser.newPage({viewport:{width,height:width<500?844:900},isMobile:width<500,hasTouch:width<500}),errors=[];page.on('pageerror',e=>errors.push(e.message));page.setDefaultTimeout(45000);
 try{await page.goto(base);assert.equal(await page.locator('#addressSearch').getAttribute('placeholder'),'Start typing your property address');
