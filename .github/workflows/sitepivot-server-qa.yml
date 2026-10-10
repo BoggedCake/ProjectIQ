@@ -10,6 +10,7 @@ on:
       - 'property-evidence.js'
       - 'planning-intelligence.js'
       - 'fsr-evidence.js'
+      - 'zoning-evidence.js'
       - 'comparison-engine.js'
       - 'qa/**'
       - 'package*.json'

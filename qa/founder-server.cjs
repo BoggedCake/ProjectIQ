@@ -29,7 +29,7 @@ function createServer(){
    return;
   }
   const file=url.pathname==='/'?'index.html':url.pathname.slice(1);
-  if(!['index.html','fsr-evidence.js','property-evidence.js','planning-intelligence.js','commercial-engine.js','comparison-engine.js','conversation.js','voice.js'].includes(file)||req.method!=='GET'){res.writeHead(404);return res.end('Not found')}
+  if(!['index.html','zoning-evidence.js','fsr-evidence.js','property-evidence.js','planning-intelligence.js','commercial-engine.js','comparison-engine.js','conversation.js','voice.js'].includes(file)||req.method!=='GET'){res.writeHead(404);return res.end('Not found')}
   let content=fs.readFileSync(path.join(root,file));
   if(file==='index.html')content=content.toString().replace(/<title>[^<]*<\/title>/,'<title>SitePivot — LOCAL FOUNDER TEST</title>').replace(/<body([^>]*)>/,`<body$1><aside role="note" style="padding:12px 20px;background:#fff0b8;color:#312400;font:700 15px system-ui;text-align:center">SITEPIVOT LOCAL FOUNDER TEST — ${revision}<br><small>Development version. Not the public website.</small></aside>`);
   res.setHeader('Content-Type',file.endsWith('.js')?'application/javascript; charset=utf-8':'text/html; charset=utf-8');res.end(content);

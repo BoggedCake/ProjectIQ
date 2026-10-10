@@ -3,6 +3,7 @@
 const {councilEvidence}=require('./council');
 const {frontage,parcelEvidence}=require('../../property-evidence');
 const FSR=require('../../fsr-evidence');
+const Z=require('../../zoning-evidence');
 const UPSTREAM={
   geocoder:'https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer',
   address:'https://portal.spatial.nsw.gov.au/server/rest/services/Hosted/NSW_Address_Point_Formatted/FeatureServer/0',
@@ -167,11 +168,11 @@ async function parcelFor(property){
   return parcelEvidence(fs,property,{spatialReference:{wkid:4283},supplementaryAreas:property.supplementaryAreas||[]});
 }
 async function spatial(base,id,geom,type,lga,fields='*',timeout=6000){
-  const j=await arcQuery(base,id,{where:'1=1',geometry:JSON.stringify(geom),geometryType:type,inSR:4283,spatialRel:'esriSpatialRelIntersects',outFields:fields,returnGeometry:'false',resultRecordCount:50},timeout);
+  const j=await arcQuery(base,id,{where:'1=1',geometry:JSON.stringify(geom),geometryType:type,inSR:4283,spatialRel:'esriSpatialRelIntersects',outFields:fields,returnGeometry:base===UPSTREAM.primary&&id===LAYER.zone?'true':'false',outSR:4283,resultRecordCount:50},timeout);
   if(!Array.isArray(j.features)||j.exceededTransferLimit)throw new Error('Official spatial query did not return a complete feature set');
   // Primary EPI polygons already establish spatial applicability. Legacy council
   // names must not remove an intersecting LEP control following amalgamations.
-  let fs=j.features;if(lga&&base!==UPSTREAM.primary)fs=fs.filter(f=>sameLga(attrs(f),lga));return fs;
+  let fs=j.features.map(f=>f.geometry?{...f,geometry:{...f.geometry,spatialReference:f.geometry.spatialReference||j.spatialReference||{wkid:4283}}}:f);if(lga&&base!==UPSTREAM.primary)fs=fs.filter(f=>sameLga(attrs(f),lga));return fs;
 }
 async function identify(base,point,timeout=6000){
   const d=.015,x=+point.x,y=+point.y;
@@ -221,7 +222,8 @@ async function planningFor(property){
   settled.forEach((r,i)=>{const k=keys[i];if(r.status==='fulfilled')data[k]=r.value;else{data[k]=[];failed.push(k);errors.push(k+': '+(r.reason?.message||'failed'))}});
   const missing=(k,label)=>failed.includes(k)?'Source check did not complete — Needs Review':label;
   const epis=epiNames([data.zone,data.fsr,data.height,data.lot,data.heritage,data.reservation,data.application,data.acid,data.riparian,data.biodiversity,data.wetlands,data.sensitive,data.flood,data.landslide]);
-  const localInstrument=epis.find(x=>/Local Environmental Plan|\bLEP\b/i.test(x))||epis.find(x=>!/^State Environmental Planning Policy/i.test(x))||null;
+  const zoningEvidence=Z.resolve({records:data.zone,parcelGeometry:parcel.geometry,queryComplete:!failed.includes('zone'),error:failed.includes('zone')?'Official zoning retrieval failed':null,source:UPSTREAM.primary+'/2',checkedAt:new Date().toISOString()});
+  const localInstrument=['single-zone','boundary-review'].includes(zoningEvidence.state)?zoningEvidence.primaryZone?.instrument||null:epis.join(' / ')||null;
   const statePolicies=unique([
     ...epis.filter(x=>/^State Environmental Planning Policy/i.test(x)),
     ...(data.sepp||[]).map(r=>r.attributes?.EPI_NAME||r.attributes?.['EPI Name']||r.layerName).filter(Boolean)
@@ -235,7 +237,7 @@ async function planningFor(property){
       controlSources:{zone:UPSTREAM.primary+'/2',lot:UPSTREAM.primary+'/4',height:UPSTREAM.primary+'/5',fsr:UPSTREAM.primary+'/1',heritage:UPSTREAM.primary+'/0',application:UPSTREAM.primary+'/6'},
       councilEvidence:council,spatialScope:parcel.geometry?'parcel':'address-point',
       instrument:localInstrument,allEpiNames:epis,epiNames:epis,statePolicies,sepp:statePolicies,
-      zone:failed.includes('zone')?null:formatZone(data.zone),
+      zone:failed.includes('zone')?null:['single-zone','boundary-review'].includes(zoningEvidence.state)&&zoningEvidence.primaryZone?[zoningEvidence.primaryZone.code,zoningEvidence.primaryZone.label].filter(Boolean).join(' · '):formatZone(data.zone),zoningEvidence,
       fsr:fsrEvidence.value,fsrEvidence,
       height:failed.includes('height')?null:formatHeight(data.height),
       minLot:failed.includes('lot')?null:formatLot(data.lot),
@@ -257,7 +259,7 @@ async function planningFor(property){
       keySites:failed.includes('keySites')?[]:rowLabels(data.keySites),
       urbanRelease:failed.includes('urbanRelease')?[]:rowLabels(data.urbanRelease),
       localTriggers:failed.includes('localIdentify')?[]:unique((data.localIdentify||[]).map(r=>[r.layerName,r.attributes?.LAY_CLASS||r.attributes?.Class].filter(Boolean).join(' · '))),
-      splitZone:unique(data.zone.map(f=>formatZone([f]))).length>1,
+      splitZone:zoningEvidence.splitZone,
       liveErrors:errors,failedKeys:failed,failedSources:failed,checkedAt:new Date().toISOString()
     },
     timingMs:now()-t,

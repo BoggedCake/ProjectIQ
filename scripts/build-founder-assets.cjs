@@ -1,6 +1,6 @@
 'use strict';
 const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
-const FILES=['index.html','fsr-evidence.js','commercial-engine.js','planning-intelligence.js','property-evidence.js','comparison-engine.js','conversation.js','voice.js'];
+const FILES=['index.html','zoning-evidence.js','fsr-evidence.js','commercial-engine.js','planning-intelligence.js','property-evidence.js','comparison-engine.js','conversation.js','voice.js'];
 function build({root=path.resolve(__dirname,'..'),files=FILES,revision}={}){
  root=fs.realpathSync(root);
  const directory=path.join(root,'qa-artifacts','migration-public');

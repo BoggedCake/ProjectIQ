@@ -9,6 +9,7 @@ on:
       - 'property-evidence.js'
       - 'planning-intelligence.js'
       - 'fsr-evidence.js'
+      - 'zoning-evidence.js'
       - 'comparison-engine.js'
       - 'conversation.js'
       - 'voice.js'
@@ -45,7 +46,7 @@ jobs:
             curl -L -s -o /tmp/sitepivot-conversation.js "https://boggedcake.github.io/ProjectIQ/conversation.js?qa=${GITHUB_SHA}"
             curl -L -s -o /tmp/sitepivot-voice.js "https://boggedcake.github.io/ProjectIQ/voice.js?qa=${GITHUB_SHA}"
             modules_match=true
-            for module in property-evidence planning-intelligence comparison-engine fsr-evidence; do
+            for module in property-evidence planning-intelligence comparison-engine fsr-evidence zoning-evidence; do
               curl -L -s -o "/tmp/${module}.js" "https://boggedcake.github.io/ProjectIQ/${module}.js?qa=${GITHUB_SHA}"
               cmp -s "${module}.js" "/tmp/${module}.js" || modules_match=false
             done
@@ -88,8 +89,15 @@ jobs:
         run: node qa/residential-browser.cjs
         env:
           SITEPIVOT_URL: https://boggedcake.github.io/ProjectIQ/
+      - name: Verify distinct DA and CDC opportunities on the real duplex founder properties
+        if: ${{ !cancelled() && steps.runtime.outcome == 'success' && steps.deployed.outcome == 'success' }}
+        run: node qa/duplex-browser.cjs
+        env:
+          SITEPIVOT_URL: https://boggedcake.github.io/ProjectIQ/
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: residential-founder-results
-          path: qa-artifacts/residential/
+          path: |
+            qa-artifacts/residential/
+            qa-artifacts/duplex/

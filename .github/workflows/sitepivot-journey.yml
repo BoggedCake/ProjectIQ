@@ -29,6 +29,8 @@ jobs:
         if: ${{ !cancelled() && steps.browsers.outcome == 'success' }}
       - run: SITEPIVOT_FOUNDER_PREVIEW=1 node qa/founder-repair-browser.cjs
         if: ${{ !cancelled() && steps.browsers.outcome == 'success' }}
+      - run: node qa/duplex-browser.cjs
+        if: ${{ !cancelled() && steps.browsers.outcome == 'success' }}
       - run: node qa/residential-browser.cjs
         if: ${{ !cancelled() && steps.browsers.outcome == 'success' }}
       - run: node qa/property-intelligence-browser.cjs
@@ -49,3 +51,4 @@ jobs:
             qa-artifacts/founder-repair/
             qa-artifacts/property-intelligence/
             qa-artifacts/residential/
+            qa-artifacts/duplex/

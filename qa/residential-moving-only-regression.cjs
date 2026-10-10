@@ -1,7 +1,7 @@
 'use strict';
 const {JSDOM,VirtualConsole}=require('jsdom'),fs=require('node:fs'),assert=require('node:assert/strict');
 const errors=[],vc=new VirtualConsole();vc.on('jsdomError',e=>errors.push(e.message));
-const d=new JSDOM(fs.readFileSync('index.html','utf8'),{url:'http://localhost/?fixtures=1',runScripts:'dangerously',virtualConsole:vc,beforeParse(w){w.scrollTo=()=>{};for(const m of ['fsr-evidence','property-evidence','planning-intelligence','commercial-engine','comparison-engine','conversation','voice'])w.eval(fs.readFileSync(m+'.js','utf8'))}});
+const d=new JSDOM(fs.readFileSync('index.html','utf8'),{url:'http://localhost/?fixtures=1',runScripts:'dangerously',virtualConsole:vc,beforeParse(w){w.scrollTo=()=>{};for(const m of ['property-evidence','zoning-evidence','fsr-evidence','planning-intelligence','commercial-engine','comparison-engine','conversation','voice'])w.eval(fs.readFileSync(m+'.js','utf8'))}});
 try{
 const a=d.window.SitePivot,doc=d.window.document;a.selectProperty(a.FIXTURES[0]);a.app.goal='unsure';Object.assign(a.app.scope,{moveEnabled:true,moveSale:2000000,targetPurchase:2500000,moveLoanBalance:800000,moveContractDate:'2026-10-10'});delete a.app.scope.moveFinance;delete a.app.scope.moveHolding;delete a.app.scope.replacementProjectCost;
 a.show('scope');assert.equal(doc.querySelectorAll('[data-room]').length,0);assert.equal(doc.querySelector('#scopeQuality'),null);assert.equal(doc.querySelector('#keepFinance'),null);assert.equal(doc.querySelector('#moveFinance').value,'$0');assert.match(doc.querySelector('#moveFields').textContent,/Zero is a working assumption/);

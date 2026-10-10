@@ -9,7 +9,7 @@ const http=require('node:http');
 const fs=require('node:fs');
 const assert=require('node:assert/strict');
 const html=fs.readFileSync(require('node:path').join(__dirname,'../index.html'));
-const server=http.createServer((req,res)=>{if(['/fsr-evidence.js','/property-evidence.js','/planning-intelligence.js','/commercial-engine.js','/comparison-engine.js','/conversation.js','/voice.js'].includes(req.url.split('?')[0])){res.setHeader('Content-Type','application/javascript');res.end(fs.readFileSync(require('node:path').join(__dirname,'..'+req.url.split('?')[0])));return}res.setHeader('Content-Type','text/html');res.end(html)});
+const server=http.createServer((req,res)=>{if(['/zoning-evidence.js','/fsr-evidence.js','/property-evidence.js','/planning-intelligence.js','/commercial-engine.js','/comparison-engine.js','/conversation.js','/voice.js'].includes(req.url.split('?')[0])){res.setHeader('Content-Type','application/javascript');res.end(fs.readFileSync(require('node:path').join(__dirname,'..'+req.url.split('?')[0])));return}res.setHeader('Content-Type','text/html');res.end(html)});
 const results=[];
 async function main(){
  await new Promise(r=>server.listen(0,'127.0.0.1',r));
