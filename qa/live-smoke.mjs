@@ -1,4 +1,5 @@
 import { chromium } from 'playwright';
+import {failedRequest, liveContext, waitForIdentity, waitForPlanning} from './live-readiness.mjs';
 
 const URL=(process.env.SITEPIVOT_URL||'https://boggedcake.github.io/ProjectIQ/')+'?qa='+(process.env.SITEPIVOT_BUILD||Date.now());
 const address='57 Griffiths Street, Fairlight NSW 2094';
@@ -8,7 +9,7 @@ const consoleErrors=[];
 const requestFailures=[];
 page.on('console',m=>{ if(m.type()==='error') consoleErrors.push(m.text()); });
 page.on('pageerror',e=>consoleErrors.push('PAGEERROR '+e.message));
-page.on('requestfailed',r=>requestFailures.push({url:r.url(),error:r.failure()?.errorText||''}));
+page.on('requestfailed',r=>requestFailures.push(failedRequest(r)));
 
 const result={url:URL,address,started:new Date().toISOString()};
 try{
@@ -27,10 +28,10 @@ try{
     for(const [name,url] of checks){
       const t=performance.now();
       try{
-        const r=await fetch(url,{mode:'cors'});
-        const text=await r.text();
-        out[name]={ok:r.ok,status:r.status,ms:Math.round(performance.now()-t),acao:r.headers.get('access-control-allow-origin'),body:text.slice(0,300)};
-      }catch(e){out[name]={ok:false,ms:Math.round(performance.now()-t),error:String(e)}}
+        const r=await fetch(url,{mode:'cors',signal:AbortSignal.timeout(name==='arcgisSuggest'?8500:5000)});
+        const body=await r.json();
+        out[name]={service:name,ok:r.ok&&!body.error,status:r.status,ms:Math.round(performance.now()-t),acao:r.headers.get('access-control-allow-origin'),outcome:body.error?'arcgis-error':r.ok?'success':'http-error',errorCode:body.error?.code||null,checkedAt:new Date().toISOString()};
+      }catch(e){out[name]={service:name,ok:false,status:null,ms:Math.round(performance.now()-t),outcome:e.name==='TimeoutError'?'timeout':'transport-error',checkedAt:new Date().toISOString()}}
     }
     return out;
   });
@@ -45,15 +46,15 @@ try{
     await input.press('ArrowDown');
     result.keyboardActiveSuggestion=await page.locator('#searchResults.open .searchResult.active').count();
     const exact=page.locator('#searchResults.open .searchResult').filter({hasText:'57 Griffiths'}).first();
-    if(await exact.count()) await exact.click(); else await page.locator('#searchResults.open .searchResult').first().click();
+    await exact.click();
     try{
-      await page.waitForSelector('#view-property.active',{timeout:12000});
+      await waitForIdentity(page);
       result.propertyResolved=true;
       result.identity=await page.locator('#identityMetrics').innerText();
       await page.locator('#confirmProperty').click();
       await page.waitForSelector('#view-passport.active',{timeout:5000});
       const planStart=Date.now();
-      try{await page.waitForFunction(()=>window.SitePivot?.app?.property?.planning?.loading===false,{timeout:9000});result.planningMs=Date.now()-planStart;}catch(e){result.planningTimeout=e.message;}
+      result.planningReadiness=await waitForPlanning(page);result.planningMs=Date.now()-planStart;
       result.passport=await page.locator('#planningFacts').innerText();
       result.consumerUx={
         detailedPlanningClosed:!(await page.locator('#planningDetails').evaluate(el=>el.open)),
@@ -153,14 +154,14 @@ try{
       await page.locator('#restartBtn').click();
       await page.locator('#view-landing.active').waitFor();
       result.founderJourney={pass:roadmap.length>20&&report.length>100&&sameProperty,roadmapRendered:roadmap.length>20,reportRendered:report.length>100,propertyPreserved:sameProperty,startOver:true};
-    }catch(e){result.propertyResolved=false;result.propertyError=e.message;result.searchBox=await page.locator('#searchResults').innerText().catch(()=>null);}
+    }catch(e){result.propertyResolved=false;result.propertyError=e.message;result.readiness=await liveContext(page);result.searchBox=await page.locator('#searchResults').innerText().catch(()=>null);}
   }catch(e){
     result.suggestionMs=null;
     result.suggestionError=e.message;
     result.searchBox=await page.locator('#searchResults').innerText().catch(()=>null);
   }
 
-  result.parcelProbe=await page.evaluate(async()=>{const url='https://portal.spatial.nsw.gov.au/server/rest/services/NSW_Land_Parcel_Property_Theme/FeatureServer/8/query?f=json&where='+encodeURIComponent("planlabel = 'DP1729' AND lotnumber = '32'")+'&outFields='+encodeURIComponent('cadid,lotnumber,planlabel,planlotarea,planlotareaunits,lotidstring,classsubtype')+'&returnGeometry=true&outSR=4283&resultRecordCount=5';const t=performance.now();try{const r=await fetch(url,{mode:'cors'});const j=await r.json();return{ok:r.ok,status:r.status,ms:Math.round(performance.now()-t),features:(j.features||[]).map(f=>({attributes:f.attributes,hasGeometry:!!f.geometry,rings:f.geometry?.rings?.length||0})),error:j.error||null}}catch(e){return{ok:false,ms:Math.round(performance.now()-t),error:String(e)}}});
+  result.parcelProbe=await page.evaluate(async()=>{const url='https://portal.spatial.nsw.gov.au/server/rest/services/NSW_Land_Parcel_Property_Theme/FeatureServer/8/query?f=json&where='+encodeURIComponent("planlabel = 'DP1729' AND lotnumber = '32'")+'&outFields='+encodeURIComponent('cadid,lotnumber,planlabel,planlotarea,planlotareaunits,lotidstring,classsubtype')+'&returnGeometry=true&outSR=4283&resultRecordCount=5';const t=performance.now();try{const r=await fetch(url,{mode:'cors',signal:AbortSignal.timeout(8500)});const j=await r.json();return{ok:r.ok,status:r.status,ms:Math.round(performance.now()-t),features:(j.features||[]).map(f=>({attributes:f.attributes,hasGeometry:!!f.geometry,rings:f.geometry?.rings?.length||0})),error:j.error||null}}catch(e){return{ok:false,ms:Math.round(performance.now()-t),error:String(e)}}});
 
   result.matrix=await page.evaluate(async()=>{
     const cases=[
@@ -216,6 +217,7 @@ try{
 
   result.consoleErrors=consoleErrors;
   result.requestFailures=requestFailures;
+  result.readiness=await liveContext(page);
 }catch(e){
   result.fatal=e.stack||String(e);
 }

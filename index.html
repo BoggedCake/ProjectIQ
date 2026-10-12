@@ -258,13 +258,14 @@ const LIVE_LAYER={
 // Server requests stay on this application's origin; links cannot override the destination.
 const API_BASE='';
 const SERVER_API=!!API_BASE||((location.protocol==='https:'||location.protocol==='http:')&&!/github\.io$/i.test(location.hostname));
-async function apiJSON(path,{method='GET',body=null,timeout=8000}={}){
+async function apiJSON(path,{method='GET',body=null,timeout=8000,signal}={}){
  const ctrl=typeof AbortController!=='undefined'?new AbortController():null,timer=setTimeout(()=>ctrl&&ctrl.abort(),timeout);
+ const abort=()=>ctrl?.abort();signal?.addEventListener('abort',abort,{once:true});if(signal?.aborted)abort();
  try{
    const url=(API_BASE||'')+path;
-   const r=await fetch(url,{method,headers:{Accept:'application/json',...(body?{'Content-Type':'application/json'}:{})},body:body?JSON.stringify(body):null,signal:ctrl?.signal});
-   const j=await r.json().catch(()=>({error:'Invalid API response'}));if(!r.ok||j?.error)throw new Error(j?.error||('HTTP '+r.status));return j;
- }finally{clearTimeout(timer)}
+   const r=await abortable(fetch(url,{method,headers:{Accept:'application/json',...(body?{'Content-Type':'application/json'}:{})},body:body?JSON.stringify(body):null,signal:ctrl?.signal}),ctrl?.signal);
+   const j=await abortable(r.json(),ctrl?.signal).catch(()=>({error:'Invalid API response'}));if(!r.ok||j?.error)throw new Error(j?.error||('HTTP '+r.status));return j;
+ }finally{clearTimeout(timer);signal?.removeEventListener('abort',abort)}
 }
 
 const esc=s=>String(s??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
@@ -277,90 +278,110 @@ const firstVal=(o,keys)=>{for(const k of keys){if(o&&meaningful(o[k]))return o[k
 function setSearchMessage(html,open=true){const box=$('searchResults');if(!box)return;box.innerHTML=html;box.classList.toggle('open',!!open);$('addressSearch')?.setAttribute('aria-expanded',String(!!open))}
 function setLiveStatus(msg,type='info'){app.liveStatus=msg;setSearchMessage('<div class="notice '+type+'" style="margin:8px">'+esc(msg)+'</div>',true)}
 function params(o){const q=new URLSearchParams();Object.entries(o||{}).forEach(([k,v])=>{if(v!==undefined&&v!==null)q.set(k,String(v))});return q.toString()}
-function arcJsonp(url,query,timeout=9000){return new Promise((resolve,reject)=>{const cb='__spcb_'+Date.now()+'_'+Math.random().toString(36).slice(2);const s=document.createElement('script');let done=false,timer=null;const retire=()=>{window[cb]=()=>{};/* Keep a no-op until page unload: a cancelled JSONP response may execute much later. */try{s.remove()}catch(e){}};const finish=(fn,val)=>{if(done)return;done=true;if(timer)clearTimeout(timer);retire();fn(val)};window[cb]=data=>{if(data&&data.error)finish(reject,new Error(data.error.message||'ArcGIS service error'));else finish(resolve,data)};s.onerror=()=>finish(reject,new Error('Government data service unavailable'));timer=setTimeout(()=>finish(reject,new Error('Government data request timed out')),timeout);s.src=url+(url.includes('?')?'&':'?')+params({...query,f:'json',callback:cb});document.head.appendChild(s)})}
+function requestError(message,status,code){const e=new Error(message);e.status=status||null;e.code=code||null;return e}
+function cancelled(){const e=new Error('Property request cancelled');e.name='AbortError';return e}
+const requestDiagnostics=[];
+function recordRequest(url,info){let service;try{service=new URL(url,location.href).hostname+new URL(url,location.href).pathname}catch{service='unknown'}requestDiagnostics.push({service,...info});while(requestDiagnostics.length>200)requestDiagnostics.shift()}
+function abortable(promise,signal){if(!signal)return promise;if(signal.aborted)return Promise.reject(cancelled());return new Promise((resolve,reject)=>{const abort=()=>{cleanup();reject(cancelled())},cleanup=()=>signal.removeEventListener('abort',abort);signal.addEventListener('abort',abort,{once:true});promise.then(v=>{cleanup();resolve(v)},e=>{cleanup();reject(e)})})}
+function arcJsonp(url,query,timeout=9000,signal){return new Promise((resolve,reject)=>{const cb='__spcb_'+Date.now()+'_'+Math.random().toString(36).slice(2);const s=document.createElement('script');let done=false,timer=null;const retire=()=>{window[cb]=()=>{};/* Late cancelled JSONP must remain harmless until unload. */try{s.remove()}catch(e){}};const finish=(fn,val)=>{if(done)return;done=true;if(timer)clearTimeout(timer);signal?.removeEventListener('abort',abort);retire();fn(val)},abort=()=>finish(reject,cancelled());window[cb]=data=>{if(data&&data.error)finish(reject,requestError(data.error.message||'ArcGIS service error',data.error.code,'arcgis'));else finish(resolve,data)};s.onerror=()=>finish(reject,requestError('Government data service unavailable',null,'network'));if(signal?.aborted){abort();return}signal?.addEventListener('abort',abort,{once:true});timer=setTimeout(()=>finish(reject,requestError('Government data request timed out',null,'timeout')),timeout);s.src=url+(url.includes('?')?'&':'?')+params({...query,f:'json',callback:cb});document.head.appendChild(s)})}
 const spatialCache=new Map();
-async function arcJSON(url,query={},timeout=4500){const key=url+JSON.stringify(query),hit=spatialCache.get(key),now=Date.now();if(hit&&hit.expires>now)return hit.promise;const promise=arcJSONFresh(url,query,timeout);spatialCache.set(key,{expires:now+120000,promise});try{return await promise}catch(e){spatialCache.delete(key);throw e}}
-async function arcJSONFresh(url,query={},timeout=4500){
+async function arcJSON(url,query={},timeout=4500,{signal}={}){
+ if(signal?.aborted)throw cancelled();const key=url+JSON.stringify(query),hit=spatialCache.get(key),now=Date.now();
+ if(hit&&hit.expires>now){recordRequest(url,{cache:true,outcome:'success',checkedAt:hit.checkedAt,elapsedMs:0});return deep(hit.value)}
+ const started=performance.now(),deadline=started+timeout;let last;
+ for(let attempt=1;attempt<=3;attempt++){
+   if(signal?.aborted)throw cancelled();const remaining=deadline-performance.now();if(remaining<=0)break;const at=performance.now();
+   try{const value=await arcJSONFresh(url,query,remaining,signal),checkedAt=new Date().toISOString();recordRequest(url,{attempt,outcome:'success',status:200,elapsedMs:Math.round(performance.now()-at),checkedAt,cache:false});
+     // Only complete spatial payloads and nonempty suggestions are cached, never errors/truncation.
+     if(value&&!value.error&&!value.exceededTransferLimit&&(!/\/identify$/.test(url)||Array.isArray(value.results))&&(Array.isArray(value.features)||Array.isArray(value.results)||Array.isArray(value.candidates)||value.suggestions?.length)){for(const [k,v] of spatialCache)if(v.expires<=Date.now())spatialCache.delete(k);spatialCache.set(key,{value:deep(value),checkedAt,expires:Date.now()+120000});while(spatialCache.size>160)spatialCache.delete(spatialCache.keys().next().value)}
+     return value;
+   }catch(e){last=e;recordRequest(url,{attempt,outcome:e.name==='AbortError'?'cancelled':e.code||'failure',status:e.status||null,elapsedMs:Math.round(performance.now()-at),checkedAt:new Date().toISOString(),cache:false});if(e.name==='AbortError')throw e;
+     const retry=[408,429,500,502,503,504].includes(e.status)||e.code==='network'||e.code==='timeout';const delay=100*2**(attempt-1)+Math.floor(Math.random()*80);if(!retry||attempt===3||deadline-performance.now()<delay+100)throw e;await abortable(new Promise(r=>setTimeout(r,delay)),signal);
+   }
+ }
+ throw last||requestError('Government data request timed out',null,'timeout');
+}
+async function arcJSONFresh(url,query={},timeout=4500,signal){
  const jsonpFirst=/mapprod3\.environment\.nsw\.gov\.au|maps\.six\.nsw\.gov\.au/i.test(url);
- if(jsonpFirst)return arcJsonp(url,query,timeout);
- const started=performance.now(),full=url+(url.includes('?')?'&':'?')+params({...query,f:'json'});
- const fetchBudget=Math.min(2500,Math.max(900,timeout-900)),ctrl=typeof AbortController!=='undefined'?new AbortController():null,timer=setTimeout(()=>ctrl&&ctrl.abort(),fetchBudget);
+ if(jsonpFirst)return arcJsonp(url,query,timeout,signal);
+ const started=performance.now(),full=url+(url.includes('?')?'&':'?')+params({...query,f:'json'}),ctrl=new AbortController();
+ const abort=()=>ctrl.abort();signal?.addEventListener('abort',abort,{once:true});if(signal?.aborted)ctrl.abort();let expired=false;const timer=setTimeout(()=>{expired=true;ctrl.abort()},timeout);
  try{
-   const r=await fetch(full,{mode:'cors',credentials:'omit',signal:ctrl?.signal,headers:{Accept:'application/json'}});
-   if(!r.ok)throw new Error('HTTP '+r.status);
-   const j=await r.json();if(j&&j.error)throw new Error(j.error.message||'ArcGIS service error');return j;
+   const j=await abortable((async()=>{const r=await fetch(full,{mode:'cors',credentials:'omit',signal:ctrl.signal,headers:{Accept:'application/json'}});if(!r.ok)throw requestError('HTTP '+r.status,r.status,'http');const data=await r.json();if(data?.error)throw requestError(data.error.message||'ArcGIS service error',data.error.code,'arcgis');return data})(),ctrl.signal);return j;
  }catch(e){
-   const elapsed=performance.now()-started,remaining=Math.max(700,timeout-elapsed);
-   if(remaining<750)throw e;
-   try{return await arcJsonp(url,query,remaining)}catch(jp){throw new Error((e&&e.message?e.message:'Request failed')+'; '+jp.message)}
- }finally{clearTimeout(timer)}
+   if(signal?.aborted)throw cancelled();if(expired)throw requestError('Government data request timed out',null,'timeout');
+   // HTTP/ArcGIS failures retain status for retry policy; JSONP cannot repair bad queries.
+   if(e.status||e.code==='arcgis')throw e;
+   const remaining=timeout-(performance.now()-started);if(remaining<100)throw requestError('Government data request timed out',null,'timeout');
+   return arcJsonp(url,query,remaining,signal);
+ }finally{clearTimeout(timer);signal?.removeEventListener('abort',abort)}
 }
 function addressTokens(q){const map={ST:'STREET',STREET:'STREET',RD:'ROAD',ROAD:'ROAD',AVE:'AVENUE',AV:'AVENUE',AVENUE:'AVENUE',PDE:'PARADE',PARADE:'PARADE',DR:'DRIVE',DRIVE:'DRIVE',PL:'PLACE',PLACE:'PLACE',CT:'COURT',COURT:'COURT',CRES:'CRESCENT',CRESCENT:'CRESCENT',HWY:'HIGHWAY'};return String(q||'').toUpperCase().replace(/[,.-]/g,' ').replace(/\s+/g,' ').trim().split(' ').filter(Boolean).map(x=>map[x]||x).filter(x=>x!=='NSW'&&x!=='NEW'&&x!=='SOUTH'&&x!=='WALES')}
 function sqlSafe(s){return String(s||'').replace(/'/g,"''")}
 async function liveAddressSearch(q){
- const seq=++app.lookupSeq,key=String(q||'').toLowerCase().trim();if(key.length<4)return[];
- app._suggestCache=app._suggestCache||new Map();if(app._suggestCache.has(key))return app._suggestCache.get(key);
+ app.suggestController?.abort();app.suggestController=new AbortController();const signal=app.suggestController.signal;app.dataState=app.dataState||{};app.dataState.suggestions={status:'loading'};const seq=++app.lookupSeq,key=String(q||'').toLowerCase().trim();if(key.length<4)return[];
+ app._suggestCache=app._suggestCache||new Map();const suggestionHit=app._suggestCache.get(key);if(suggestionHit&&suggestionHit.expires>Date.now()){app.dataState.suggestions.status='ready';return deep(suggestionHit.value)}
  const t=performance.now();let out=[];
  if(SERVER_API){
-   try{const j=await apiJSON('/api/address/suggest?q='+encodeURIComponent(q),{timeout:3000});out=(j.suggestions||[]).slice(0,10);app.lastSuggestProvider=j.provider||'SitePivot API'}
-   catch(e){console.warn('SitePivot address API fallback',e)}
+   try{const j=await apiJSON('/api/address/suggest?q='+encodeURIComponent(q),{timeout:3000,signal});out=(j.suggestions||[]).slice(0,10);app.lastSuggestProvider=j.provider||'SitePivot API'}
+   catch(e){if(e.name==='AbortError'&&signal.aborted)throw e;console.warn('SitePivot address API fallback',e)}
  }
  if(!out.length){
-   const j=await arcJSON(LIVE.geocoder+'/suggest',{text:q,countryCode:'AUS',category:'Address',maxSuggestions:10,returnCollections:'false'},2800);
+   const j=await arcJSON(LIVE.geocoder+'/suggest',{text:q,countryCode:'AUS',category:'Address',maxSuggestions:10,returnCollections:'false'},2800,{signal});
    out=(j.suggestions||[]).filter(x=>x&&x.text).filter(x=>/New South Wales|\bNSW\b/i.test(x.text)).slice(0,10);app.lastSuggestProvider='ArcGIS World Geocoder';
  }
  if(seq!==app.lookupSeq)return[];
- app._suggestCache.set(key,out);app.lastSuggestMs=Math.round(performance.now()-t);return out
+ if(out.length){app._suggestCache.set(key,{value:deep(out),expires:Date.now()+120000});while(app._suggestCache.size>50)app._suggestCache.delete(app._suggestCache.keys().next().value)}app.dataState.suggestions.status='ready';app.lastSuggestMs=Math.round(performance.now()-t);return out
 }
-async function geocoderCandidate(item){
- const j=await arcJSON(LIVE.geocoder+'/findAddressCandidates',{SingleLine:item.text||'',magicKey:item.magicKey||'',countryCode:'AUS',category:'Address',maxLocations:3,outFields:'Match_addr,Addr_type,City,Region,Postal',forStorage:'false',outSR:4283},8500);
+async function geocoderCandidate(item,signal){
+ const j=await arcJSON(LIVE.geocoder+'/findAddressCandidates',{SingleLine:item.text||'',magicKey:item.magicKey||'',countryCode:'AUS',category:'Address',maxLocations:3,outFields:'Match_addr,Addr_type,City,Region,Postal',forStorage:'false',outSR:4283},8500,{signal});
  const list=j.candidates||[],hit=list.find(x=>x&&x.location&&/New South Wales|\bNSW\b/i.test(String(x.address||'')+' '+String(x.attributes?.Region||'')))||list[0];
  if(!hit||!hit.location)throw new Error('Address coordinates could not be resolved');return hit
 }
 function parsedAddressParts(s){const raw=String(s||'').toUpperCase().replace(/,|\bAUSTRALIA\b|\bAUS\b/g,' ').replace(/NEW SOUTH WALES/g,'NSW').replace(/\s+/g,' ').trim();const unit=raw.match(/^\s*(?:UNIT\s*)?([A-Z0-9-]+)\s*\/\s*(\d+[A-Z]?)/),namedUnit=raw.match(/\b(?:UNIT|APARTMENT|APT|FLAT)\s+([A-Z0-9-]+)\b/);const streetRaw=namedUnit?raw.replace(namedUnit[0],''):raw;const num=unit?unit[2]:(streetRaw.match(/\b(\d+[A-Z]?)\b/)||[])[1]||'';const postcode=(raw.match(/\b(2\d{3})\b/)||[])[1]||'';return{raw,unit:unit?unit[1]:namedUnit?.[1]||'',number:num,postcode}}
 function authorityScore(a,itemText){const q=parsedAddressParts(itemText),cand=String(a.formattedaddress||'').toUpperCase(),p=parsedAddressParts(cand);if(a.streetnumber1!=null&&String(a.streetnumber1).trim())p.number=String(a.streetnumber1).toUpperCase().trim();let s=0;if(q.number&&p.number===q.number)s+=80;else if(q.number&&p.number!==q.number)s-=160;if(q.postcode&&p.postcode===q.postcode)s+=25;else if(q.postcode&&p.postcode&&q.postcode!==p.postcode)s-=30;for(const t of q.raw.split(' ').filter(x=>x.length>2&&!['NSW','NEW','SOUTH','WALES'].includes(x))){if(cand.includes(t))s+=3}if(q.unit){if(String(a.complexunitidentifier||p.unit||'').toUpperCase()===q.unit)s+=60;else s-=200}if(String(a.ss_principaladdresstype||'').toUpperCase()==='PRIMARY')s+=5;return s}
-async function authoritativeAddressForCandidate(candidate,itemText){
+async function authoritativeAddressForCandidate(candidate,itemText,signal){
  const q=parsedAddressParts(itemText),where=q.unit?"complexunitidentifier = '"+sqlSafe(q.unit)+"' AND streetnumber1 = '"+sqlSafe(q.number)+"'":'1=1';
- const j=await arcJSON(LIVE.addressPoint+'/query',{where,geometry:JSON.stringify(candidate.location),geometryType:'esriGeometryPoint',inSR:4283,spatialRel:'esriSpatialRelIntersects',distance:100,units:'esriSRUnit_Meter',outFields:'objectid,formattedaddress,localityname,lganame,cadastralidentifier,pl_ptlotsecpn,streetnumber1,streetnumber2,streetname,streettype,streettypedescription,postcode,complexunitidentifier,complexlevelnumber,ss_addresspointtype,ss_classsubtype,ss_principaladdresstype,ss_addressstringoid,ss_principaladdresssiteoid,ss_propid,ss_sppropid,lot_cadid,ap_gurasid',returnGeometry:'true',outSR:4283,resultRecordCount:100},5000);
+ const j=await arcJSON(LIVE.addressPoint+'/query',{where,geometry:JSON.stringify(candidate.location),geometryType:'esriGeometryPoint',inSR:4283,spatialRel:'esriSpatialRelIntersects',distance:100,units:'esriSRUnit_Meter',outFields:'objectid,formattedaddress,localityname,lganame,cadastralidentifier,pl_ptlotsecpn,streetnumber1,streetnumber2,streetname,streettype,streettypedescription,postcode,complexunitidentifier,complexlevelnumber,ss_addresspointtype,ss_classsubtype,ss_principaladdresstype,ss_addressstringoid,ss_principaladdresssiteoid,ss_propid,ss_sppropid,lot_cadid,ap_gurasid',returnGeometry:'true',outSR:4283,resultRecordCount:100},5000,{signal});
  const fs=(j.features||[]).filter(f=>f.geometry&&attrs(f).formattedaddress);if(!fs.length)throw new Error('No authoritative NSW address point was returned near this address');
  const ranked=fs.map(f=>({f,score:authorityScore(attrs(f),itemText)})).sort((a,b)=>b.score-a.score),best=ranked[0];
  if(!best||best.score<55)throw new Error('Authoritative NSW address match confidence was too low');return best.f
 }
-async function lgaForPoint(point,fallback){
+async function lgaForPoint(point,fallback,signal){
  if(fallback)return fallback;
- const j=await arcJSON(LIVE.lga+'/query',{where:'1=1',geometry:JSON.stringify(point),geometryType:'esriGeometryPoint',inSR:4283,spatialRel:'esriSpatialRelIntersects',outFields:'lganame,councilnam,abscode',returnGeometry:'false',resultRecordCount:5});
+ const j=await arcJSON(LIVE.lga+'/query',{where:'1=1',geometry:JSON.stringify(point),geometryType:'esriGeometryPoint',inSR:4283,spatialRel:'esriSpatialRelIntersects',outFields:'lganame,councilnam,abscode',returnGeometry:'false',resultRecordCount:5},4500,{signal});
  const a=attrs((j.features||[])[0]);return a.lganame||a.councilnam||'Needs Review'
 }
 function areaSqm(a){const n=+a.planlotarea||0,u=String(a.planlotareaunits||'').toUpperCase();if(!n)return 0;if(/HA|HECT/.test(u))return n*10000;if(/M|SQM|M2|MET/.test(u)||!u)return n;return n}
-async function parcelForPoint(point,cadastralId='',cadid=null){
+async function parcelForPoint(point,cadastralId='',cadid=null,signal){
  const fields='cadid,lotnumber,planlabel,planlotarea,planlotareaunits,lotidstring,classsubtype,lastupdate';
  let fs=[],proximity=false,errors=[];
  if(cadid!==null&&cadid!==undefined&&String(cadid)!==''&&Number.isFinite(+cadid)){
-   try{const j=await arcJSON(LIVE.cadastre+'/query',{where:'cadid = '+Number(cadid),outFields:fields,returnGeometry:'true',outSR:4283,resultRecordCount:20},3000);fs=(j.features||[]).filter(f=>f.geometry&&f.geometry.rings)}catch(e){errors.push('cadid: '+e.message)}
+   try{const j=await arcJSON(LIVE.cadastre+'/query',{where:'cadid = '+Number(cadid),outFields:fields,returnGeometry:'true',outSR:4283,resultRecordCount:20},3000,{signal});fs=(j.features||[]).filter(f=>f.geometry&&f.geometry.rings)}catch(e){if(e.name==='AbortError')throw e;errors.push('cadid: '+e.message)}
  }
  if(!fs.length&&cadastralId){
-   try{const safe=String(cadastralId).replace(/'/g,"''");const j=await arcJSON(LIVE.cadastre+'/query',{where:"lotidstring = '"+safe+"'",outFields:fields,returnGeometry:'true',outSR:4283,resultRecordCount:20},3000);fs=(j.features||[]).filter(f=>f.geometry&&f.geometry.rings)}catch(e){errors.push('id: '+e.message)}
+   try{const safe=String(cadastralId).replace(/'/g,"''");const j=await arcJSON(LIVE.cadastre+'/query',{where:"lotidstring = '"+safe+"'",outFields:fields,returnGeometry:'true',outSR:4283,resultRecordCount:20},3000,{signal});fs=(j.features||[]).filter(f=>f.geometry&&f.geometry.rings)}catch(e){if(e.name==='AbortError')throw e;errors.push('id: '+e.message)}
    if(!fs.length){
      try{
        const cid=String(cadastralId),m=cid.match(/^([^/]*)\/[^/]*\/(.+)$/);
-       if(m){const lot=String(m[1]).replace(/'/g,"''"),plan=String(m[2]).replace(/'/g,"''");const j=await arcJSON(LIVE.cadastre+'/query',{where:"lotnumber = '"+lot+"' AND planlabel = '"+plan+"'",outFields:fields,returnGeometry:'true',outSR:4283,resultRecordCount:20},3000);fs=(j.features||[]).filter(f=>f.geometry&&f.geometry.rings)}
-     }catch(e){errors.push('lotplan: '+e.message)}
+       if(m){const lot=String(m[1]).replace(/'/g,"''"),plan=String(m[2]).replace(/'/g,"''");const j=await arcJSON(LIVE.cadastre+'/query',{where:"lotnumber = '"+lot+"' AND planlabel = '"+plan+"'",outFields:fields,returnGeometry:'true',outSR:4283,resultRecordCount:20},3000,{signal});fs=(j.features||[]).filter(f=>f.geometry&&f.geometry.rings)}
+     }catch(e){if(e.name==='AbortError')throw e;errors.push('lotplan: '+e.message)}
    }
  }
  if(!fs.length){
    const common={where:'1=1',geometry:`${point.x},${point.y}`,geometryType:'esriGeometryPoint',inSR:4283,spatialRel:'esriSpatialRelIntersects',outFields:fields,returnGeometry:'true',outSR:4283,resultRecordCount:20};
-   try{const j=await arcJSON(LIVE.cadastre+'/query',common,3000);fs=(j.features||[]).filter(f=>f.geometry&&f.geometry.rings)}catch(e){errors.push('point: '+e.message)}
+   try{const j=await arcJSON(LIVE.cadastre+'/query',common,3000,{signal});fs=(j.features||[]).filter(f=>f.geometry&&f.geometry.rings)}catch(e){if(e.name==='AbortError')throw e;errors.push('point: '+e.message)}
  }
  if(!fs.length)return{features:[],geometry:null,proximity,errors};
  const rings=fs.flatMap(f=>f.geometry.rings||[]);return{features:fs,geometry:{rings,spatialReference:{wkid:4283}},proximity,errors}
 }
-async function spatialLayer(base,id,geom,type,lga,outFields='*',count=50){
+async function spatialLayer(base,id,geom,type,lga,outFields='*',count=50,signal){
  const q={where:'1=1',geometry:JSON.stringify(geom),geometryType:type,inSR:4283,spatialRel:'esriSpatialRelIntersects',outFields,returnGeometry:base===LIVE.primary&&id===LIVE_LAYER.zone?'true':'false',outSR:4283,resultRecordCount:count};
- const j=await arcJSON(base+'/'+id+'/query',q,3800);let fs=(j.features||[]).map(f=>f.geometry?{...f,geometry:{...f.geometry,spatialReference:f.geometry.spatialReference||j.spatialReference||{wkid:4283}}}:f);if(!Array.isArray(j.features)||j.exceededTransferLimit)throw Error('Planning spatial result truncated; full coverage requires pagination.');if(lga&&base!==LIVE.primary)fs=fs.filter(f=>sameLga(attrs(f),lga));return fs
+ const j=await arcJSON(base+'/'+id+'/query',q,3800,{signal});let fs=(j.features||[]).map(f=>f.geometry?{...f,geometry:{...f.geometry,spatialReference:f.geometry.spatialReference||j.spatialReference||{wkid:4283}}}:f);if(!Array.isArray(j.features)||j.exceededTransferLimit)throw Error('Planning spatial result truncated; full coverage requires pagination.');if(lga&&base!==LIVE.primary)fs=fs.filter(f=>sameLga(attrs(f),lga));const hit=spatialCache.get(base+'/'+id+'/query'+JSON.stringify(q));fs.sourceCheck={checkedAt:hit?.checkedAt||new Date().toISOString(),status:'available'};return fs
 }
-async function identifyPoint(base,point){
+async function identifyPoint(base,point,signal){
  const d=.015,x=+point.x,y=+point.y;if(!Number.isFinite(x)||!Number.isFinite(y))return[];
- const j=await arcJSON(base+'/identify',{geometry:JSON.stringify(point),geometryType:'esriGeometryPoint',sr:4283,layers:'all',tolerance:1,mapExtent:[x-d,y-d,x+d,y+d].join(','),imageDisplay:'900,700,96',returnGeometry:'false'},3800);return j.results||[]
+ const q={geometry:JSON.stringify(point),geometryType:'esriGeometryPoint',sr:4283,layers:'all',tolerance:1,mapExtent:[x-d,y-d,x+d,y+d].join(','),imageDisplay:'900,700,96',returnGeometry:'false'};const j=await arcJSON(base+'/identify',q,3800,{signal}),rows=j.results;if(!Array.isArray(rows)||j.exceededTransferLimit)throw requestError('Planning identify response incomplete; absence is not established',null,'incomplete');rows.sourceCheck={checkedAt:spatialCache.get(base+'/identify'+JSON.stringify(q))?.checkedAt||new Date().toISOString(),status:'available'};return rows
 }
 function rowLabels(fs,keys=['LAY_CLASS','SYM_CODE','H_NAME','H_ID']){return uniq((fs||[]).map(f=>{const a=attrs(f);return firstVal(a,keys)}))}
 function epiNames(groups){return uniq(groups.flatMap(fs=>(fs||[]).map(f=>attrs(f).EPI_NAME).filter(Boolean)))}
@@ -370,26 +391,28 @@ function formatHeight(fs){const vals=uniq(fs.map(f=>{const a=attrs(f),v=firstVal
 function formatLot(fs){const vals=uniq(fs.map(f=>{const a=attrs(f),v=firstVal(a,['LOT_SIZE','MIN_LOT_SIZE','LAY_CLASS']),u=firstVal(a,['UNITS']);if(v===null)return null;const s=String(v);return /^\d+(\.\d+)?$/.test(s)?new Intl.NumberFormat('en-AU').format(+s)+' '+(u||'m²'):s}));return vals.join(' / ')||null}
 function planNames(fs){return uniq(fs.map(f=>firstVal(attrs(f),['PLAN_NAME','NAME','LAY_CLASS'])))}
 function triggerText(fs,noneText='No mapped overlap returned'){const vals=rowLabels(fs);return vals.length?vals.join(' / '):noneText}
-async function pullPlanning(point,parcel,lga){
+async function pullPlanning(point,parcel,lga,signal){
  const geom=parcel?.geometry||point,type=parcel?.geometry?'esriGeometryPolygon':'esriGeometryPoint';
+ const layer=(base,id,geom,type,lga,fields='*',count=50)=>spatialLayer(base,id,geom,type,lga,fields,count,signal);
  const jobs={
-   heritage:spatialLayer(LIVE.primary,LIVE_LAYER.heritage,geom,type,lga),fsr:spatialLayer(LIVE.primary,LIVE_LAYER.fsr,geom,type,lga),zone:spatialLayer(LIVE.primary,LIVE_LAYER.zone,geom,type,lga),reservation:spatialLayer(LIVE.primary,LIVE_LAYER.reservation,geom,type,lga),lot:spatialLayer(LIVE.primary,LIVE_LAYER.lot,geom,type,lga),height:spatialLayer(LIVE.primary,LIVE_LAYER.height,geom,type,lga),application:spatialLayer(LIVE.primary,LIVE_LAYER.application,geom,type,lga),
-   acid:spatialLayer(LIVE.protection,LIVE_LAYER.acid,geom,type,lga),riparian:spatialLayer(LIVE.protection,LIVE_LAYER.riparian,geom,type,lga),biodiversity:spatialLayer(LIVE.protection,LIVE_LAYER.biodiversity,geom,type,lga),wetlands:spatialLayer(LIVE.protection,LIVE_LAYER.wetlands,geom,type,lga),sensitive:spatialLayer(LIVE.protection,LIVE_LAYER.sensitive,geom,type,lga),
-   flood:spatialLayer(LIVE.hazard,LIVE_LAYER.flood,geom,type,lga),landslide:spatialLayer(LIVE.hazard,LIVE_LAYER.landslide,geom,type,lga),bushfire:spatialLayer(LIVE.bushfire,0,geom,type,null,'d_category,d_guidelin,startdate,lastupdate'),
-   dcp:spatialLayer(LIVE.controls,LIVE_LAYER.dcp,point,'esriGeometryPoint',lga,'LGA_NAME,COUNCIL_NAME,PLAN_NAME,PLAN_TYPE,PUBLISHED_DATE,COMMENCED_DATE,REPEALED_DATE,AMENDMENT,FILE_NAME'),contribution:spatialLayer(LIVE.controls,LIVE_LAYER.contribution,point,'esriGeometryPoint',lga,'LGA_NAME,COUNCIL_NAME,PLAN_NAME,PLAN_TYPE,PUBLISHED_DATE,COMMENCED_DATE,REPEALED_DATE,AMENDMENT,FILE_NAME'),
-   greenfield:spatialLayer(LIVE.controls,LIVE_LAYER.greenfield,geom,type,lga),localProvision:spatialLayer(LIVE.controls,LIVE_LAYER.localProvision,geom,type,lga),apu:spatialLayer(LIVE.controls,LIVE_LAYER.apu,geom,type,lga),keySites:spatialLayer(LIVE.controls,LIVE_LAYER.keySites,geom,type,lga),urbanRelease:spatialLayer(LIVE.controls,LIVE_LAYER.urbanRelease,geom,type,lga),sic:spatialLayer(LIVE.controls,LIVE_LAYER.sic,geom,type,lga),
-   sepp:identifyPoint(LIVE.sepp,point),localIdentify:identifyPoint(LIVE.local,point)
+   heritage:layer(LIVE.primary,LIVE_LAYER.heritage,geom,type,lga),fsr:layer(LIVE.primary,LIVE_LAYER.fsr,geom,type,lga),zone:layer(LIVE.primary,LIVE_LAYER.zone,geom,type,lga),reservation:layer(LIVE.primary,LIVE_LAYER.reservation,geom,type,lga),lot:layer(LIVE.primary,LIVE_LAYER.lot,geom,type,lga),height:layer(LIVE.primary,LIVE_LAYER.height,geom,type,lga),application:layer(LIVE.primary,LIVE_LAYER.application,geom,type,lga),
+   acid:layer(LIVE.protection,LIVE_LAYER.acid,geom,type,lga),riparian:layer(LIVE.protection,LIVE_LAYER.riparian,geom,type,lga),biodiversity:layer(LIVE.protection,LIVE_LAYER.biodiversity,geom,type,lga),wetlands:layer(LIVE.protection,LIVE_LAYER.wetlands,geom,type,lga),sensitive:layer(LIVE.protection,LIVE_LAYER.sensitive,geom,type,lga),
+   flood:layer(LIVE.hazard,LIVE_LAYER.flood,geom,type,lga),landslide:layer(LIVE.hazard,LIVE_LAYER.landslide,geom,type,lga),bushfire:layer(LIVE.bushfire,0,geom,type,null,'d_category,d_guidelin,startdate,lastupdate'),
+   dcp:layer(LIVE.controls,LIVE_LAYER.dcp,point,'esriGeometryPoint',lga,'LGA_NAME,COUNCIL_NAME,PLAN_NAME,PLAN_TYPE,PUBLISHED_DATE,COMMENCED_DATE,REPEALED_DATE,AMENDMENT,FILE_NAME'),contribution:layer(LIVE.controls,LIVE_LAYER.contribution,point,'esriGeometryPoint',lga,'LGA_NAME,COUNCIL_NAME,PLAN_NAME,PLAN_TYPE,PUBLISHED_DATE,COMMENCED_DATE,REPEALED_DATE,AMENDMENT,FILE_NAME'),
+   greenfield:layer(LIVE.controls,LIVE_LAYER.greenfield,geom,type,lga),localProvision:layer(LIVE.controls,LIVE_LAYER.localProvision,geom,type,lga),apu:layer(LIVE.controls,LIVE_LAYER.apu,geom,type,lga),keySites:layer(LIVE.controls,LIVE_LAYER.keySites,geom,type,lga),urbanRelease:layer(LIVE.controls,LIVE_LAYER.urbanRelease,geom,type,lga),sic:layer(LIVE.controls,LIVE_LAYER.sic,geom,type,lga),
+   sepp:identifyPoint(LIVE.sepp,point,signal),localIdentify:identifyPoint(LIVE.local,point,signal)
  };
  const keys=Object.keys(jobs),settled=await Promise.allSettled(Object.values(jobs)),data={},errors=[],failedKeys=[];
  settled.forEach((r,i)=>{const k=keys[i];if(r.status==='fulfilled')data[k]=r.value;else{data[k]=[];failedKeys.push(k);errors.push(k+': '+(r.reason?.message||'failed'))}});
+ const sourceChecks=Object.fromEntries(keys.map(k=>[k,{status:failedKeys.includes(k)?'unavailable':'available',checkedAt:failedKeys.includes(k)?null:data[k]?.sourceCheck?.checkedAt||new Date().toISOString()}]));
  const failed=k=>failedKeys.includes(k),missing=(k,label)=>failed(k)?'Source check did not complete — Needs Review':label;
  const epis=epiNames([data.zone,data.fsr,data.height,data.lot,data.heritage,data.reservation,data.application,data.acid,data.riparian,data.biodiversity,data.wetlands,data.sensitive,data.flood,data.landslide]);
  const sepp=uniq((data.sepp||[]).map(r=>{const a=r.attributes||{};return a.EPI_NAME||a['EPI Name']||r.layerName}).filter(Boolean));
  const localTriggers=uniq((data.localIdentify||[]).map(r=>{const a=r.attributes||{};return [r.layerName,a.LAY_CLASS||a['Class']].filter(Boolean).join(' · ')}).filter(Boolean));
- const zoningEvidence=Z.resolve({records:data.zone,parcelGeometry:parcel?.geometry,queryComplete:!failed('zone'),error:failed('zone')?'Official zoning retrieval failed':null,source:LIVE.primary+'/2',checkedAt:new Date().toISOString()});
+ const zoningEvidence=Z.resolve({records:data.zone,parcelGeometry:parcel?.geometry,queryComplete:!failed('zone'),error:failed('zone')?'Official zoning retrieval failed':null,source:LIVE.primary+'/2',checkedAt:sourceChecks.zone.checkedAt});
  const planningInstrument=['single-zone','boundary-review'].includes(zoningEvidence.state)?zoningEvidence.primaryZone?.instrument||null:epis.join(' / ')||null;
  return{
-   zone:failed('zone')?null:['single-zone','boundary-review'].includes(zoningEvidence.state)&&zoningEvidence.primaryZone?[zoningEvidence.primaryZone.code,zoningEvidence.primaryZone.label].filter(Boolean).join(' · '):formatZone(data.zone),zoningEvidence,fsr:F.resolve({records:data.fsr,error:failed('fsr')?'FSR source request failed':null,parcelResolved:!!parcel?.geometry,queryComplete:!failed('fsr'),source:LIVE.primary+'/1',checkedAt:new Date().toISOString()}).value,height:failed('height')?null:formatHeight(data.height),minLot:failed('lot')?null:formatLot(data.lot),
+   zone:failed('zone')?null:['single-zone','boundary-review'].includes(zoningEvidence.state)&&zoningEvidence.primaryZone?[zoningEvidence.primaryZone.code,zoningEvidence.primaryZone.label].filter(Boolean).join(' · '):formatZone(data.zone),zoningEvidence,fsr:F.resolve({records:data.fsr,error:failed('fsr')?'FSR source request failed':null,parcelResolved:!!parcel?.geometry,queryComplete:!failed('fsr'),source:LIVE.primary+'/1',checkedAt:sourceChecks.fsr.checkedAt}).value,height:failed('height')?null:formatHeight(data.height),minLot:failed('lot')?null:formatLot(data.lot),
    heritage:data.heritage.length?triggerText(data.heritage):missing('heritage','No mapped EPI heritage overlap returned'),
    flood:data.flood.length?triggerText(data.flood):missing('flood','No mapped EPI flood overlap returned — council flood mapping still requires checking'),
    bushfire:data.bushfire.length?uniq(data.bushfire.map(f=>attrs(f).d_category).filter(Boolean)).join(' / '):missing('bushfire','No NSW bush fire prone land overlap returned'),
@@ -405,8 +428,8 @@ async function pullPlanning(point,parcel,lga){
    contributionPlans:failed('contribution')?[]:planNames(data.contribution),contributionFiles:failed('contribution')?[]:uniq(data.contribution.map(f=>attrs(f).FILE_NAME).filter(Boolean)),
    greenfield:failed('greenfield')?null:(data.greenfield.length?triggerText(data.greenfield):null),localProvisions:failed('localProvision')?[]:rowLabels(data.localProvision),additionalPermittedUses:failed('apu')?[]:rowLabels(data.apu),keySites:failed('keySites')?[]:rowLabels(data.keySites),urbanRelease:failed('urbanRelease')?[]:rowLabels(data.urbanRelease),sic:failed('sic')?[]:rowLabels(data.sic),
    controls:Object.fromEntries(['zone','lot','height','fsr','heritage','application'].map(k=>[k,(data[k]||[]).map(f=>attrs(f))])),controlSources:{zone:LIVE.primary+'/2',lot:LIVE.primary+'/4',height:LIVE.primary+'/5',fsr:LIVE.primary+'/1'},sepp:failed('sepp')?[]:sepp,localTriggers:failed('localIdentify')?[]:localTriggers,epiNames:epis,instrument:planningInstrument,splitZone:zoningEvidence.splitZone,
-   fsrEvidence:F.resolve({records:data.fsr,error:failed('fsr')?'FSR source request failed':null,parcelResolved:!!parcel?.geometry,queryComplete:!failed('fsr'),instrument:planningInstrument,source:LIVE.primary+'/1',checkedAt:new Date().toISOString()}),
-   failedKeys,liveErrors:errors,liveCheckedAt:new Date().toISOString(),_liveSource:true
+   fsrEvidence:F.resolve({records:data.fsr,error:failed('fsr')?'FSR source request failed':null,parcelResolved:!!parcel?.geometry,queryComplete:!failed('fsr'),instrument:planningInstrument,source:LIVE.primary+'/1',checkedAt:sourceChecks.fsr.checkedAt}),
+   sourceChecks,failedKeys,liveErrors:errors,liveCheckedAt:new Date().toISOString(),_liveSource:true
  }
 }
 function parseTitleFromLots(lots,identity={}){const e=G.parcelEvidence(lots?.features||[],identity,{spatialReference:{wkid:4283}});return {...e,title:'Cadastral parcel · title requires confirmation'};}
@@ -416,42 +439,43 @@ function titleFromCadastralIdentifier(a){
  return{lot:m?.[1]||cid||'Needs Review',dp:m?.[2]||'Needs Review',title:isStrataFromAddress(a)?'Strata / cadastral':'Torrens / cadastral'}
 }
 async function resolveLiveIdentity(item){
- const seq=++app.enrichSeq,started=performance.now();setLiveStatus('Resolving the selected NSW property…','info');
+ app.propertyController?.abort();app.propertyController=new AbortController();const signal=app.propertyController.signal;const seq=++app.enrichSeq,started=performance.now();app.lastSelectedAddress=deep(item);app.dataState=app.dataState||{};app.dataState.identity={status:'loading',startedAt:Date.now(),deadlineMs:18000};setLiveStatus('Resolving the selected NSW property…','info');
  if(SERVER_API){
-   const j=await apiJSON('/api/property/resolve?text='+encodeURIComponent(item.text||'')+(item.magicKey?'&magicKey='+encodeURIComponent(item.magicKey):''),{timeout:8000});
+   const j=await apiJSON('/api/property/resolve?text='+encodeURIComponent(item.text||'')+(item.magicKey?'&magicKey='+encodeURIComponent(item.magicKey):''),{timeout:8000,signal});
    if(seq!==app.enrichSeq)throw new Error('Stale property request');
    const a=j.property||{},point=a.point,t={title:a.title||'Needs Review',lot:a.lot||'Needs Review',dp:a.dp||'Needs Review'},isStrata=!!a.strata;
    const p={id:'live-'+(a.addressId||Date.now()),address:a.address||item.text||'NSW property',suburb:a.suburb||'NSW',region:a.lga||'NSW',lga:a.lga||'Needs Review',postcode:String(a.postcode||''),propertyType:isStrata?'apartment':'house',title:t.title,lot:t.lot,dp:t.dp,area:null,frontage:null,beds:null,baths:null,parking:null,parcels:1,identityStatus:'verified',live:true,generic:false,point,parcelGeometry:null,parcelProximity:false,planning:{loading:true,zone:null,fsr:null,height:null,minLot:null,heritage:'Checking…',flood:'Checking…',bushfire:'Checking…',acid:'Checking…',biodiversity:'Checking…',riparian:'Checking…',wetlands:'Checking…',sensitive:'Checking…',landslide:'Checking…',reservation:'Checking…',application:'Checking…',dcpPlans:[],contributionPlans:[],sepp:[],localTriggers:[],instrument:null,liveErrors:[]},opportunities:['Improve / renovation pathway','Extension or additional-level screening','Development pathway after planning evidence loads'],costRegion:1,currentComps:[],completed:{reno:[],extend:[],storey:[],duplex:[],townhouse:[],apartment:[],multisite:[]},active:[],sourceMeta:{address:'SitePivot API → ArcGIS fast suggestion → NSW Address Point Formatted',addressObjectId:a.addressId||null,streetName:a.streetName||null,cadastralIdentifier:a.cadastralIdentifier||null,cadid:a.cadid||null,cadastre:'NSW Land Parcel Property Theme',planning:'NSW Planning Portal spatial services',checkedAt:new Date().toISOString(),serverApi:true,timing:{suggestMs:app.lastSuggestMs||null,addressMs:j.timingMs||null,identityMs:Math.round(performance.now()-started)}}};
-   return{p,official:null,geo:null,seq,server:true}
+   app.dataState.identity.status='verified';return{p,official:null,geo:null,seq,signal,server:true}
  }
- const geo=await geocoderCandidate(item);if(seq!==app.enrichSeq)throw new Error('Stale property request');
- const tAuth=performance.now(),official=await authoritativeAddressForCandidate(geo,item.text||'');const addressMs=Math.round(performance.now()-tAuth);
+ const geo=await geocoderCandidate(item,signal);if(seq!==app.enrichSeq)throw new Error('Stale property request');
+ const tAuth=performance.now(),official=await authoritativeAddressForCandidate(geo,item.text||'',signal);const addressMs=Math.round(performance.now()-tAuth);
  if(seq!==app.enrichSeq)throw new Error('Stale property request');
- const a=attrs(official),point=official.geometry||geo.location,lga=a.lganame||await lgaForPoint(point,null),t=titleFromCadastralIdentifier(a),canonical=a.formattedaddress||item.text||'NSW property',suburb=a.localityname||geo.attributes?.City||'NSW',postcode=String(a.postcode||geo.attributes?.Postal||''),isStrata=isStrataFromAddress(a);
+ const a=attrs(official),point=official.geometry||geo.location,lga=a.lganame||await lgaForPoint(point,null,signal),t=titleFromCadastralIdentifier(a),canonical=a.formattedaddress||item.text||'NSW property',suburb=a.localityname||geo.attributes?.City||'NSW',postcode=String(a.postcode||geo.attributes?.Postal||''),isStrata=isStrataFromAddress(a);
+ if(seq!==app.enrichSeq||signal.aborted)throw cancelled();
  const p={id:'live-'+(a.objectid||a.ap_gurasid||Date.now()),address:canonical,suburb,region:lga,lga,postcode,propertyType:isStrata?'apartment':'house',title:t.title,lot:t.lot,dp:t.dp,area:null,frontage:null,beds:null,baths:null,parking:null,parcels:1,identityStatus:'verified',live:true,generic:false,point,parcelGeometry:null,parcelProximity:false,planning:{loading:true,zone:null,fsr:null,height:null,minLot:null,heritage:'Checking…',flood:'Checking…',bushfire:'Checking…',acid:'Checking…',biodiversity:'Checking…',riparian:'Checking…',wetlands:'Checking…',sensitive:'Checking…',landslide:'Checking…',reservation:'Checking…',application:'Checking…',dcpPlans:[],contributionPlans:[],sepp:[],localTriggers:[],instrument:null,liveErrors:[]},opportunities:['Improve / renovation pathway','Extension or additional-level screening','Development pathway after planning evidence loads'],costRegion:1,currentComps:[],completed:{reno:[],extend:[],storey:[],duplex:[],townhouse:[],apartment:[],multisite:[]},active:[],sourceMeta:{address:'ArcGIS fast suggestion + NSW Address Point Formatted authoritative match',addressObjectId:a.objectid||null,streetName:[a.streetname,a.streettype].filter(Boolean).join(' '),cadastralIdentifier:a.cadastralidentifier||a.pl_ptlotsecpn||null,cadid:a.lot_cadid||null,cadastre:'NSW Cadastre',planning:'NSW Planning Portal spatial services',checkedAt:new Date().toISOString(),serverApi:false,timing:{suggestMs:app.lastSuggestMs||null,addressMs,identityMs:Math.round(performance.now()-started)}}};
- return{p,official,geo,seq,server:false}
+ app.dataState.identity.status='verified';return{p,official,geo,seq,signal,server:false}
 }
-async function completeLiveProperty(p,official,geo,seq){
+async function completeLiveProperty(p,official,geo,seq,signal=app.propertyController?.signal){
  try{
    if(p.sourceMeta?.serverApi){
      const payload={point:p.point,lga:p.lga,cadastralIdentifier:p.sourceMeta.cadastralIdentifier,cadid:p.sourceMeta.cadid,streetName:p.sourceMeta.streetName,lot:p.lot,dp:p.dp};
-     const tPlan=performance.now(),j=await apiJSON('/api/planning/property',{method:'POST',body:payload,timeout:16000});
+     const tPlan=performance.now(),j=await apiJSON('/api/planning/property',{method:'POST',body:payload,timeout:16000,signal});
      if(seq!==app.enrichSeq)return;
      const parcel=j.parcel||{},planning=j.planning||{};p.sourceMeta.timing.planningMs=Math.round(performance.now()-tPlan);p.sourceMeta.timing.serverPlanningMs=j.timingMs||null;
-     if(parcel.frontage){p.frontageEvidence=parcel.frontage;p.frontage=parcel.frontage.primary?.metres||null}if(parcel.lot)p.lot=parcel.lot;if(parcel.dp)p.dp=parcel.dp;p.area=parcel.area??null;p.areaEvidence=parcel.areaEvidence||null;p.identityEvidence=parcel.identityEvidence||null;if(parcel.parcels)p.parcels=parcel.parcels;
+     if(parcel.frontage){p.frontageEvidence=parcel.frontage;p.frontage=parcel.frontage.primary?.metres||null}if(parcel.lot)p.lot=parcel.lot;if(parcel.dp)p.dp=parcel.dp;if(parcel.area!=null){p.area=parcel.area;p.areaEvidence=parcel.areaEvidence||null;}if(parcel.identityEvidence)p.identityEvidence=parcel.identityEvidence;if(parcel.parcels)p.parcels=parcel.parcels;
      planning.loading=false;p.planning=planning;p.sourceMeta.timing.totalMs=(p.sourceMeta.timing.identityMs||0)+(p.sourceMeta.timing.planningMs||0);
    }else{
      const a=attrs(official),point=official.geometry||geo.location,tParcel=performance.now();
-     const parcel=await Promise.race([parcelForPoint(point,a.cadastralidentifier||a.pl_ptlotsecpn||'',a.lot_cadid),new Promise(resolve=>setTimeout(()=>resolve({features:[],geometry:null,proximity:false,errors:['parcel timeout']}),8500))]);
-     p.sourceMeta.timing.parcelMs=Math.round(performance.now()-tParcel);
+     const parcel=await Promise.race([parcelForPoint(point,a.cadastralidentifier||a.pl_ptlotsecpn||'',a.lot_cadid,signal),new Promise(resolve=>setTimeout(()=>resolve({features:[],geometry:null,proximity:false,errors:['parcel timeout']}),8500))]);
+     if(seq!==app.enrichSeq||signal?.aborted)return;p.sourceMeta.timing.parcelMs=Math.round(performance.now()-tParcel);
      if(parcel.features?.length){const pt=parseTitleFromLots(parcel,{cadid:a.lot_cadid,cadastralIdentifier:a.cadastralidentifier||a.pl_ptlotsecpn,lot:p.lot,dp:p.dp});p.title=pt.title;p.lot=pt.lot;p.dp=pt.dp;p.area=pt.area;p.areaEvidence=pt.areaEvidence;p.identityEvidence=pt.identityEvidence;p.parcels=pt.parcels;p.parcelGeometry=pt.geometry;p.parcelProximity=parcel.proximity;parcel.geometry=pt.geometry}
-     const roadPromise=parcel.geometry?arcJSON(LIVE.cadastre.replace(/\/8$/,'')+'/5/query',{where:'1=1',geometry:JSON.stringify(parcel.geometry),geometryType:'esriGeometryPolygon',inSR:4283,spatialRel:'esriSpatialRelIntersects',distance:30,units:'esriSRUnit_Meter',outFields:'*',returnGeometry:true,outSR:4283,resultRecordCount:100},3500).then(j=>G.frontage(parcel.geometry,(j.features||[]).map(f=>({id:String(attrs(f).cadid||attrs(f).objectid||''),name:attrs(f).roadnamelabel||'',geometry:{...f.geometry,spatialReference:f.geometry?.spatialReference||j.spatialReference||{wkid:4283}}})),a.streetname||'')).catch(()=>({status:'review',reason:'Road geometry unavailable.'})):Promise.resolve(null);
-     const tPlan=performance.now(),planning=await pullPlanning(point,parcel,p.lga);const frontage=await roadPromise;if(frontage){p.frontageEvidence=frontage;p.frontage=frontage.primary?.metres||null}p.sourceMeta.timing.planningMs=Math.round(performance.now()-tPlan);
+     const roadPromise=parcel.geometry?arcJSON(LIVE.cadastre.replace(/\/8$/,'')+'/5/query',{where:'1=1',geometry:JSON.stringify(parcel.geometry),geometryType:'esriGeometryPolygon',inSR:4283,spatialRel:'esriSpatialRelIntersects',distance:30,units:'esriSRUnit_Meter',outFields:'*',returnGeometry:true,outSR:4283,resultRecordCount:100},3500,{signal}).then(j=>G.frontage(parcel.geometry,(j.features||[]).map(f=>({id:String(attrs(f).cadid||attrs(f).objectid||''),name:attrs(f).roadnamelabel||'',geometry:{...f.geometry,spatialReference:f.geometry?.spatialReference||j.spatialReference||{wkid:4283}}})),a.streetname||'')).catch(()=>({status:'review',reason:'Road geometry unavailable.'})):Promise.resolve(null);
+     const tPlan=performance.now(),planning=await pullPlanning(point,parcel,p.lga,signal);const frontage=await roadPromise;if(frontage){p.frontageEvidence=frontage;p.frontage=frontage.primary?.metres||null}p.sourceMeta.timing.planningMs=Math.round(performance.now()-tPlan);
      if(seq!==app.enrichSeq)return;planning.loading=false;p.planning=planning;p.sourceMeta.timing.totalMs=(p.sourceMeta.timing.identityMs||0)+(p.sourceMeta.timing.parcelMs||0)+(p.sourceMeta.timing.planningMs||0);
    }
    p.opportunities=['Improve / renovation pathway','Extension or additional-level screening','Development pathway based on verified planning evidence'];
    if(p.planning.zone&&/R[1-4]|MU1|E1|B\d/i.test(p.planning.zone))p.opportunities.unshift('Planning-led development opportunity screening');
- }catch(e){if(seq!==app.enrichSeq)return;p.planning.loading=false;p.planning.failedKeys=uniq([...(p.planning.failedKeys||[]),...Object.keys(LIVE_LAYER),'bushfire','sepp','localIdentify']);p.planning.failedSources=p.planning.failedKeys;p.planning.liveErrors=[...(p.planning.liveErrors||[]),e.message];console.warn('planning enrichment',e)}
+ }catch(e){if(seq!==app.enrichSeq)return;const failed=uniq([...Object.keys(LIVE_LAYER),'bushfire','sepp','localIdentify']);p.planning={loading:false,zone:null,instrument:null,fsr:null,height:null,minLot:null,failedKeys:failed,failedSources:failed,liveErrors:[e.message],sourceChecks:Object.fromEntries(failed.map(k=>[k,{status:'unavailable',checkedAt:null}]))};console.warn('planning enrichment',e)}
  if(app.property&&app.property.id===p.id){
    const draft=app.view==='passport'&&$('confirmBeds')?Object.fromEntries(['confirmBeds','confirmBaths','confirmCars','confirmType'].map(id=>[id,$(id).value])):null;
    const currentProfile=app.property.dwellingProfile;
@@ -462,18 +486,24 @@ async function completeLiveProperty(p,official,geo,seq){
    app.property=deep(p);ensureDwellingProfile(app.property);app.assessment=null;renderIdentity();if(app.view==='passport'){renderPassport();if(draft)for(const [id,value] of Object.entries(draft))if($(id))$(id).value=value}else if(['assessment','roadmap','report'].includes(app.view))show(app.view)
  }
 }
+async function retryPlanningEvidence(){
+ const current=app.property;if(!current?.live||current.planning?.loading)return;app.propertyController?.abort();app.propertyController=new AbortController();const signal=app.propertyController.signal,seq=++app.enrichSeq,p=deep(current);p.planning.loading=true;app.property=p;app.assessment=null;
+ const official=app.propertyResolution?.official||{geometry:p.point,attributes:{cadastralidentifier:p.sourceMeta?.cadastralIdentifier,lot_cadid:p.sourceMeta?.cadid,streetname:p.sourceMeta?.streetName}},geo=app.propertyResolution?.geo||{location:p.point};
+ if(app.view==='passport')renderPassport();else if(['assessment','roadmap','report'].includes(app.view))show(app.view);
+ await completeLiveProperty(p,official,geo,seq,signal);
+}
 function statusPill(s){return`<span class="pill ${s}">${STATUS[s]||s}</span>`}
 function show(name){if(app.view!==name)voicePlayer.stop();app.view=name;$$('.view').forEach(v=>v.classList.toggle('active',v.id===`view-${name}`));window.scrollTo(0,0);if(name==='passport')renderPassport();if(name==='goal')renderGoals();if(name==='develop')renderDevelop();if(name==='scope')renderScope();if(name==='assessment')renderAssessment();if(name==='roadmap')renderRoadmap();if(name==='report')renderReport();mountConversation()}
-function reset(full=true){app.inputSeq++;app.lookupSeq++;app.enrichSeq++;app.liveSuggestions=[];app.activeSuggestion=-1;app.property=null;app.project=null;app.goal=null;app.devType=null;app.scope={area:80,quality:'premium',complexity:'normal',budget:null,targetPurchase:null,dwellings:2,gfa:440,configuration:'two-storey',moveEnabled:false,rooms:{}};app.intent=null;app.confirmedIntent=null;if($('intentInput'))$('intentInput').value='';if($('intentStatus'))$('intentStatus').textContent='';app.intentSeq=(app.intentSeq||0)+1;app.marketSeq=(app.marketSeq||0)+1;app.assessment=null;resetAssistant(null);$('addressSearch').value='';$('searchResults').classList.remove('open');$('addressSearch').setAttribute('aria-expanded','false');show('landing')}
+function reset(full=true){app.propertyController?.abort();app.suggestController?.abort();app.dataState={identity:{status:'idle'},suggestions:{status:'idle'}};app.inputSeq++;app.lookupSeq++;app.enrichSeq++;app.liveSuggestions=[];app.activeSuggestion=-1;app.property=null;app.propertyResolution=null;app.project=null;app.goal=null;app.devType=null;app.scope={area:80,quality:'premium',complexity:'normal',budget:null,targetPurchase:null,dwellings:2,gfa:440,configuration:'two-storey',moveEnabled:false,rooms:{}};app.intent=null;app.confirmedIntent=null;if($('intentInput'))$('intentInput').value='';if($('intentStatus'))$('intentStatus').textContent='';app.intentSeq=(app.intentSeq||0)+1;app.marketSeq=(app.marketSeq||0)+1;app.assessment=null;resetAssistant(null);$('addressSearch').value='';$('searchResults').classList.remove('open');$('addressSearch').setAttribute('aria-expanded','false');show('landing')}
 function findMatches(q){q=(q||'').toLowerCase().replace(/,/g,' ').replace(/\s+/g,' ').trim();if(!q)return[];return FIXTURES.filter(f=>f.address.toLowerCase().replace(/,/g,' ').includes(q)||(`${f.suburb} ${f.postcode}`).toLowerCase().includes(q)).slice(0,8)}
 function genericProperty(address){return{id:'generic-'+Date.now(),address:address||'Unverified NSW property',suburb:'Unverified',region:'NSW',lga:'Needs Review',postcode:'',propertyType:'house',title:'Needs Review',lot:'—',dp:'—',area:null,frontage:null,beds:null,baths:null,parking:null,parcels:null,identityStatus:'review',generic:true,live:false,planning:{zone:null,fsr:null,height:null,minLot:null,heritage:'Needs Review',flood:'Needs Review',bushfire:'Needs Review',acid:'Needs Review',biodiversity:'Needs Review',riparian:'Needs Review',wetlands:'Needs Review',sensitive:'Needs Review',landslide:'Needs Review',reservation:'Needs Review',application:'Needs Review',dcpPlans:[],contributionPlans:[],sepp:[],localTriggers:[],splitZone:false,localDcp:'Needs Review',instrument:'Authoritative NSW property/planning lookup did not complete'},opportunities:['Improve / renovation pathway','Extension pathway','Development pathway after property identity and planning evidence are verified'],costRegion:1,currentComps:[],completed:{reno:[],extend:[],storey:[],duplex:[],townhouse:[],apartment:[],multisite:[]},active:[]}}
-function selectProperty(p){app.property=deep(p);app.project=null;ensureDwellingProfile(app.property);app.goal=null;app.devType=null;app.assessment=null;app.scope={area:80,quality:'premium',complexity:'normal',budget:null,targetPurchase:null,dwellings:2,gfa:440,configuration:'two-storey',moveEnabled:false,rooms:{}};app.intent=null;app.confirmedIntent=null;if($('intentInput'))$('intentInput').value='';if($('intentStatus'))$('intentStatus').textContent='';app.intentSeq=(app.intentSeq||0)+1;app.marketSeq=(app.marketSeq||0)+1;resetAssistant(app.property.id);renderIdentity();show('property')}
+function selectProperty(p,retainRequest=false){if(!retainRequest){app.propertyController?.abort();app.enrichSeq++;}app.dataState=app.dataState||{};app.dataState.identity={...app.dataState.identity,status:'verified'};if(!retainRequest)app.propertyResolution=null;app.property=deep(p);app.project=null;ensureDwellingProfile(app.property);app.goal=null;app.devType=null;app.assessment=null;app.scope={area:80,quality:'premium',complexity:'normal',budget:null,targetPurchase:null,dwellings:2,gfa:440,configuration:'two-storey',moveEnabled:false,rooms:{}};app.intent=null;app.confirmedIntent=null;if($('intentInput'))$('intentInput').value='';if($('intentStatus'))$('intentStatus').textContent='';app.intentSeq=(app.intentSeq||0)+1;app.marketSeq=(app.marketSeq||0)+1;resetAssistant(app.property.id);renderIdentity();show('property')}
 async function selectLiveSuggestion(item){
  const requestSeq=app.enrichSeq+1;
  try{
-   const {p,official,geo,seq}=await resolveLiveIdentity(item);setSearchMessage('',false);$('addressSearch').setAttribute('aria-expanded','false');app.activeSuggestion=-1;$('addressSearch').value=p.address;selectProperty(p);
-   completeLiveProperty(p,official,geo,seq);
- }catch(e){if(requestSeq!==app.enrichSeq)return;app.lastLiveError=e.message;console.error('SitePivot live property lookup',e);setLiveStatus('The address was found, but property identity could not be resolved: '+e.message,'warn')}
+   const {p,official,geo,seq,signal}=await resolveLiveIdentity(item);setSearchMessage('',false);$('addressSearch').setAttribute('aria-expanded','false');app.activeSuggestion=-1;$('addressSearch').value=p.address;selectProperty(p,true);
+   app.propertyResolution={official,geo};completeLiveProperty(p,official,geo,seq,signal);
+ }catch(e){if(requestSeq!==app.enrichSeq)return;app.dataState.identity.status='unavailable';app.lastLiveError=e.message;console.warn('SitePivot live property lookup',e);setLiveStatus('The address was found, but property identity could not be resolved: '+e.message,'warn');const retry=document.createElement('button');retry.id='retryPropertyIdentity';retry.className='secondaryBtn';retry.textContent='Retry property check';retry.onclick=()=>selectLiveSuggestion(app.lastSelectedAddress);$('searchResults').appendChild(retry)}
 }
 async function continueAddress(){const inputSeq=app.inputSeq;const q=$('addressSearch').value.trim();if(!q){setLiveStatus('Enter a NSW address first.','warn');return}const exact=FIXTURES.find(f=>f.address.toLowerCase()===q.toLowerCase());if(exact&&new URLSearchParams(location.search).get('fixtures')==='1')return selectProperty(exact);setLiveStatus('Searching NSW addresses…','info');try{const live=await liveAddressSearch(q);if(inputSeq!==app.inputSeq)return;app.liveSuggestions=live;if(live.length===1)return selectLiveSuggestion(live[0]);if(live.length>1){renderSearch(live,'live');return}}catch(e){if(inputSeq!==app.inputSeq)return;console.warn('live address search',e);app.lastLiveError=e.message}setLiveStatus('No NSW address match was returned. Check the street number, street and suburb, then try again.','warn')}
 function updateSuggestionActive(){
@@ -505,8 +535,8 @@ function renderIdentity(){const p=app.property;if(!p)return;const live=!!p.live;
 function fsrEvidence(p){const pl=p?.planning||{};if(pl.fsrEvidence)return pl.fsrEvidence;if(pl.failedKeys?.includes('fsr'))return{state:'service-failure',label:'FSR source unavailable',reason:'The spatial request failed; absence is not established.',requiresReview:true};if(pl.fsr)return{state:'mapped',label:pl.fsr,value:pl.fsr,provenance:{instrument:pl.instrument,source:pl.controlSources?.fsr,checkedAt:pl.liveCheckedAt},requiresReview:!p.live};return{state:'parcel-unresolved',label:'FSR needs confirmation',reason:'No completed parcel-based FSR assessment is available.',requiresReview:true}}
 function fsrDisplay(p){const e=fsrEvidence(p);return e.value||e.label||'FSR needs confirmation'}
 function planningFactRows(p){const pl=p.planning||{},live=!!p.live,failed=new Set(pl.failedKeys||[]);const mapped=(v,key,neg=false)=>{if(pl.loading)return'review';if(failed.has(key))return'review';if(!meaningful(v))return'unavailable';if(!live)return p.generic?'review':'indicative';return neg?'review':'verified'};const dcp=pl.loading?'Checking…':(failed.has('dcp')?'Source check did not complete — Needs Review':((pl.dcpPlans||[]).join(' / ')||'No LGA-based DCP record returned'));const cp=pl.loading?'Checking…':(failed.has('contribution')?'Source check did not complete — Needs Review':((pl.contributionPlans||[]).join(' / ')||'No LGA-based contribution plan record returned'));const sepp=pl.loading?'Checking…':(failed.has('sepp')?'Source check did not complete — Needs Review':((pl.sepp||[]).slice(0,6).join(' / ')||'No property-point SEPP spatial trigger returned'));const local=pl.loading?'Checking…':(failed.has('localIdentify')?'Source check did not complete — Needs Review':((pl.localTriggers||[]).slice(0,6).join(' / ')||'No additional local-provision spatial trigger returned'));return[
-fact('Planning instrument',pl.instrument||'Unknown',mapped(pl.instrument,'zone'),'zone','The in-force EPI name returned by the NSW Planning Portal spatial layers.'),
-fact('Land zone',pl.zone||'Unknown',mapped(pl.zone,'zone'),'zone','Controls permissible/prohibited land uses.'),
+fact('Planning instrument',pl.loading?'Checking…':failed.has('zone')?'Source temporarily unavailable':pl.instrument||'Evidence unavailable',mapped(pl.instrument,'zone'),'zone','The in-force EPI name returned by the NSW Planning Portal spatial layers.'),
+fact('Land zone',pl.loading?'Checking…':failed.has('zone')?'Source temporarily unavailable':pl.zone||'Evidence unavailable',mapped(pl.zone,'zone'),'zone','Controls permissible/prohibited land uses.'),
 {...fact('Floor space ratio',fsrDisplay(p),p.generic&&!pl.fsr?'unavailable':fsrEvidence(p).requiresReview?'review':p.live?'verified':'indicative','fsr',fsrEvidence(p).reason||'May limit gross floor area where mapped.'),instrument:fsrEvidence(p).provenance?.instrument||pl.instrument||'NSW Planning Portal FSR layer',url:fsrEvidence(p).provenance?.source||pl.controlSources?.fsr,date:fsrEvidence(p).provenance?.checkedAt||pl.liveCheckedAt},
 fact('Height of buildings',pl.height||'Unknown',mapped(pl.height,'height'),'height','May limit building height where mapped.'),
 fact('Minimum lot size',pl.minLot||'Unknown',mapped(pl.minLot,'lot'),'lot','Relevant to subdivision/development screening.'),
@@ -524,7 +554,7 @@ fact('Land application / special area',pl.application||'Unknown',mapped(pl.appli
 fact('Applicable LGA DCP',dcp,live&&!failed.has('dcp')&&pl.dcpPlans?.length?'verified':'review','dcp','Plan identity is pulled for the resolved LGA; clause-level DCP interpretation still requires rule coverage.'),
 fact('Contribution plan',cp,live&&!failed.has('contribution')&&pl.contributionPlans?.length?'verified':'review','dcp','LGA-based contribution plan identity where published in the Planning Portal.'),
 fact('SEPP / state-policy spatial triggers',sepp,live&&!failed.has('sepp')&&pl.sepp?.length?'verified':'review','sepp','Spatial triggers are surfaced; textual SEPP eligibility criteria still require rule evaluation.'),
-fact('Additional local provisions / maps',local,live&&!failed.has('localIdentify')&&pl.localTriggers?.length?'verified':'review','dcp','Property-point local provision layers returned by the Planning Portal.')];}
+fact('Additional local provisions / maps',local,live&&!failed.has('localIdentify')&&pl.localTriggers?.length?'verified':'review','dcp','Property-point local provision layers returned by the Planning Portal.')].map(row=>{const control={'Planning instrument':'zone','Land zone':'zone','Floor space ratio':'fsr','Height of buildings':'height','Minimum lot size':'lot','Heritage':'heritage','Flood planning':'flood','Bush fire prone land':'bushfire','Acid sulfate soils':'acid','Environmental / biodiversity':'biodiversity','Riparian / watercourse':'riparian','Wetlands':'wetlands','Environmentally sensitive land':'sensitive','Landslide risk':'landslide','Land reservation / acquisition':'reservation','Land application / special area':'application','Applicable LGA DCP':'dcp','Contribution plan':'contribution','SEPP / state-policy spatial triggers':'sepp','Additional local provisions / maps':'localIdentify'}[row.name],at=pl.sourceChecks?.[control]?.checkedAt;return at?{...row,date:at}:row});}
 function propertyTypeLabel(v){
  const x=String(v||'house').toLowerCase();
  if(x==='apartment'||x==='unit')return'Apartment';
@@ -843,7 +873,9 @@ function toggleVoiceReply(){
 function renderPassport(){
  const p=app.property;if(!p)return;const pl=p.planning||{},s=consumerPropertySummary(p),err=(pl.liveErrors||[]).length;
  $('passportAddress').textContent=s.address||p.address;
- $('passportBanner').innerHTML=p.live?(pl.loading?'<div class="notice info"><strong>Property found.</strong> SitePivot is finishing the detailed planning checks in the background.</div>':'<div class="notice '+(err?'warn':'good')+'"><strong>Property analysis ready.</strong> '+(err?'A detailed planning source still needs checking, but the key property summary is available.':'The key mapped planning checks are complete.')+'</div>'):p.generic?'<div class="notice warn"><strong>Property details need confirmation.</strong> SitePivot will keep unknown information clearly marked.</div>':'';
+ const failures=pl.failedKeys||[],conflict=pl.zoningEvidence?.state==='conflicting'||pl.fsrEvidence?.state==='multiple-values';
+ $('passportBanner').innerHTML=p.live?(pl.loading?'<div class="notice info" role="status"><strong>Property found.</strong> Planning controls are still loading. You can confirm your home while we check.</div>':failures.length||err?'<div class="notice warn" role="status"><strong>Property identified; some planning sources are temporarily unavailable.</strong> Confirmed property details are retained. Missing checks remain unknown and may prevent a development assessment. <button type="button" class="secondaryBtn" id="retryPlanningEvidence">Retry planning checks</button></div>':'<div class="notice '+(conflict?'warn':'good')+'" role="status"><strong>'+(conflict?'Planning evidence needs review.':'Mapped planning checks complete.')+'</strong> '+(conflict?'Some sources conflict; confirm the applicable controls.':'Planning eligibility is assessed separately for your proposed works.')+'</div>'):p.generic?'<div class="notice warn"><strong>Property details need confirmation.</strong> SitePivot will keep unknown information clearly marked.</div>':'';
+ if($('retryPlanningEvidence'))$('retryPlanningEvidence').onclick=retryPlanningEvidence;
  renderDwellingSummary(p);
  $('passportMetrics').innerHTML=[
    ['Zoning',s.zone],
@@ -1017,7 +1049,7 @@ function applyIntent(p){p=E.normalizeIntent(p);app.scope.rooms=p.rooms;app.scope
 async function refreshMarket(){const p=app.property;if(!p?.live)return;const key=app.goal==='develop'?app.devType:app.goal;const seq=app.marketSeq=(app.marketSeq||0)+1,pid=p.id;let r;try{if(!SERVER_API)throw Error('API not deployed');r=await apiJSON('/api/market/property',{method:'POST',body:{property:{address:p.address,lga:p.lga,point:p.point,propertyType:p.propertyType,beds:p.beds,baths:p.baths,area:p.area,target:targetProfile()}},timeout:7500})}catch{r={status:'review',reason:'Licensed sold-market provider is not connected here.',soldComparables:[],completedProductComparables:[],currentListings:[]}}if(seq!==app.marketSeq||pid!==app.property?.id)return;app.property.marketEvidence=r;app.property.currentComps=r.soldComparables||[];app.property.active=r.currentListings||[];if(key)app.property.completed[key]=r.completedProductComparables||[];app.assessment=null;if(['assessment','roadmap','report'].includes(app.view))show(app.view)}
 
 function bind(){let timer=null;
-$('addressSearch').addEventListener('input',e=>{clearTimeout(timer);const seq=++app.inputSeq,q=e.target.value.trim();app.activeSuggestion=-1;if(q.length<4){app.lookupSeq++;app.liveSuggestions=[];$('searchResults').classList.remove('open');$('addressSearch').setAttribute('aria-expanded','false');return}setSearchMessage('<div class="notice info" style="margin:8px">Searching the NSW address register…</div>',true);timer=setTimeout(async()=>{if(seq!==app.inputSeq)return;try{const items=await liveAddressSearch(q);if(seq!==app.inputSeq)return;if(items.length)renderSearch(items,'live');else setLiveStatus('No NSW address match yet — keep typing the street number, street and suburb.','warn')}catch(err){if(seq!==app.inputSeq)return;console.warn('NSW address search',err);setLiveStatus('The NSW address service is temporarily unavailable. Try again in a moment.','warn')}},280)});
+$('addressSearch').addEventListener('input',e=>{clearTimeout(timer);app.propertyController?.abort();app.enrichSeq++;const seq=++app.inputSeq,q=e.target.value.trim();app.activeSuggestion=-1;if(q.length<4){app.suggestController?.abort();app.propertyController?.abort();app.enrichSeq++;app.lookupSeq++;app.liveSuggestions=[];$('searchResults').classList.remove('open');$('addressSearch').setAttribute('aria-expanded','false');return}setSearchMessage('<div class="notice info" style="margin:8px">Searching the NSW address register…</div>',true);timer=setTimeout(async()=>{if(seq!==app.inputSeq)return;try{const items=await liveAddressSearch(q);if(seq!==app.inputSeq)return;if(items.length)renderSearch(items,'live');else setLiveStatus('No NSW address match yet — keep typing the street number, street and suburb.','warn')}catch(err){if(seq!==app.inputSeq)return;app.dataState=app.dataState||{};app.dataState.suggestions={status:'unavailable'};console.warn('NSW address search',err);setLiveStatus('The NSW address service is temporarily unavailable. Try again in a moment.','warn')}},280)});
 $('addressSearch').addEventListener('keydown',e=>{if(e.key==='ArrowDown'){e.preventDefault();moveSuggestion(1);return}if(e.key==='ArrowUp'){e.preventDefault();moveSuggestion(-1);return}if(e.key==='Enter'){e.preventDefault();if($('searchResults').classList.contains('open')&&chooseActiveSuggestion())return;continueAddress()}if(e.key==='Escape'){app.activeSuggestion=-1;$('searchResults').classList.remove('open');$('addressSearch').setAttribute('aria-expanded','false')}});
 $('addressContinue').onclick=()=>continueAddress();
 $('assistantSend').onclick=submitAssistant;
@@ -1112,7 +1144,7 @@ async function runLiveDiagnostics(){
  window.__SITEPIVOT_LIVE_DIAGNOSTICS__=out;
  return out;
 }
-window.SitePivot={planning:P,propertyEvidence:G,comparison:Q,conversation:C,voice:V,voicePlayer,voiceDiagnostics,assistantState,applyConversationActions,continueConversation,commercial:E,interpretIntent,applyIntent,refreshMarket,FIXTURES,SOURCES,GOALS,DEV,LIVE,SERVER_API,API_BASE,app,findMatches,liveAddressSearch,resolveLiveIdentity,completeLiveProperty,selectProperty,computeAssessment,projectCost,currentMarket,completedMarket,marketRange,compScore,assistantAnswer,assistantSpeechAnswer,consumerPropertySummary,saveDwellingProfile,chooseGoal,goalDestination,show,preferredSpeechVoice,submitAssistant,startVoiceInput,stopVoiceInput,voiceInputSupported,voiceOutputSupported,runSelfTests,runLiveDiagnostics,reset};bind();renderSources();
+window.SitePivot={retryPlanningEvidence,requestDiagnostics,planning:P,propertyEvidence:G,comparison:Q,conversation:C,voice:V,voicePlayer,voiceDiagnostics,assistantState,applyConversationActions,continueConversation,commercial:E,interpretIntent,applyIntent,refreshMarket,FIXTURES,SOURCES,GOALS,DEV,LIVE,SERVER_API,API_BASE,app,findMatches,liveAddressSearch,resolveLiveIdentity,completeLiveProperty,selectProperty,computeAssessment,projectCost,currentMarket,completedMarket,marketRange,compScore,assistantAnswer,assistantSpeechAnswer,consumerPropertySummary,saveDwellingProfile,chooseGoal,goalDestination,show,preferredSpeechVoice,submitAssistant,startVoiceInput,stopVoiceInput,voiceInputSupported,voiceOutputSupported,runSelfTests,runLiveDiagnostics,reset};bind();renderSources();
 if(new URLSearchParams(location.search).get('autotest')==='1'){setTimeout(()=>runSelfTests(),50)}
 })();
 </script>

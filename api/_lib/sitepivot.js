@@ -35,31 +35,70 @@ const safe=s=>String(s||'').replace(/'/g,"''");
 const normaliseLga=s=>String(s||'').toUpperCase().replace(/^THE COUNCIL OF\s+/,'').replace(/^CITY OF\s+/,'').replace(/\s+CITY COUNCIL$/,'').replace(/\s+COUNCIL$/,'').replace(/\s+SHIRE$/,'').replace(/[^A-Z0-9]+/g,' ').trim();
 const sameLga=(row,lga)=>{const x=normaliseLga(row?.LGA_NAME??row?.lga_name??row?.lganame??row?.COUNCIL_NAME??row?.councilnam??row?.council);const y=normaliseLga(lga);return !x||!y||x===y||x.includes(y)||y.includes(x)};
 
-function withTimeout(ms){
-  const c=new AbortController();
-  const t=setTimeout(()=>c.abort(),ms);
-  return {signal:c.signal,done:()=>clearTimeout(t)};
+const CACHE_TTL=120000,CACHE_MAX_ENTRIES=256,CACHE_MAX_BYTES=8*1024*1024;
+const sourceChecks=new WeakMap();
+const retryStatuses=new Set([408,429,500,502,503,504]);
+const networkCodes=new Set(['ECONNRESET','ECONNREFUSED','ETIMEDOUT','EAI_AGAIN','ENETUNREACH','UND_ERR_CONNECT_TIMEOUT','UND_ERR_HEADERS_TIMEOUT','UND_ERR_SOCKET']);
+function upstreamError(message,kind,status){const e=new Error(message);e.kind=kind;if(status!==undefined)e.status=status;return e}
+function retryable(e){
+  if(e?.name==='AbortError'||e?.kind==='cancelled')return false;
+  if(e?.kind==='timeout')return true;
+  if(e?.kind==='http'||e?.kind==='arcgis')return retryStatuses.has(e.status);
+  return networkCodes.has(e?.code)||networkCodes.has(e?.cause?.code)||(e?.name==='TypeError'&&/^fetch failed$/i.test(e.message));
 }
-async function fetchJson(url,{method='GET',params={},timeout=6000}={}){
-  const key=method+':'+url+':'+JSON.stringify(params);
-  const hit=cache.get(key);
-  if(hit&&hit.exp>now())return hit.value;
-  const {signal,done}=withTimeout(timeout);
-  try{
-    let res;
-    if(method==='POST'){
-      const body=new URLSearchParams({...params,f:'json'}).toString();
-      res=await fetch(url,{method:'POST',headers:{'content-type':'application/x-www-form-urlencoded;charset=UTF-8','accept':'application/json'},body,signal});
-    }else{
-      const q=new URLSearchParams({...params,f:'json'}).toString();
-      res=await fetch(url+(url.includes('?')?'&':'?')+q,{headers:{accept:'application/json'},signal});
-    }
-    if(!res.ok)throw new Error('HTTP '+res.status);
-    const data=await res.json();
-    if(data?.error)throw new Error(data.error.message||'ArcGIS error');
-    cache.set(key,{exp:now()+120000,value:data});
-    return data;
-  }finally{done()}
+function cachePut(key,value,fetchedAt,url){
+  // Only complete successful responses can support a repeated evidence check.
+  if(!value||typeof value!=='object'||value.exceededTransferLimit||!['features','results','suggestions','candidates'].some(k=>Array.isArray(value[k])))return;
+  const endpoint=String(url).split('?')[0].split('/').pop(),field={query:'features',identify:'results',suggest:'suggestions',findAddressCandidates:'candidates'}[endpoint];
+  if(field&&!Array.isArray(value[field]))return;
+  // Empty address matches are not authoritative negative spatial evidence.
+  if((field==='suggestions'||field==='candidates')&&!value[field].length)return;
+  const bytes=Buffer.byteLength(key)+Buffer.byteLength(JSON.stringify(value));
+  if(bytes>CACHE_MAX_BYTES)return;
+  const time=now();for(const [k,v] of cache)if(v.exp<=time)cache.delete(k);
+  cache.delete(key);let total=bytes;for(const v of cache.values())total+=v.bytes;
+  while(cache.size>=CACHE_MAX_ENTRIES||total>CACHE_MAX_BYTES){const oldest=cache.keys().next().value;total-=cache.get(oldest).bytes;cache.delete(oldest)}
+  cache.set(key,{exp:fetchedAt+CACHE_TTL,fetchedAt,bytes,value});
+}
+async function fetchJson(url,{method='GET',params={},timeout=6000,signal:callerSignal}={}){
+  if(callerSignal?.aborted)throw upstreamError('Upstream request cancelled','cancelled');
+  const key=method+':'+url+':'+JSON.stringify(params),hit=cache.get(key);
+  if(hit&&hit.exp>now()){sourceChecks.set(hit.value,{checkedAt:new Date(hit.fetchedAt).toISOString(),cached:true});return hit.value}
+  if(hit)cache.delete(key);
+  const deadline=now()+Math.max(0,timeout),attempts=3;
+  let lastError;
+  for(let attempt=0;attempt<attempts;attempt++){
+    const remaining=deadline-now();if(remaining<=0)throw upstreamError('Upstream request timed out','timeout');
+    const controller=new AbortController();let timer,cancel;
+    const stopped=new Promise((_,reject)=>{
+      timer=setTimeout(()=>{reject(upstreamError('Upstream request timed out','timeout'));controller.abort()},remaining);
+      cancel=()=>{reject(upstreamError('Upstream request cancelled','cancelled'));controller.abort()};
+      callerSignal?.addEventListener('abort',cancel,{once:true});if(callerSignal?.aborted)cancel();
+    });
+    try{
+      const request=(async()=>{
+        const q=new URLSearchParams({...params,f:'json'}).toString();
+        const res=method==='POST'?await fetch(url,{method:'POST',headers:{'content-type':'application/x-www-form-urlencoded;charset=UTF-8',accept:'application/json'},body:q,signal:controller.signal}):await fetch(url+(url.includes('?')?'&':'?')+q,{headers:{accept:'application/json'},signal:controller.signal});
+        if(!res.ok)throw upstreamError('HTTP '+res.status,'http',res.status);
+        const data=await res.json();
+        if(data?.error)throw upstreamError(data.error.message||'ArcGIS error','arcgis',Number(data.error.code));
+        return data;
+      })();
+      const data=await Promise.race([request,stopped]),fetchedAt=now();
+      if(fetchedAt>=deadline)throw upstreamError('Upstream request timed out','timeout');
+      if(data&&typeof data==='object')sourceChecks.set(data,{checkedAt:new Date(fetchedAt).toISOString(),cached:false});
+      cachePut(key,data,fetchedAt,url);return data;
+    }catch(e){lastError=e;if(!retryable(e)||attempt===attempts-1)throw e}
+    finally{clearTimeout(timer);callerSignal?.removeEventListener('abort',cancel)}
+    const delay=Math.floor(100*2**attempt*(.75+Math.random()*.5));
+    if(deadline-now()<=delay)throw lastError;
+    await new Promise((resolve,reject)=>{
+      const t=setTimeout(()=>{callerSignal?.removeEventListener('abort',cancelWait);resolve()},delay);
+      const cancelWait=()=>{clearTimeout(t);callerSignal?.removeEventListener('abort',cancelWait);reject(upstreamError('Upstream request cancelled','cancelled'))};
+      callerSignal?.addEventListener('abort',cancelWait,{once:true});if(callerSignal?.aborted)cancelWait();
+    });
+  }
+  throw lastError;
 }
 async function arcQuery(base,id,params={},timeout=6000){
   return fetchJson(base+'/'+id+'/query',{method:'POST',params,timeout});
@@ -172,11 +211,11 @@ async function spatial(base,id,geom,type,lga,fields='*',timeout=6000){
   if(!Array.isArray(j.features)||j.exceededTransferLimit)throw new Error('Official spatial query did not return a complete feature set');
   // Primary EPI polygons already establish spatial applicability. Legacy council
   // names must not remove an intersecting LEP control following amalgamations.
-  let fs=j.features.map(f=>f.geometry?{...f,geometry:{...f.geometry,spatialReference:f.geometry.spatialReference||j.spatialReference||{wkid:4283}}}:f);if(lga&&base!==UPSTREAM.primary)fs=fs.filter(f=>sameLga(attrs(f),lga));return fs;
+  let fs=j.features.map(f=>f.geometry?{...f,geometry:{...f.geometry,spatialReference:f.geometry.spatialReference||j.spatialReference||{wkid:4283}}}:f);if(lga&&base!==UPSTREAM.primary)fs=fs.filter(f=>sameLga(attrs(f),lga));sourceChecks.set(fs,sourceChecks.get(j));return fs;
 }
 async function identify(base,point,timeout=6000){
   const d=.015,x=+point.x,y=+point.y;
-  return fetchJson(base+'/identify',{method:'POST',params:{geometry:JSON.stringify(point),geometryType:'esriGeometryPoint',sr:4283,layers:'all',tolerance:1,mapExtent:[x-d,y-d,x+d,y+d].join(','),imageDisplay:'900,700,96',returnGeometry:'false'},timeout}).then(j=>j.results||[]);
+  return fetchJson(base+'/identify',{method:'POST',params:{geometry:JSON.stringify(point),geometryType:'esriGeometryPoint',sr:4283,layers:'all',tolerance:1,mapExtent:[x-d,y-d,x+d,y+d].join(','),imageDisplay:'900,700,96',returnGeometry:'false'},timeout}).then(j=>{if(!Array.isArray(j?.results)||j.exceededTransferLimit)throw new Error('Official identify query did not return a complete result set');const results=j.results;sourceChecks.set(results,sourceChecks.get(j));return results});
 }
 function rowLabels(fs,keys=['LAY_CLASS','SYM_CODE','H_NAME','H_ID']){return unique((fs||[]).map(f=>first(attrs(f),keys)))}
 function formatZone(fs){return unique(fs.map(f=>{const a=attrs(f);return [first(a,['SYM_CODE','ZONE','ZONE_CODE']),first(a,['LAY_CLASS','ZONE_NAME'])].filter(Boolean).join(' · ')||null})).join(' / ')||null}
@@ -222,14 +261,14 @@ async function planningFor(property){
   settled.forEach((r,i)=>{const k=keys[i];if(r.status==='fulfilled')data[k]=r.value;else{data[k]=[];failed.push(k);errors.push(k+': '+(r.reason?.message||'failed'))}});
   const missing=(k,label)=>failed.includes(k)?'Source check did not complete — Needs Review':label;
   const epis=epiNames([data.zone,data.fsr,data.height,data.lot,data.heritage,data.reservation,data.application,data.acid,data.riparian,data.biodiversity,data.wetlands,data.sensitive,data.flood,data.landslide]);
-  const zoningEvidence=Z.resolve({records:data.zone,parcelGeometry:parcel.geometry,queryComplete:!failed.includes('zone'),error:failed.includes('zone')?'Official zoning retrieval failed':null,source:UPSTREAM.primary+'/2',checkedAt:new Date().toISOString()});
+  const zoningEvidence=Z.resolve({records:data.zone,parcelGeometry:parcel.geometry,queryComplete:!failed.includes('zone'),error:failed.includes('zone')?'Official zoning retrieval failed':null,source:UPSTREAM.primary+'/2',checkedAt:sourceChecks.get(data.zone)?.checkedAt||null});
   const localInstrument=['single-zone','boundary-review'].includes(zoningEvidence.state)?zoningEvidence.primaryZone?.instrument||null:epis.join(' / ')||null;
   const statePolicies=unique([
     ...epis.filter(x=>/^State Environmental Planning Policy/i.test(x)),
     ...(data.sepp||[]).map(r=>r.attributes?.EPI_NAME||r.attributes?.['EPI Name']||r.layerName).filter(Boolean)
   ]);
   const [council,frontageEvidence]=await Promise.all([councilPromise,frontagePromise]);
-  const fsrEvidence=FSR.resolve({records:data.fsr,error:failed.includes('fsr')?'Official FSR retrieval failed':null,parcelResolved:!!parcel.geometry,queryComplete:!failed.includes('fsr'),instrument:localInstrument,source:UPSTREAM.primary+'/1',checkedAt:new Date().toISOString()});
+  const fsrEvidence=FSR.resolve({records:data.fsr,error:failed.includes('fsr')?'Official FSR retrieval failed':null,parcelResolved:!!parcel.geometry,queryComplete:!failed.includes('fsr'),instrument:localInstrument,source:UPSTREAM.primary+'/1',checkedAt:sourceChecks.get(data.fsr)?.checkedAt||null});
   return {
     parcel:{frontage:frontageEvidence,lot:parcel.lot,dp:parcel.dp,area:parcel.area,parcels:parcel.parcels,geometryResolved:!!parcel.geometry,identityEvidence:parcel.identityEvidence||null,areaEvidence:parcel.areaEvidence||null,status:parcel.status||'review'},
     planning:{
@@ -260,7 +299,7 @@ async function planningFor(property){
       urbanRelease:failed.includes('urbanRelease')?[]:rowLabels(data.urbanRelease),
       localTriggers:failed.includes('localIdentify')?[]:unique((data.localIdentify||[]).map(r=>[r.layerName,r.attributes?.LAY_CLASS||r.attributes?.Class].filter(Boolean).join(' · '))),
       splitZone:zoningEvidence.splitZone,
-      liveErrors:errors,failedKeys:failed,failedSources:failed,checkedAt:new Date().toISOString()
+      liveErrors:errors,failedKeys:failed,failedSources:failed,sourceChecks:Object.fromEntries(keys.map(k=>[k,failed.includes(k)?{status:'failed',checkedAt:null,cached:false}:{status:'complete',...sourceChecks.get(data[k])}])),checkedAt:new Date().toISOString()
     },
     timingMs:now()-t,
     providers:['NSW Land Parcel Property Theme','NSW Planning Portal EPI Primary Planning Layers','NSW Planning Portal Protection/Hazard','NSW Bush Fire Prone Land','NSW Planning Portal Development Control']

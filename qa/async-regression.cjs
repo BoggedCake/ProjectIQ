@@ -79,7 +79,7 @@ const suiteTimeout=setTimeout(()=>{console.error('FAIL async suite did not finis
  await test('very late government JSONP cannot call a deleted callback',async()=>{
   const vm=require('node:vm'),timers=[],window={};let script,removed=false;
   const context={window,document:{createElement(){return script={remove(){removed=true}}},head:{appendChild(){}}},setTimeout(fn,ms){timers.push({fn,ms});return timers.length},clearTimeout(){},params:q=>new URLSearchParams(q).toString(),URLSearchParams,Date,Math,Error};
-  const source=html.match(/^function arcJsonp[^\n]+/m)[0];vm.runInNewContext(source+';this.pending=arcJsonp("https://official.test/query",{},5).catch(e=>e.message)',context);
+  const source=html.match(/^function arcJsonp[^\n]+/m)[0];vm.runInNewContext(html.match(/^function requestError[^\n]+/m)[0]+';'+html.match(/^function cancelled[^\n]+/m)[0]+';'+source+';this.pending=arcJsonp("https://official.test/query",{},5).catch(e=>e.message)',context);
   const callback=new URL(script.src).searchParams.get('callback');timers.find(t=>t.ms===5).fn();assert.match(await context.pending,/timed out/);for(const t of timers.filter(t=>t.ms>5))t.fn();
   assert.ok(removed);assert.equal(typeof window[callback],'function');assert.doesNotThrow(()=>window[callback]({features:[{late:true}]}));assert.match(await context.pending,/timed out/);
  });
