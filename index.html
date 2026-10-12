@@ -146,7 +146,7 @@ input[type="checkbox"]{width:20px;height:20px;padding:0;flex:0 0 20px;accent-col
 <script src="property-evidence.js?v=20261010-residential-repair"></script>
 <script src="zoning-evidence.js?v=20261010-duplex-repair"></script>
 <script src="fsr-evidence.js?v=20261010-residential-repair"></script>
-<script src="planning-intelligence.js?v=20261010-duplex-repair"></script>
+<script src="planning-intelligence.js?v=20261013-reliability"></script>
 <script src="commercial-engine.js?v=20261012-premium-feasibility-v2"></script>
 <script src="comparison-engine.js?v=20261012-premium-feasibility-v2"></script>
 <script src="conversation.js?v=20261012-premium-feasibility-v2"></script>
@@ -377,11 +377,11 @@ async function parcelForPoint(point,cadastralId='',cadid=null,signal){
 }
 async function spatialLayer(base,id,geom,type,lga,outFields='*',count=50,signal){
  const q={where:'1=1',geometry:JSON.stringify(geom),geometryType:type,inSR:4283,spatialRel:'esriSpatialRelIntersects',outFields,returnGeometry:base===LIVE.primary&&id===LIVE_LAYER.zone?'true':'false',outSR:4283,resultRecordCount:count};
- const j=await arcJSON(base+'/'+id+'/query',q,3800,{signal});let fs=(j.features||[]).map(f=>f.geometry?{...f,geometry:{...f.geometry,spatialReference:f.geometry.spatialReference||j.spatialReference||{wkid:4283}}}:f);if(!Array.isArray(j.features)||j.exceededTransferLimit)throw Error('Planning spatial result truncated; full coverage requires pagination.');if(lga&&base!==LIVE.primary)fs=fs.filter(f=>sameLga(attrs(f),lga));const hit=spatialCache.get(base+'/'+id+'/query'+JSON.stringify(q));fs.sourceCheck={checkedAt:hit?.checkedAt||new Date().toISOString(),status:'available'};return fs
+ const budget=base===LIVE.primary&&id===LIVE_LAYER.zone?6000:3800;const j=await arcJSON(base+'/'+id+'/query',q,budget,{signal});let fs=(j.features||[]).map(f=>f.geometry?{...f,geometry:{...f.geometry,spatialReference:f.geometry.spatialReference||j.spatialReference||{wkid:4283}}}:f);if(!Array.isArray(j.features)||j.exceededTransferLimit)throw Error('Planning spatial result truncated; full coverage requires pagination.');if(lga&&base!==LIVE.primary)fs=fs.filter(f=>sameLga(attrs(f),lga));const hit=spatialCache.get(base+'/'+id+'/query'+JSON.stringify(q));fs.sourceCheck={checkedAt:hit?.checkedAt||new Date().toISOString(),status:'available'};return fs
 }
 async function identifyPoint(base,point,signal){
  const d=.015,x=+point.x,y=+point.y;if(!Number.isFinite(x)||!Number.isFinite(y))return[];
- const q={geometry:JSON.stringify(point),geometryType:'esriGeometryPoint',sr:4283,layers:'all',tolerance:1,mapExtent:[x-d,y-d,x+d,y+d].join(','),imageDisplay:'900,700,96',returnGeometry:'false'};const j=await arcJSON(base+'/identify',q,3800,{signal}),rows=j.results;if(!Array.isArray(rows)||j.exceededTransferLimit)throw requestError('Planning identify response incomplete; absence is not established',null,'incomplete');rows.sourceCheck={checkedAt:spatialCache.get(base+'/identify'+JSON.stringify(q))?.checkedAt||new Date().toISOString(),status:'available'};return rows
+ const q={geometry:JSON.stringify(point),geometryType:'esriGeometryPoint',sr:4283,layers:'all',tolerance:1,mapExtent:[x-d,y-d,x+d,y+d].join(','),imageDisplay:'900,700,96',returnGeometry:'false'};const j=await arcJSON(base+'/identify',q,6000,{signal}),rows=j.results;if(!Array.isArray(rows)||j.exceededTransferLimit)throw requestError('Planning identify response incomplete; absence is not established',null,'incomplete');rows.sourceCheck={checkedAt:spatialCache.get(base+'/identify'+JSON.stringify(q))?.checkedAt||new Date().toISOString(),status:'available'};return rows
 }
 function rowLabels(fs,keys=['LAY_CLASS','SYM_CODE','H_NAME','H_ID']){return uniq((fs||[]).map(f=>{const a=attrs(f);return firstVal(a,keys)}))}
 function epiNames(groups){return uniq(groups.flatMap(fs=>(fs||[]).map(f=>attrs(f).EPI_NAME).filter(Boolean)))}
@@ -410,7 +410,7 @@ async function pullPlanning(point,parcel,lga,signal){
  const sepp=uniq((data.sepp||[]).map(r=>{const a=r.attributes||{};return a.EPI_NAME||a['EPI Name']||r.layerName}).filter(Boolean));
  const localTriggers=uniq((data.localIdentify||[]).map(r=>{const a=r.attributes||{};return [r.layerName,a.LAY_CLASS||a['Class']].filter(Boolean).join(' · ')}).filter(Boolean));
  const zoningEvidence=Z.resolve({records:data.zone,parcelGeometry:parcel?.geometry,queryComplete:!failed('zone'),error:failed('zone')?'Official zoning retrieval failed':null,source:LIVE.primary+'/2',checkedAt:sourceChecks.zone.checkedAt});
- const planningInstrument=['single-zone','boundary-review'].includes(zoningEvidence.state)?zoningEvidence.primaryZone?.instrument||null:epis.join(' / ')||null;
+ const planningInstrument=failed('zone')?null:['single-zone','boundary-review'].includes(zoningEvidence.state)?zoningEvidence.primaryZone?.instrument||null:epis.join(' / ')||null;
  return{
    zone:failed('zone')?null:['single-zone','boundary-review'].includes(zoningEvidence.state)&&zoningEvidence.primaryZone?[zoningEvidence.primaryZone.code,zoningEvidence.primaryZone.label].filter(Boolean).join(' · '):formatZone(data.zone),zoningEvidence,fsr:F.resolve({records:data.fsr,error:failed('fsr')?'FSR source request failed':null,parcelResolved:!!parcel?.geometry,queryComplete:!failed('fsr'),source:LIVE.primary+'/1',checkedAt:sourceChecks.fsr.checkedAt}).value,height:failed('height')?null:formatHeight(data.height),minLot:failed('lot')?null:formatLot(data.lot),
    heritage:data.heritage.length?triggerText(data.heritage):missing('heritage','No mapped EPI heritage overlap returned'),

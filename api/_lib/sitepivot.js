@@ -262,7 +262,7 @@ async function planningFor(property){
   const missing=(k,label)=>failed.includes(k)?'Source check did not complete — Needs Review':label;
   const epis=epiNames([data.zone,data.fsr,data.height,data.lot,data.heritage,data.reservation,data.application,data.acid,data.riparian,data.biodiversity,data.wetlands,data.sensitive,data.flood,data.landslide]);
   const zoningEvidence=Z.resolve({records:data.zone,parcelGeometry:parcel.geometry,queryComplete:!failed.includes('zone'),error:failed.includes('zone')?'Official zoning retrieval failed':null,source:UPSTREAM.primary+'/2',checkedAt:sourceChecks.get(data.zone)?.checkedAt||null});
-  const localInstrument=['single-zone','boundary-review'].includes(zoningEvidence.state)?zoningEvidence.primaryZone?.instrument||null:epis.join(' / ')||null;
+  const localInstrument=failed.includes('zone')?null:['single-zone','boundary-review'].includes(zoningEvidence.state)?zoningEvidence.primaryZone?.instrument||null:epis.join(' / ')||null;
   const statePolicies=unique([
     ...epis.filter(x=>/^State Environmental Planning Policy/i.test(x)),
     ...(data.sepp||[]).map(r=>r.attributes?.EPI_NAME||r.attributes?.['EPI Name']||r.layerName).filter(Boolean)
