@@ -34,7 +34,9 @@ jobs:
       - run: node qa/residential-browser.cjs
         if: ${{ !cancelled() && steps.browsers.outcome == 'success' }}
       - name: Verify financial inputs, repayments and reports with labelled regression fixtures
-        run: node qa/master-financial-browser.cjs
+        run: |
+          node qa/master-financial-browser.cjs
+          node qa/premium-browser.cjs
         if: ${{ !cancelled() && steps.browsers.outcome == 'success' }}
       - run: node qa/property-intelligence-browser.cjs
         if: ${{ !cancelled() && steps.browsers.outcome == 'success' }}
@@ -55,4 +57,5 @@ jobs:
             qa-artifacts/property-intelligence/
             qa-artifacts/residential/
             qa-artifacts/financial/
+            qa-artifacts/premium/
             qa-artifacts/duplex/

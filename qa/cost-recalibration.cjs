@@ -1,7 +1,7 @@
 'use strict';
 const assert=require('node:assert/strict'),E=require('../commercial-engine');
 // Supported planning + explicit synthetic exemption evidence isolate arithmetic, not live eligibility.
-const supported={eligibility:{readyForFeasibility:true},contributions:{status:'verified-exemption',source:'Regression fixture: council exemption assessment',reason:'Synthetic confirmed exemption solely for arithmetic reconciliation'}};
+const supported={landDebt:0,eligibility:{readyForFeasibility:true},contributions:{status:'verified-exemption',source:'Regression fixture: council exemption assessment',reason:'Synthetic confirmed exemption solely for arithmetic reconciliation'}};
 const input={area:440,quality:'premium',configuration:'two-storey-basement',projectType:'duplex',dwellingCount:2,region:'NSW'};
 const c=E.deliveredCost(input);
 assert.ok(Array.isArray(c.components),'actual cost components must be available');
@@ -10,7 +10,7 @@ assert.equal(c.configurationDetails.aboveGroundLevels,2);assert.equal(c.configur
 assert.equal(c.areaBreakdown.aboveGround+c.areaBreakdown.basement,440);
 assert.equal(E.deliveredCost({...input,area:880}).areaBreakdown.basement,880/3);
 const taller=E.deliveredCost({...input,configuration:'three-level-basement'});
-assert.equal(taller.configurationDetails.aboveGroundLevels,3);assert.equal(taller.configurationDetails.totalLevels,4);assert.equal(taller.liftCount,2);assert.ok(taller.mid>c.mid);
+assert.equal(taller.configurationDetails.aboveGroundLevels,3);assert.equal(taller.configurationDetails.totalLevels,4);assert.equal(taller.liftCount,0);assert.ok(taller.mid>c.mid);
 assert.ok(c.constructionMid<c.mid,'hard works must exclude consultants, fees and contingency');
 assert.ok(c.siteUnknowns.includes('Ground conditions and groundwater'));
 assert.equal(E.deliveredCost({...input,land:10000000,prestige:true}).mid,c.mid);

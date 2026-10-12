@@ -37,7 +37,7 @@ near(result.total,1000000+input.cost.mid); near(result.finance,0);
 assert.equal(result.decisionReady,true); assert.equal(result.interestRate,.095);
 const allowance=E.feasibility({...input,exploratory:true,contributions:{status:'provisional',amount:35000}});
 assert.equal(allowance.status,'exploratory'); assert.equal(allowance.decisionReady,false); near(allowance.lines.authorityContributions,35000);
-const double=E.feasibility({...input,eligibility:{readyForFeasibility:true},extras:{authorityContributions:100},contributions:{status:'user-allowance',amount:30000}});
+const double=E.feasibility({...input,landDebt:0,eligibility:{readyForFeasibility:true},extras:{authorityContributions:100},contributions:{status:'user-allowance',amount:30000}});
 near(double.lines.authorityContributions,30000);
 const residualInput={...input,eligibility:{readyForFeasibility:true},landDebtRatio:.5};
 const r=E.feasibility(residualInput),r2=E.feasibility({...residualInput,land:r.residualLandValue}); near(r2.profitOnCost,.2);
