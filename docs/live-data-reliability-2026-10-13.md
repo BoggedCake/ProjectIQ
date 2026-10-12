@@ -37,3 +37,31 @@ Direct live Fairlight identified its authoritative address,415.2m² parcel, R1,F
 The repeated3800ms zoning/identify expiry, contrasted with successful existing6000ms server QA, justified aligning only the large zoning-geometry and identify requests with that existing six-second budget. Other planning queries keep3800ms and suggestions2800ms. Parcel plus parallel planning still fits the existing20second readiness deadline; no browser assertion deadline was raised. A deterministic4.2second zoning response failed under the old budget and passes under the bounded six-second budget. Unknown zoning cannot be rescued by previously supported pathway evidence: an explicit unavailable context disables both financial and preliminary gates. Independent review and fail-first regression verified that safeguard.
 
 A final recovery regression exposed client negative candidate caching and wrong-shape query caching. Both now use endpoint-specific response validation: nonempty geocoder arrays, identify results arrays and query features arrays. Empty spatial features remain legitimate, while failed identity and malformed evidence can be requested again immediately.
+
+## Final code checkpoint and acceptance evidence
+
+Tested application code: `28758a8c650523ab02719517f8318d9f43b32000`. Earlier repair commits: `490a061e3ab474a30628107b6c2dd2db3e76261f`, `4b4e451a4d047cc0c7ff3ab37c8624be462e12e3`, `ab7834a893451fe2f365a8d3ba3a859c1fe9663e`. Subsequent reporting-only commits do not change these tested application assets.
+
+| Check | Final result | Evidence |
+|---|---|---|
+| Local unit/integration | Exit0;266PASS log results | Full suite, including fail-first outage, cancellation, cache recovery and eligibility regressions |
+| Consumer regression | Success;347PASS, no failures | https://github.com/BoggedCake/ProjectIQ/actions/runs/38323399377 |
+| Server data QA | Success | https://github.com/BoggedCake/ProjectIQ/actions/runs/38323399425 |
+| Security preparation | Success | https://github.com/BoggedCake/ProjectIQ/actions/runs/38323399369 |
+| Pages deployment | Success | https://github.com/BoggedCake/ProjectIQ/actions/runs/38323400148 |
+| Deployed live QA | Failure: two source/transport timeout checks remain unresolved | https://github.com/BoggedCake/ProjectIQ/actions/runs/38323399424 |
+
+The final live workflow verified exact parity of all nine deployed HTML/JavaScript assets with this code checkpoint. All16Eileen/Fairlight text/voice conversation cases passed, including both Chromium/WebKit at390/393px. All4actual residential cases passed; all12Violet/Nield/Eileen DA/CDC cases passed; all4Seaview premium cases passed at390/1280px. Financial fixtures, input retention, report parity, lifts/pools and arithmetic remain verified. No factual assertion was weakened. Intermediate cancelled runs were superseded by code changes; the red4b run remains recorded above.
+
+The two unresolved checks are:
+
+1. Smoke regional matrix: `84/2-8 Dixon Street Sydney NSW2000` returned a government-data timeout. Other regional cases, including49Mann Street Gosford, passed.
+2. One390px Fairlight founder journey: geocoder suggestion and candidate requests succeeded, then the NSW Address Point query did not complete within5000ms. Diagnostics recorded status:null, outcome:timeout, elapsed:5001ms. The app reached terminal identity-unavailable state, with a retry action, rather than remaining stuck waiting for the property view. Other Fairlight viewports and every Fairlight Chromium/WebKit conversation case passed.
+
+These establish unavailable live source/transport responses within the bounded deadline. They do not establish that the government service was globally down or distinguish provider internals from network/browser transport. No source fact or successful assessment was invented to make those checks pass. Full live QA is explicitly **not wholly green**. No unchanged retry-until-green was used. Recovering a source needs the visible retry action; current source availability remains an external dependency.
+
+Actual final-release desktop interaction confirmed the revised planning-module cache tag, Fairlight identity/415.2m² parcel/R1/height8.5m/FSR0.6:1, retained3bed/2bath/1car inputs and single-click confirmation after checking the entered fields. Earlier batched cloud clicks are not evidence of a verified handler repair. Physical iPhone interaction/audio remains a founder check, distinct from automated WebKit tests.
+
+Open the existing testing URL, refresh, select the exact address suggestion and confirm the property. Confirm home details, then ask the project question. If a source is unavailable, use Retry property check or Retry planning checks; missing essential evidence will continue withholding development feasibility. Eileen must not receive an achievable ordinary-duplex feasibility; Seaview conditional working scenarios retain the existing visible provisional assumptions. Gosford is a retrieval fixture for a council administration address, not a residential feasibility example.
+
+No merge to main, repository/hosting change, paid service, credential change, commercial launch or external communication. Main remained `2e7f85d1c935ce0d0f5253b05471211c817e3e62` at final verification. No further founder permission is needed for completed routine repairs; physical-device acceptance and live-source availability remain outstanding.
