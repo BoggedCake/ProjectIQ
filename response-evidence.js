@@ -9,6 +9,7 @@ function councilOptions(id,limit=100){return{arcgisQuery:true,limit,nonemptyAttr
 
 const semanticScalar=v=>validId(v)&&String(v).trim()!=='-9999';
 function semanticAttributes(a,keys){const value=keys.map(k=>a[k]).find(v=>v!==undefined&&v!==null&&v!==''&&String(v)!=='-9999'&&Number(v)!==-9999);return semanticScalar(value);}
+function roadOptions(limit=100){return{arcgisQuery:true,limit,idField:'cadid',record:a=>Object.prototype.hasOwnProperty.call(a,'roadnamelabel')&&(a.roadnamelabel===null||typeof a.roadnamelabel==='string'),geometry:g=>Array.isArray(g?.rings)&&g.rings.length>0};}
 function validate(response,options={}){
  const field=options.field||'features',fail=reason=>({complete:false,state:'unresolved',reason,records:[]});
  if(!response||typeof response!=='object'||Array.isArray(response)||response.error||!Array.isArray(response[field]))return fail('Malformed authoritative '+field+' response.');
@@ -50,8 +51,8 @@ function queryOptions(url,limit){
  if(/NBC_PWM_LEPs/.test(url)){const layer=String(url).match(/MapServer\/(\d+)\/query(?:[?#]|$)/);Object.assign(options,councilOptions(layer?.[1],Number(limit)))}
  if(/NSW_Address_Point_Formatted/.test(url)){options.requiredFields=['formattedaddress'];options.geometry=g=>Number.isFinite(g?.x)&&Number.isFinite(g?.y);options.idField='objectid'}
  if(/NSW_Land_Parcel_Property_Theme.*\/8\/query/.test(url)){options.requiredFields=['lotnumber','planlabel'];options.idField='cadid';options.geometry=g=>Array.isArray(g?.rings)&&g.rings.length>0}
- if(/NSW_Land_Parcel_Property_Theme.*\/5\/query/.test(url)){options.requiredFields=['roadnamelabel'];options.idField='cadid';options.geometry=g=>Array.isArray(g?.rings)&&g.rings.length>0}
+ if(/NSW_Land_Parcel_Property_Theme.*\/5\/query/.test(url))Object.assign(options,roadOptions(Number(limit)))
  return options;
 }
-return{validate,requireComplete,queryOptions,councilOptions,validId};
+return{validate,requireComplete,queryOptions,councilOptions,roadOptions,validId};
 });

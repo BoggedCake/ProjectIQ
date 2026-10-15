@@ -18,7 +18,7 @@
     "test:financial": "node qa/financial-voice-regression.cjs && node qa/residential-mortgage-regression.cjs && node qa/financial-replacement-regression.cjs && node qa/master-financial-ui.cjs",
     "test:premium": "node qa/premium-feasibility-regression.cjs && node qa/premium-ui.cjs",
     "test:reliability": "node qa/client-reliability.cjs && node qa/server-reliability.cjs",
-    "test:p0": "node qa/p0-address-regression.cjs && node qa/p0-completeness-regression.cjs && node qa/p0-zoning-regression.cjs && node --test qa/p0-review-regression.cjs && node --test qa/p0-trigger-regression.cjs"
+    "test:p0": "node qa/p0-address-regression.cjs && node qa/p0-completeness-regression.cjs && node qa/p0-road-regression.cjs && node qa/p0-zoning-regression.cjs && node --test qa/p0-review-regression.cjs && node --test qa/p0-trigger-regression.cjs"
   },
   "devDependencies": {
     "jsdom": "30.1.2",

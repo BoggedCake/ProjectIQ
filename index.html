@@ -143,16 +143,16 @@ input[type="checkbox"]{width:20px;height:20px;padding:0;flex:0 0 20px;accent-col
 </main>
 </div>
 <div class="modal" id="sourcesModal"><div class="modalCard"><div class="sectionTitle"><div><div class="eyebrow">Evidence coverage</div><h2 style="font-size:30px">NSW source registry</h2></div><button class="secondaryBtn" id="closeSources">Close</button></div><div class="notice warn"><strong>Important:</strong> Property searches use official NSW records where available. Identifying a council plan does not confirm every design requirement. Unresolved checks stay clearly marked.</div><div id="sourceRegistry"></div></div></div>
-<script src="address-evidence.js?v=20261015-p0-correctness-3"></script>
-<script src="response-evidence.js?v=20261015-p0-correctness-3"></script>
-<script src="property-evidence.js?v=20261015-p0-correctness-3"></script>
-<script src="zoning-evidence.js?v=20261015-p0-correctness-3"></script>
-<script src="fsr-evidence.js?v=20261015-p0-correctness-3"></script>
-<script src="planning-intelligence.js?v=20261015-p0-correctness-3"></script>
-<script src="commercial-engine.js?v=20261015-p0-correctness-3"></script>
-<script src="comparison-engine.js?v=20261015-p0-correctness-3"></script>
-<script src="conversation.js?v=20261015-p0-correctness-3"></script>
-<script src="voice.js?v=20261015-p0-correctness-3"></script>
+<script src="address-evidence.js?v=20261015-p0-correctness-4"></script>
+<script src="response-evidence.js?v=20261015-p0-correctness-4"></script>
+<script src="property-evidence.js?v=20261015-p0-correctness-4"></script>
+<script src="zoning-evidence.js?v=20261015-p0-correctness-4"></script>
+<script src="fsr-evidence.js?v=20261015-p0-correctness-4"></script>
+<script src="planning-intelligence.js?v=20261015-p0-correctness-4"></script>
+<script src="commercial-engine.js?v=20261015-p0-correctness-4"></script>
+<script src="comparison-engine.js?v=20261015-p0-correctness-4"></script>
+<script src="conversation.js?v=20261015-p0-correctness-4"></script>
+<script src="voice.js?v=20261015-p0-correctness-4"></script>
 <script>
 (()=>{'use strict';
 const E=window.SitePivotCommercial,C=window.SitePivotConversation,V=window.SitePivotVoice,P=window.SitePivotPlanning,G=window.PropertyEvidence,Q=window.SitePivotComparison,F=window.SitePivotFSR,Z=window.SitePivotZoning;
@@ -475,7 +475,7 @@ async function completeLiveProperty(p,official,geo,seq,signal=app.propertyContro
      const parcel=await Promise.race([parcelForPoint(point,a.cadastralidentifier||a.pl_ptlotsecpn||'',a.lot_cadid,signal),new Promise(resolve=>setTimeout(()=>resolve({features:[],geometry:null,proximity:false,errors:['parcel timeout']}),8500))]);
      if(seq!==app.enrichSeq||signal?.aborted)return;p.sourceMeta.timing.parcelMs=Math.round(performance.now()-tParcel);
      if(parcel.features?.length){p.parcelAssociations=parcel.features.map(f=>({cadid:attrs(f).cadid??null,lot:attrs(f).lotnumber??null,dp:attrs(f).planlabel??null,cadastralIdentifier:attrs(f).lotidstring??null}));const pt=parseTitleFromLots(parcel,{cadid:a.lot_cadid,cadastralIdentifier:a.cadastralidentifier||a.pl_ptlotsecpn,lot:p.lot,dp:p.dp});p.title=pt.title;p.lot=pt.lot;p.dp=pt.dp;p.area=pt.area;p.areaEvidence=pt.areaEvidence;p.identityEvidence=pt.identityEvidence;p.propertyScopeStatus=pt.identityEvidence?.status==='matched'?'associated-parcel':'review';p.parcels=pt.parcels;p.parcelGeometry=pt.geometry;p.parcelProximity=parcel.proximity;parcel.geometry=pt.geometry}
-     const roadPromise=parcel.geometry?arcJSON(LIVE.cadastre.replace(/\/8$/,'')+'/5/query',{where:'1=1',geometry:JSON.stringify(parcel.geometry),geometryType:'esriGeometryPolygon',inSR:4283,spatialRel:'esriSpatialRelIntersects',distance:30,units:'esriSRUnit_Meter',outFields:'*',returnGeometry:true,outSR:4283,resultRecordCount:100},3500,{signal}).then(j=>G.frontage(parcel.geometry,SitePivotResponse.requireComplete(j,{arcgisQuery:true,limit:100,idField:'cadid',requiredFields:['roadnamelabel'],geometry:g=>Array.isArray(g?.rings)&&g.rings.length>0}).map(f=>({id:String(attrs(f).cadid||attrs(f).objectid||''),name:attrs(f).roadnamelabel||'',geometry:{...f.geometry,spatialReference:f.geometry?.spatialReference||j.spatialReference||{wkid:4283}}})),a.streetname||'')).catch(()=>({status:'review',reason:'Road geometry unavailable.'})):Promise.resolve(null);
+     const roadPromise=parcel.geometry?arcJSON(LIVE.cadastre.replace(/\/8$/,'')+'/5/query',{where:'1=1',geometry:JSON.stringify(parcel.geometry),geometryType:'esriGeometryPolygon',inSR:4283,spatialRel:'esriSpatialRelIntersects',distance:30,units:'esriSRUnit_Meter',outFields:'*',returnGeometry:true,outSR:4283,resultRecordCount:100},3500,{signal}).then(j=>G.frontage(parcel.geometry,SitePivotResponse.requireComplete(j,SitePivotResponse.roadOptions(100)).map(f=>({id:String(attrs(f).cadid||attrs(f).objectid||''),name:attrs(f).roadnamelabel||'',geometry:{...f.geometry,spatialReference:f.geometry?.spatialReference||j.spatialReference||{wkid:4283}}})),a.streetname||'')).catch(()=>({status:'review',reason:'Road geometry unavailable.'})):Promise.resolve(null);
      const tPlan=performance.now(),planning=await pullPlanning(point,parcel,p.lga,signal);if(!parcel.geometry){markParcelUnresolved(p,'Complete address-associated parcel boundaries need confirmation.');planning.failedKeys=uniq([...planning.failedKeys,'parcel']);planning.failedSources=planning.failedKeys;planning.sourceChecks.parcel={status:'unavailable',checkedAt:null};planning.liveErrors.push('Parcel geometry unavailable; point-based planning checks require confirmation.');}const frontage=await roadPromise;if(frontage){p.frontageEvidence=frontage;p.frontage=frontage.primary?.metres||null}p.sourceMeta.timing.planningMs=Math.round(performance.now()-tPlan);
      if(seq!==app.enrichSeq)return;planning.loading=false;p.planning=planning;p.sourceMeta.timing.totalMs=(p.sourceMeta.timing.identityMs||0)+(p.sourceMeta.timing.parcelMs||0)+(p.sourceMeta.timing.planningMs||0);
    }
