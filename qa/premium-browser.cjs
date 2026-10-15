@@ -84,7 +84,7 @@ const near=(actual,expected,label)=>assert.ok(Number.isFinite(actual)&&Math.abs(
     await select('scopeLiftChoice','custom');const custom=await reveal('scopeLiftCount');assert.equal(await custom.getAttribute('min'),'0');assert.equal(await custom.getAttribute('max'),'10');
     await select('scopeLiftChoice','0');await select('scopePoolConfiguration','none');await capture('actual-inputs');
     await page.locator('#runAssessment').click();let baseline=check(await snapshot());
-    near(baseline.assessment.feas.contributions.amount,baseline.assessment.cost.mid*.01,'provisional 1% contribution');
+    const contribution=baseline.assessment.feas.contributions,evidence=contribution.evidence;assert.equal(evidence.framework,'section-7.12');assert.equal(evidence.statutoryCostBase.verified,false);assert.ok(evidence.missingInputs.length>0);assert.ok(evidence.statutoryCostBase.includedComponents.includes('demolition'));assert.notEqual(evidence.statutoryCostBase.amount,baseline.assessment.cost.mid,'Statutory working base is distinct from delivery');near(contribution.amount,Math.round(evidence.statutoryCostBase.amount*evidence.rate*100)/100,'Published plan rate on provisional statutory cost');
     assert.equal(baseline.assessment.feas.contributions.status,'provisional');
     const baselineText=await visibleSummary();assert.match(baselineText,/provisional/i);assert.match(baselineText,/debt/i);await capture('assessment');
     await page.locator('#editScope').click();await fill('feas-landDebt',0);await select('feas-financeMode','debt');

@@ -105,10 +105,17 @@ jobs:
           SITEPIVOT_URL: https://boggedcake.github.io/ProjectIQ/
       - name: Verify deployed financial UI using labelled regression fixtures across desktop and mobile
         if: ${{ !cancelled() && steps.runtime.outcome == 'success' && steps.deployed.outcome == 'success' }}
-        run: |
-          node qa/ownership-browser.cjs
-          node qa/master-financial-browser.cjs
-          node qa/premium-browser.cjs
+        run: node qa/ownership-browser.cjs
+        env:
+          SITEPIVOT_URL: https://boggedcake.github.io/ProjectIQ/
+      - name: Verify deployed household mortgage and changeover calculations
+        if: ${{ !cancelled() && steps.runtime.outcome == 'success' && steps.deployed.outcome == 'success' }}
+        run: node qa/master-financial-browser.cjs
+        env:
+          SITEPIVOT_URL: https://boggedcake.github.io/ProjectIQ/
+      - name: Verify deployed premium development and cost components
+        if: ${{ !cancelled() && steps.runtime.outcome == 'success' && steps.deployed.outcome == 'success' }}
+        run: node qa/premium-browser.cjs
         env:
           SITEPIVOT_URL: https://boggedcake.github.io/ProjectIQ/
       - name: Verify real 19 Waratah buyer price-only journey, reports and saved recheck

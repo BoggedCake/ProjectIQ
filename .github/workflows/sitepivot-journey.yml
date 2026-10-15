@@ -36,10 +36,13 @@ jobs:
       - run: node qa/residential-browser.cjs
         if: ${{ !cancelled() && steps.browsers.outcome == 'success' }}
       - name: Verify financial inputs, repayments and reports with labelled regression fixtures
-        run: |
-          node qa/ownership-browser.cjs
-          node qa/master-financial-browser.cjs
-          node qa/premium-browser.cjs
+        run: node qa/ownership-browser.cjs
+        if: ${{ !cancelled() && steps.browsers.outcome == 'success' }}
+      - name: Verify household mortgage and changeover calculations
+        run: node qa/master-financial-browser.cjs
+        if: ${{ !cancelled() && steps.browsers.outcome == 'success' }}
+      - name: Verify premium development and cost components
+        run: node qa/premium-browser.cjs
         if: ${{ !cancelled() && steps.browsers.outcome == 'success' }}
       - name: Verify real 19 Waratah buyer journey in Chromium and WebKit desktop and mobile
         run: node qa/waratah-browser.cjs
