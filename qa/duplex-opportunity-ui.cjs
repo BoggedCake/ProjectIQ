@@ -1,7 +1,7 @@
 'use strict';
 const fs=require('node:fs'),assert=require('node:assert/strict'),{JSDOM,VirtualConsole}=require('jsdom');
 const errors=[],vc=new VirtualConsole();vc.on('jsdomError',e=>errors.push(e.message));
-const dom=new JSDOM(fs.readFileSync('index.html','utf8'),{url:'http://localhost/?fixtures=1',runScripts:'dangerously',virtualConsole:vc,beforeParse(w){w.scrollTo=()=>{};for(const m of ['property-evidence','zoning-evidence','fsr-evidence','planning-intelligence','commercial-engine','comparison-engine','conversation','voice'])if(fs.existsSync(m+'.js'))w.eval(fs.readFileSync(m+'.js','utf8'));}});
+const dom=new JSDOM(fs.readFileSync('index.html','utf8'),{url:'http://localhost/?fixtures=1',runScripts:'dangerously',virtualConsole:vc,beforeParse(w){w.scrollTo=()=>{};for(const m of ['address-evidence','response-evidence','property-evidence','zoning-evidence','fsr-evidence','planning-intelligence','commercial-engine','comparison-engine','conversation','voice'])if(fs.existsSync(m+'.js'))w.eval(fs.readFileSync(m+'.js','utf8'));}});
 const a=dom.window.SitePivot,doc=dom.window.document;
 (async()=>{
  const p=JSON.parse(JSON.stringify(a.FIXTURES[0]));Object.assign(p,{id:'synthetic-manly-da',address:'Synthetic Manly R1 control parcel',area:596.8,frontage:13});p.planning={...p.planning,zone:'R1 General Residential',instrument:'Manly Local Environmental Plan 2013',splitZone:false,fsr:'0.5:1',height:'8.5 m',minLot:'300 m²'};

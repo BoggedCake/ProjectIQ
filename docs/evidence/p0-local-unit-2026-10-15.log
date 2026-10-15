@@ -1,0 +1,386 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> test:unit
+> npm run test:p0 && npm run test:reliability && npm run test:premium && npm run test:financial && npm run test:duplex && npm run test:residential && npm run test:property && node qa/changeover-regression.cjs && node qa/conversation-founder-regression.cjs && node qa/conversation-founder-api-regression.cjs && node qa/voice-complete-regression.cjs && node qa/cost-recalibration.cjs && node qa/founder-ui-regression.cjs && node qa/conversation-provider-regression.cjs && node qa/conversation-regression.cjs && node qa/conversation-ui-regression.cjs && node qa/voice-adapter-regression.cjs && node qa/voice-reliability-regression.cjs && node qa/voice-ui-regression.cjs && node qa/voice-server-regression.cjs && node qa/commercial-regression.cjs && node qa/intake-component-regression.cjs && node qa/intake-ui-regression.cjs && node qa/provider-contract-regression.cjs && node qa/consumer-commercial.cjs && node qa/model-regression.cjs && node qa/async-regression.cjs
+
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> test:p0
+> node qa/p0-address-regression.cjs && node qa/p0-completeness-regression.cjs && node qa/p0-zoning-regression.cjs && node --test qa/p0-review-regression.cjs && node --test qa/p0-trigger-regression.cjs
+
+PASS P0 address production browser/server veto, suffix/range/unit/alias, ambiguity and completeness
+PASS P0 complete parcel/council contract, unknown metadata, duplicate records and preserved multi-lot review
+PASS complete
+PASS overlap-hides-gap
+PASS exact-duplicates-retain-review
+PASS split
+PASS parcel-hole
+PASS adjacent
+PASS minor-sliver
+PASS invalid-zone
+PASS invalid-parcel
+PASS missing-crs
+PASS unsupported-zone-crs
+PASS mismatched-crs
+PASS multipart
+PASS concave
+PASS different-instrument-overlap
+PASS cross-zone-overlap-hides-gap
+PASS self-touching-zone
+PASS crossing-feature-boundaries
+PASS minor-uncovered-gap
+PASS zone-hole-gap
+PASS incomplete-query
+PASS supported-crs 4283
+PASS supported-crs 4326
+PASS supported-crs 7844
+PASS supported-crs 3857
+PASS supported-crs 102100
+PASS supported-crs 102113
+PASS supported-crs 7856
+PASS malformed-records
+PASS malformed-records
+PASS malformed-records
+P0 zoning: 0 failed
+✔ R1 malformed council coverage cannot establish mapped clear (9.257014ms)
+✔ R1 each layer schema and duplicate collection fails closed consistently with cache admission (18.999279ms)
+✔ R2 common Australian canonical street types and explicit abbreviations preserve exact identity (3.432155ms)
+✔ R3 malformed scalar identifiers cannot establish address or complete collections (2.092837ms)
+✔ malformed offsets cannot establish completed empty evidence (0.467746ms)
+✔ malformed zone code or instrument never establishes completed controlling evidence (0.999562ms)
+✔ selected comma-delimited address preserves locality before city hierarchy (1.32744ms)
+✔ authoritative building-name prefix requires stable ID and structured number confirmation (1.909453ms)
+✔ structured source disambiguates street names and localities containing street type words (1.73816ms)
+✔ invalid or unsupported council parcel geometry cannot establish mapped clear (0.923491ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 431.348982
+✔ trigger layers reject unusable semantics before filtering and successful cache admission (426.841259ms)
+✔ trigger semantic contract preserves consumed string/numeric labels (0.38142ms)
+✔ malformed positive trigger response does not poison retry cache (33.603756ms)
+✔ malformed zone metadata cannot enter successful cache; later valid retry recovers (7.496802ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 755.3684
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> test:reliability
+> node qa/client-reliability.cjs && node qa/server-reliability.cjs
+
+PASS transient HTTP failure recovers within the same operation
+PASS empty suggestions do not poison recovery cache
+PASS changing properties cancels transport and rejects a late identity
+PASS confirmed home survives failed planning and exposes retry
+PASS failed refresh cannot revive feasibility from previously successful controls
+PASS malformed identify is unavailable, never cached verified absence
+PASS cached spatial evidence retains source time and cannot be mutated by consumers
+PASS hard deadline settles hanging request without JSONP or endless retries
+PASS identified property with unresolved parcel is a partial result with retry
+PASS large zoning geometry may use the existing server six-second budget
+PASS empty identity candidates do not prevent retry recovery
+PASS wrong spatial query shape cannot poison a subsequent retry
+PASS cancelled identity does not produce JSONP fallback
+PASS server transient recovery, permanent errors, cancellation, hard deadlines and bounded truthful cache
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> test:premium
+> node qa/premium-feasibility-regression.cjs && node qa/premium-ui.cjs
+
+PASS premium range conditions a fixed specification rather than stacking quality endpoints
+PASS all configurations default to no lifts and support explicit custom quantities and allocations
+PASS habitable basement adds finish scope once and keeps area unchanged
+PASS area rate overrides and scope allowances have independent effects
+PASS pool quantities components and GST reconcile once
+PASS user all-in rates preserve optional inclusion overrides
+PASS provisional supported feasibility labels unknown debt and explicit contribution assumptions
+PASS provisional mode never invents contributions or bypasses unsupported planning
+PASS cash mode has no construction debt or finance establishment and preserves confirmed zero debt
+PASS cost scenarios recalculate finance and every ledger rather than editing profit alone
+PASS unknown debt with verified contributions withholds nonprovisional feasibility
+PASS invalid debt strings cannot become provisional zero debt
+PASS pool heating toggles preserve the editable allowance while excluding deselected scope
+PASS premium conditional profitability, visible lifts/pools, cash/debt state, report parity and planning gates
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> test:financial
+> node qa/financial-voice-regression.cjs && node qa/residential-mortgage-regression.cjs && node qa/financial-replacement-regression.cjs && node qa/master-financial-ui.cjs
+
+PASS 16 financial/address speech regressions with unchanged display/transcript text
+Residential mortgage and development reconciliation regression passed
+PASS ready-home replacement costs, excluded optional allowances, preserved inputs and unknown funding guards
+PASS master screenshot financial journey, financial input retention and objective reset
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> test:duplex
+> node qa/duplex-pathway-regression.cjs && node qa/residential-zoning-regression.cjs && node qa/duplex-conditional-finance.cjs && node qa/duplex-opportunity-ui.cjs
+
+PASS Manly R1 permission and no LEP parent minimum support conditional DA costing
+PASS mapped 300 subdivision minimum never becomes parent duplex minimum
+PASS CDC width failure leaves permitted DA opportunity
+PASS CDC area and surveyed width give potential only with unchecked exclusions/design
+PASS mapped frontage never satisfies building-line survey width
+PASS secondary road parking requires independent evidence before 12m CDC rule
+PASS unchecked exclusions and unknown design cannot support full CDC
+PASS CDC proof cannot override a failing surveyed width
+PASS complete property proposal dated CDC proof and passing width can support full readiness
+PASS verified prohibition overrides permission and preliminary costing
+PASS different or multiple zones cannot inherit Manly R1 permission
+PASS ordinary area failure stays blocked until verified LMR pathway
+PASS indicative proximity never grants smaller LMR area standard
+PASS small measured R1 boundary overlap supports conditional DA only
+PASS CDC completed flags without surveyed building-line width remain unverified
+PASS stacked duplex uses a separate CDC division without importing3B8
+PASS conflicting or compound instruments cannot inherit consent permission
+PASS CDC reply distinguishes mapped area pass from unverified width
+violet single-zone [ { code: 'R1', area: 596.8016069436674, fraction: 1 } ]
+nield boundary-review [
+  {
+    code: 'RE1',
+    area: 0.0001724780771337323,
+    fraction: 2.8465743860030366e-7
+  },
+  { code: 'R1', area: 605.9143540553894, fraction: 0.9999997153425615 }
+]
+eileen single-zone [ { code: 'R2', area: 471.36651552770036, fraction: 1 } ]
+Residential zoning geometry regression passed
+PASS actual HTML browser module order resolves parcel geometry
+PASS captured parcel evidence propagates into DA opportunity and failed-standard gates
+Server real-property zoning/FSR/minimum-lot retrieval integration passed
+PASS conditional preliminary finance needs supported opportunity and explicit mode, never grants approval or ignores unknown costs
+PASS DA opportunity advances to labelled conditional costs while failed ordinary duplex remains blocked
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> test:residential
+> node qa/residential-eligibility-regression.cjs && node qa/residential-fsr-regression.cjs && node qa/residential-finance-regression.cjs && node qa/residential-comparison-regression.cjs && node qa/residential-acronym-regression.cjs && node qa/residential-ui-regression.cjs && node qa/residential-moving-only-regression.cjs
+
+PASS eligibility: standards, prohibition, supported/unresolved alternatives, provenance mismatch, gates and proposal replacement
+PASS residential FSR evidence states, official regional attribute fixtures and browser/CommonJS contract
+PASS server FSR spatial applicability, truncation, ArcGIS errors and unresolved parcel handling
+PASS residential finance, contribution gates and monthly reconciliation
+PASS residential fees, expenditure, equity and funding reconcile; unknown principal and unavailable development baseline stay unknown
+PASS all seven planning acronyms are spoken as letters, with identical browser/server text and unchanged display phrases
+PASS coherent consumer journey, neutral entry, blocked costs, relevant alternatives, explicit changeover and reset
+PASS moving-only home funding reconciles with disclosed editable optional allowances; site costs and missing principal stay unknown
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> test:property
+> node qa/property-accuracy-regression.cjs && node qa/planning-intelligence-regression.cjs && node qa/property-conversation-regression.cjs && node qa/comparison-pathway-regression.cjs && node qa/property-intelligence-ui.cjs
+
+PASS property geometry, area identity and corridor-frontage regressions
+PASS Fishbourne primary NSW address/lot/property association and road corridor fixture
+PASS Warringah ordinary duplex area standard fails without calling land use prohibited
+PASS 600 mapped subdivision size never becomes duplex minimum
+PASS LMR non-refusal standard only applies with checked walking catchment and exclusions
+PASS LMR indicative map or centre proximity cannot override local duplex standard
+PASS road frontage cannot satisfy width at building line for CDC
+PASS precommencement rules and saved applications remain review
+PASS unsupported LEP and conflicting area stay unresolved
+PASS ordinary subdivision cannot invent two dwelling rights or dual occupancy
+PASS Central Coast distinguishes attached550 from detached700
+PASS DCP never creates land-use prohibition and missing detail is explicit
+PASS planning answer does not generate council approval probability
+PASS LMR never grants an unverified R3 land use
+PASS LMR DA standards do not lower Codes LEP parent lot minimum
+PASS Warringah amendment savings do not erase Central Coast provisions
+PASS conflicted area still names the known local duplex benchmark
+PASS mapped nonresidential zoning is known even when duplex rules are unresolved
+PASS failed zoning retrieval is unavailable evidence, not a verified instrument conflict
+PASS failed zoning cannot restore previously supported pathway evidence
+PASS subdivide and build two properties does not silently choose duplex
+PASS explicit Torrens title is retained without generic duplex switch
+PASS granny flat is not dual occupancy or generic renovation
+PASS single home rebuild does not ask one or multiple again
+PASS followup does not repeat scripted duplex introduction
+PASS proposal state and property history preserved across short followups
+PASS sell question is a comparison interest not a renovation reset
+PASS negated duplex clears prior proposal when renovation selected
+PASS negated selling disables moving comparison
+PASS attached followup reassesses retained duplex
+PASS forget duplex follows the replacement kitchen and living intent
+PASS comparison costs, equity, actionable pathways and conservative voice/text parity
+PASS property-specific blocked duplex, retained followups, compare action and multi-segment voice
+PASS Revenue NSW current independent examples
+PASS contract date selects past version and unsupported years fail closed
+PASS dutiable market value and residential premium eligibility are explicit
+PASS independent changeover totals allocate costs exactly once
+PASS invalid costs and missing duty version cannot manufacture changeover
+PASS every hundred dollars or part rounds the excess up before duty
+PASS numeric allowance strings cannot concatenate money and downsizing releases capital
+PASS numeric-string sale and purchase prices match numeric arithmetic
+PASS I want to add another level.
+PASS Can I put another storey on my house?
+PASS I want to build upstairs.
+PASS I want another bedroom upstairs and a bathroom.
+PASS I want to extend the back of my house.
+PASS I want to open my kitchen and living room.
+PASS I want to renovate my bathroom.
+PASS Could a duplex work here?
+PASS Could I knock this down and build two homes?
+PASS What is my frontage?
+PASS What zoning is this property?
+PASS What might a duplex cost?
+PASS I don’t know what I should do but I need more space.
+PASS Broader development and feasibility categories stay distinct
+PASS Exact founder sentence stays add-level
+PASS Mixed upstairs rooms and downstairs work survive without generic route question
+PASS Single rebuild is distinct from two-home development
+PASS Move and compare preserve current project
+PASS Negated upstairs does not replace an internal renovation
+PASS Confirmed primary add-level preserves downstairs scope in intake
+PASS Existing upstairs bathroom renovation does not add a level
+PASS Negated extension keeps independent positive add-level clause
+PASS Master bedroom and bathroom use suite area without duplicated bathroom
+PASS Secondary work locations persist through actions and reject forged facts
+PASS Duplex total levels including basement map to calibrated built forms
+PASS Unsupported above-ground-only forms need explicit review
+PASS Cost question about a built form keeps existing project configuration
+PASS clear mixed intent cannot be discarded by gateway; factual API queries preserve session
+PASS full speech normalization, Australian neural preference, sequential browser/server chunks and stale cancellation
+PASS decomposed cost arithmetic, independent configuration, exclusions, GST and invalid-input checks
+PASS founder clear duplex options, visible compact changeover, unsupported date and mixed work cost
+PASS configured interpretation resolves ambiguity and cannot manufacture property evidence
+PASS A exact renovation and structural scope
+PASS B duplex plus planning question
+PASS C duplex question records project without approving
+PASS D compare out or up without arbitrary choice
+PASS E renovation budget
+PASS F height query preserves project
+PASS G duplex blockers are questions too
+PASS invalid actions cannot mutate evidence or scope
+PASS partial follow-up preserves established scope
+PASS more-room clarification resolves answer in context
+PASS built form, value assumptions and counts validated
+PASS assessment improvement question preserves development and results
+PASS renovation cost question does not reset structural scope
+PASS existing property questions all remain available
+PASS comparison follow-up retains objective
+PASS bathroom count edit works in renovation context
+PASS negative basement never adds one
+PASS scope removal removes only requested component
+18 conversation contracts passed
+PASS unified UI, property controls, persistent conversation, compact drawer, working values and reset
+PASS voice ranking, speech cleanup, stale TTS, fallback, cancellation, server credentials and cache
+PASS Australian female wins equivalent British; Australian neural quality preferred
+PASS activation speaks within toggle gesture; retain utterance until actual completion
+PASS empty catalogue waits for voiceschanged
+PASS never starts retries next voice then exposes actionable failure
+PASS error and stale callbacks cannot change replacement utterance
+PASS unsupported speech is diagnosed without silent failure
+PASS stop cancels delayed voices and queued utterance callbacks
+PASS speech metadata IDs and dates stripped without losing planning decimals
+PASS server http falls back to observed browser speech
+PASS server cors falls back to observed browser speech
+PASS server mime falls back to observed browser speech
+PASS server play-reject falls back to observed browser speech
+PASS server play-hang falls back to observed browser speech
+PASS server request-hang falls back to observed browser speech
+PASS late audio play after stop never revives old property
+PASS media error plus rejected play invokes browser fallback exactly once
+PASS server-only failure exposes useful retry state
+17 voice lifecycle checks passed, 0 failed
+PASS UI direct gesture, actual-start status, one retry, context diagnostics, reset and server-only failure
+PASS server credential validation, malformed/oversized requests, preflight, configured mock provider, MIME and allowed-origin contract
+PASS 440 m² decomposed premium duplex reconciles without soft cost double counting
+PASS all rate cards have explicit low midpoint high inclusions exclusions version
+PASS basement configuration changes delivered cost without hard-site multiplier
+PASS custom development configuration needs an explicit QS rate
+PASS feasibility sums product sales and excludes already included costs
+PASS monthly progressive finance charges staged draws and explicit settlement timing
+PASS residual land value satisfies target profit and land interest
+PASS missing sold value cannot manufacture feasibility from construction cost
+PASS financial outputs remain withheld without eligibility or contribution evidence
+PASS room selections use versioned area assumptions and explicit override
+PASS move capital only calculates when opted in with known values
+PASS money parser supports blank zero grouped whole dollars
+PASS frontage is derived from road-facing cadastral edges and corner roads
+PASS multiple parcels remove shared internal edges from frontage
+PASS no road evidence leaves frontage unresolved
+PASS invalid finance assumptions stay review instead of producing impossible profit
+PASS exact founder renovation maps kitchen living bathroom internal layout, never extension
+PASS voice transcript shares exact normalized text interpretation
+PASS negated duplex does not become development
+PASS extension extracts counts budget quality and move interest
+PASS upstairs and basement development remain separate concepts
+PASS ambiguous language asks only one clarification
+PASS ordinary renovation sums selected components without area rates
+PASS renovation quality complexity region adjust every component
+PASS whole home includes shared finishes without duplicated selected floor/paint
+PASS unknown renovation scope does not manufacture costs
+PASS delivered composition is explanation, exact sum unchanged
+PASS explicit combined works keep extension and secondary renovation
+PASS alternative development and extension asks a clarification
+PASS negative footprint constraint does not confidently select extension
+PASS renovating an existing apartment is not development
+PASS bathroom and kitchen room finishes do not add unrelated flooring
+PASS unsupported pool work remains unpriced in the project
+PASS exact founder typed intake confirms editable renovation and relevant components
+PASS renovation form does not ask additions and includes relevant follow-up
+PASS extension omits full upper level and upstairs omits garage
+PASS working market values are visible and supported feasibility separates per unit total
+PASS main result has no unknown concatenation or backend cost key
+PASS renovating an existing bathroom never adds a bathroom to completed property profile
+PASS consumer source information hides developer adapter diagnostics
+PASS changing renovation direction does not create unrequested additions
+PASS unknown project price cannot produce a positive value verdict
+PASS unconfigured market provider preserves Needs Review and empty live evidence
+PASS market failure never falls back to fixture values
+PASS market contract keeps asking listings separate and validates sold provenance
+PASS unconfigured intent provider does not pretend to understand free speech
+PASS unconfigured provider interprets clear renovation locally
+PASS structured intent validates and preserves rooms budget basement move and uncertainty
+PASS malformed intent cannot choose a pathway
+PASS intent rejects invalid optional room counts and boolean fields
+PASS council failure stays unavailable instead of not affected
+PASS council mapped flood and acid results are preserved
+PASS clear council result requires coverage and full parcel geometry
+PASS unregistered LGA explicitly requires council review
+PASS AI cannot discard explicitly requested unpriced renovation work
+PASS Passport puts intent above secondary manual pathways
+PASS ordinary scope omits move purchase field until selected
+PASS homeowner extension estimates area from rooms and allows advanced override
+PASS consumer budget is whole dollars stored as a number
+PASS supported development cost uses decomposed current duplex model
+PASS consumer assessment presents five sections with detail secondary
+PASS council clear cannot suppress a mapped state flood trigger
+PASS derived frontage has indicative identity provenance
+PASS provider labels render as text rather than executable markup
+PASS report retains five simple sections and collapses technical detail
+PASS page metadata stays in the head without leaking escape text into the UI
+PASS startup completes and property confirmation advances
+PASS all existing evidence and calculation invariants pass
+PASS feasibility chat uses the computed dollar margin and percentage
+PASS spoken and consumer summaries preserve unknown and failed flood evidence
+PASS missing planning controls display uncertainty instead of not mapped
+PASS identity does not label missing dwelling data as verified
+PASS speech removes evidence labels, ISO dates and source metadata
+PASS negative hazard results do not create bushfire or flood consultant recommendations
+PASS report keeps technical policies behind progressive disclosure
+PASS address-point planning retains controls while flagging parcel verification
+PASS starting voice invalidates older pending conversational answer
+PASS synchronous recognition abort cannot submit old transcript to new property
+PASS retry after a recognition error cannot submit the previous transcript
+PASS late intent cannot override a manual pathway
+PASS start over ignores a pending identity response
+PASS late speech events cannot enter the next property conversation
+PASS browser unit lookup matches official street fields and trailing Unit syntax
+PASS server unit lookup agrees with the browser identity contract
+PASS browser narrows dense address responses to the requested unit
+PASS server narrows dense address responses to the requested unit
+PASS late planning preserves dwelling draft
+PASS late planning preserves assessment consistency
+PASS late planning preserves resolved sold-market evidence
+PASS provider failures survive the real normalized planning contract
+PASS failed parcel lookup does not discard successful planning checks
+PASS API outage leaves consumer controls unknown rather than not mapped
+PASS very late government JSONP cannot call a deleted callback
+ASYNC_SUITE_COMPLETED

@@ -1,7 +1,7 @@
 'use strict';
 const fs=require('node:fs'),assert=require('node:assert/strict'),{JSDOM,VirtualConsole}=require('jsdom');
 const errors=[],vc=new VirtualConsole();vc.on('jsdomError',e=>errors.push(e.message));
-const d=new JSDOM(fs.readFileSync('index.html','utf8'),{url:'http://localhost/?fixtures=1',runScripts:'dangerously',virtualConsole:vc,beforeParse(w){w.scrollTo=()=>{};for(const m of ['property-evidence','zoning-evidence','fsr-evidence','planning-intelligence','commercial-engine','comparison-engine','conversation','voice'])w.eval(fs.readFileSync(m+'.js','utf8'));}});
+const d=new JSDOM(fs.readFileSync('index.html','utf8'),{url:'http://localhost/?fixtures=1',runScripts:'dangerously',virtualConsole:vc,beforeParse(w){w.scrollTo=()=>{};for(const m of ['address-evidence','response-evidence','property-evidence','zoning-evidence','fsr-evidence','planning-intelligence','commercial-engine','comparison-engine','conversation','voice'])w.eval(fs.readFileSync(m+'.js','utf8'));}});
 try{
 const a=d.window.SitePivot,doc=d.window.document,p=JSON.parse(JSON.stringify(a.FIXTURES[0]));p.id='synthetic-seaview-financial';p.address='Synthetic Seaview financial regression fixture';p.area=672.4;p.planning={...p.planning,zone:'R1',instrument:'Manly Local Environmental Plan 2013',splitZone:false,fsr:'0.5:1',height:'8.5 m'};
 a.selectProperty(p);a.app.goal='develop';a.app.devType='duplex';Object.assign(a.app.scope,{gfa:600,basementArea:200,dwellings:2,configuration:'two-storey-basement',quality:'premium',landValue:5350000,salePerDwelling:7000000});a.show('scope');

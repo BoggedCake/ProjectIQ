@@ -1,7 +1,7 @@
 'use strict';
 const {JSDOM,VirtualConsole}=require('jsdom'),fs=require('node:fs'),assert=require('node:assert/strict');
 const errors=[],vc=new VirtualConsole();vc.on('jsdomError',e=>errors.push(e.message));
-const d=new JSDOM(fs.readFileSync('index.html','utf8'),{url:'http://localhost/?fixtures=1',runScripts:'dangerously',virtualConsole:vc,beforeParse(w){w.scrollTo=()=>{};for(const m of ['property-evidence','zoning-evidence','fsr-evidence','planning-intelligence','commercial-engine','comparison-engine','conversation','voice'])w.eval(fs.readFileSync(m+'.js','utf8'))}});
+const d=new JSDOM(fs.readFileSync('index.html','utf8'),{url:'http://localhost/?fixtures=1',runScripts:'dangerously',virtualConsole:vc,beforeParse(w){w.scrollTo=()=>{};for(const m of ['address-evidence','response-evidence','property-evidence','zoning-evidence','fsr-evidence','planning-intelligence','commercial-engine','comparison-engine','conversation','voice'])w.eval(fs.readFileSync(m+'.js','utf8'))}});
 try{
 const a=d.window.SitePivot,doc=d.window.document;a.selectProperty(a.FIXTURES[0]);a.app.goal='storey';Object.assign(a.app.scope,{rooms:{bedroom:2,bathroom:2,living:1},area:85,moveEnabled:true,moveSale:2700000,targetPurchase:3300000,moveLoanBalance:1900000,moveContractDate:'2026-10-10',replacementType:'home'});
 a.show('scope');let r=a.computeAssessment().comparison;assert.equal(r.replacementExpenditure,3472287,'Existing-home optional works must not suppress known purchase expenditure');assert.equal(r.replacementFunding,2752287);assert.equal(r.transactionCosts,252287);assert.equal(r.availableEquity,720000);

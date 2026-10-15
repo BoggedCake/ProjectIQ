@@ -1,7 +1,7 @@
 'use strict';
 const assert=require('node:assert/strict'),fs=require('node:fs'),{JSDOM,VirtualConsole}=require('jsdom');
 const html=fs.readFileSync('index.html','utf8'),windows=[];let failures=0;
-function dom(fetch){const d=new JSDOM(html.replace('window.SitePivot={','window.__requestQA={arcJSON,identifyPoint,spatialLayer};window.SitePivot={'),{url:'https://boggedcake.github.io/ProjectIQ/',runScripts:'dangerously',virtualConsole:new VirtualConsole(),beforeParse(w){for(const f of ['property-evidence','zoning-evidence','fsr-evidence','planning-intelligence','commercial-engine','comparison-engine','conversation','voice'])w.eval(fs.readFileSync(f+'.js','utf8'));w.fetch=fetch;w.AbortController=AbortController;w.scrollTo=()=>{}}});windows.push(d);return d.window}
+function dom(fetch){const d=new JSDOM(html.replace('window.SitePivot={','window.__requestQA={arcJSON,identifyPoint,spatialLayer};window.SitePivot={'),{url:'https://boggedcake.github.io/ProjectIQ/',runScripts:'dangerously',virtualConsole:new VirtualConsole(),beforeParse(w){for(const f of ['address-evidence','response-evidence','property-evidence','zoning-evidence','fsr-evidence','planning-intelligence','commercial-engine','comparison-engine','conversation','voice'])w.eval(fs.readFileSync(f+'.js','utf8'));w.fetch=fetch;w.AbortController=AbortController;w.scrollTo=()=>{}}});windows.push(d);return d.window}
 const reply=(j,status=200)=>({ok:status===200,status,json:async()=>j});
 async function test(name,fn){try{await fn();console.log('PASS '+name)}catch(e){failures++;console.error('FAIL '+name+': '+e.message)}finally{windows.splice(0).forEach(d=>d.window.close())}}
 (async()=>{

@@ -1,6 +1,8 @@
 'use strict';
 
 const {councilEvidence}=require('./council');
+const A=require('../../address-evidence');
+const R=require('../../response-evidence');
 const {frontage,parcelEvidence}=require('../../property-evidence');
 const FSR=require('../../fsr-evidence');
 const Z=require('../../zoning-evidence');
@@ -46,11 +48,13 @@ function retryable(e){
   if(e?.kind==='http'||e?.kind==='arcgis')return retryStatuses.has(e.status);
   return networkCodes.has(e?.code)||networkCodes.has(e?.cause?.code)||(e?.name==='TypeError'&&/^fetch failed$/i.test(e.message));
 }
-function cachePut(key,value,fetchedAt,url){
+function cachePut(key,value,fetchedAt,url,params={}){
   // Only complete successful responses can support a repeated evidence check.
   if(!value||typeof value!=='object'||value.exceededTransferLimit||!['features','results','suggestions','candidates'].some(k=>Array.isArray(value[k])))return;
   const endpoint=String(url).split('?')[0].split('/').pop(),field={query:'features',identify:'results',suggest:'suggestions',findAddressCandidates:'candidates'}[endpoint];
   if(field&&!Array.isArray(value[field]))return;
+  if(field==='results'&&!R.validate(value,{field:'results',completeCollection:true}).complete)return;
+  if(field==='features'&&!R.validate(value,R.queryOptions(url,params.resultRecordCount)).complete)return;
   // Empty address matches are not authoritative negative spatial evidence.
   if((field==='suggestions'||field==='candidates')&&!value[field].length)return;
   const bytes=Buffer.byteLength(key)+Buffer.byteLength(JSON.stringify(value));
@@ -87,7 +91,7 @@ async function fetchJson(url,{method='GET',params={},timeout=6000,signal:callerS
       const data=await Promise.race([request,stopped]),fetchedAt=now();
       if(fetchedAt>=deadline)throw upstreamError('Upstream request timed out','timeout');
       if(data&&typeof data==='object')sourceChecks.set(data,{checkedAt:new Date(fetchedAt).toISOString(),cached:false});
-      cachePut(key,data,fetchedAt,url);return data;
+      cachePut(key,data,fetchedAt,url,params);return data;
     }catch(e){lastError=e;if(!retryable(e)||attempt===attempts-1)throw e}
     finally{clearTimeout(timer);callerSignal?.removeEventListener('abort',cancel)}
     const delay=Math.floor(100*2**attempt*(.75+Math.random()*.5));
@@ -103,26 +107,8 @@ async function fetchJson(url,{method='GET',params={},timeout=6000,signal:callerS
 async function arcQuery(base,id,params={},timeout=6000){
   return fetchJson(base+'/'+id+'/query',{method:'POST',params,timeout});
 }
-function parsedAddress(s){
-  const raw=String(s||'').toUpperCase().replace(/,|\bAUSTRALIA\b|\bAUS\b/g,' ').replace(/NEW SOUTH WALES/g,'NSW').replace(/\s+/g,' ').trim();
-  const unit=raw.match(/^\s*(?:UNIT\s*)?([A-Z0-9-]+)\s*\/\s*(\d+[A-Z]?)/);
-  const namedUnit=raw.match(/\b(?:UNIT|APARTMENT|APT|FLAT)\s+([A-Z0-9-]+)\b/);
-  const streetRaw=namedUnit?raw.replace(namedUnit[0],''):raw;
-  const number=unit?unit[2]:(streetRaw.match(/\b(\d+[A-Z]?)\b/)||[])[1]||'';
-  const postcode=(raw.match(/\b(2\d{3})\b/)||[])[1]||'';
-  return {raw,unit:unit?unit[1]:namedUnit?.[1]||'',number,postcode};
-}
-function addressScore(a,input){
-  const q=parsedAddress(input),cand=String(a.formattedaddress||'').toUpperCase(),p=parsedAddress(cand);
-  if(a.streetnumber1!=null&&String(a.streetnumber1).trim())p.number=String(a.streetnumber1).toUpperCase().trim();
-  let score=0;
-  if(q.number&&p.number===q.number)score+=100;else if(q.number&&p.number!==q.number)score-=200;
-  if(q.postcode&&p.postcode===q.postcode)score+=30;else if(q.postcode&&p.postcode&&q.postcode!==p.postcode)score-=50;
-  const tokens=q.raw.split(' ').filter(x=>x.length>2&&!['NSW','NEW','SOUTH','WALES'].includes(x));
-  for(const t of tokens)if(cand.includes(t))score+=4;
-  if(q.unit){if(String(a.complexunitidentifier||p.unit||'').toUpperCase()===q.unit)score+=80;else score-=200}
-  return score;
-}
+function parsedAddress(s){return A.parse(s)}
+function addressScore(a,input){return A.match(input,a).matched?100:-Infinity}
 async function suggestAddress(q){
   const t=now();
   const j=await fetchJson(UPSTREAM.geocoder+'/suggest',{params:{text:q,countryCode:'AUS',category:'Address',maxSuggestions:10,returnCollections:'false'},timeout:2800});
@@ -137,18 +123,16 @@ async function geocode(item){
   return hit;
 }
 async function authoritativeAddress(candidate,input){
-  const q=parsedAddress(input),where=q.unit?"complexunitidentifier = '"+safe(q.unit)+"' AND streetnumber1 = '"+safe(q.number)+"'":'1=1';
+  const q=parsedAddress(input),where=q.unit?"complexunitidentifier = '"+safe(q.unit)+"' AND streetnumber1 = '"+safe(q.number.split('-')[0])+"'":'1=1';
   const j=await arcQuery(UPSTREAM.address.replace('/0',''),0,{
     where,geometry:JSON.stringify(candidate.location),geometryType:'esriGeometryPoint',inSR:4283,spatialRel:'esriSpatialRelIntersects',
     distance:100,units:'esriSRUnit_Meter',
     outFields:'objectid,formattedaddress,localityname,lganame,cadastralidentifier,pl_ptlotsecpn,streetnumber1,streetnumber2,streetname,streettype,streettypedescription,postcode,complexunitidentifier,complexlevelnumber,ss_addresspointtype,ss_classsubtype,ss_principaladdresstype,ss_addressstringoid,ss_principaladdresssiteoid,ss_propid,ss_sppropid,lot_cadid,ap_gurasid,prop_gurasid',
     returnGeometry:'true',outSR:4283,resultRecordCount:100
   },6000);
-  const rows=(j.features||[]).filter(f=>f.geometry&&attrs(f).formattedaddress);
-  if(!rows.length)throw new Error('No authoritative NSW address point returned near the selected address');
-  const ranked=rows.map(f=>({f,score:addressScore(attrs(f),input)})).sort((a,b)=>b.score-a.score);
-  if(!ranked[0]||ranked[0].score<70)throw new Error('Authoritative NSW address match confidence was too low');
-  return ranked[0].f;
+  const rows=R.requireComplete(j,{arcgisQuery:true,limit:100,requiredFields:['formattedaddress'],geometry:g=>Number.isFinite(g?.x)&&Number.isFinite(g?.y)});
+  const identity=A.select(input,rows);if(identity.status!=='confirmed-address')throw new Error(identity.reason);
+  return {...identity.feature,identityEvidence:{status:identity.status,complete:true,sourceIds:identity.sourceIds}};
 }
 function titleFromIdentifier(a){
   const cid=String(a.cadastralidentifier||a.pl_ptlotsecpn||'').trim();
@@ -168,7 +152,7 @@ async function resolveProperty(item){
       postcode:String(a.postcode||candidate.attributes?.Postal||''),
       lga:a.lganame||null,
       point:official.geometry||candidate.location,
-      addressId:a.objectid||a.ap_gurasid||null,
+      addressId:a.ap_gurasid??a.objectid??null,identityEvidence:official.identityEvidence,addressComponents:{streetnumber1:a.streetnumber1??null,streetnumber2:a.streetnumber2??null,streetname:a.streetname??null,streettype:a.streettype??null,complexunitidentifier:a.complexunitidentifier??null},
       cadastralIdentifier:a.cadastralidentifier||a.pl_ptlotsecpn||null,
       cadid:a.lot_cadid||null,
       propertyId:a.ss_propid||null,propertyGurasid:a.prop_gurasid||null,streetName:[a.streetname,a.streettype].filter(Boolean).join(' '),
@@ -186,36 +170,36 @@ async function parcelFor(property){
   let fs=[];
   if(property.cadid!==null&&property.cadid!==undefined&&String(property.cadid)!==''&&Number.isFinite(+property.cadid)){
     const j=await arcQuery(UPSTREAM.cadastre.replace('/8',''),8,{where:'cadid = '+Number(property.cadid),outFields:fields,returnGeometry:'true',outSR:4283,resultRecordCount:20},5000);
-    fs=(j.features||[]).filter(f=>f.geometry?.rings).map(f=>({...f,geometry:{...f.geometry,spatialReference:f.geometry.spatialReference||j.spatialReference||{wkid:4283}}}));
+    fs=R.requireComplete(j,{arcgisQuery:true,limit:20,idField:'cadid',requiredFields:['lotnumber','planlabel'],geometry:g=>Array.isArray(g?.rings)&&g.rings.length>0}).map(f=>({...f,geometry:{...f.geometry,spatialReference:f.geometry.spatialReference||j.spatialReference||{wkid:4283}}}));
   }
   if(!fs.length&&property.cadastralIdentifier){
     const cid=safe(property.cadastralIdentifier);
     let j=await arcQuery(UPSTREAM.cadastre.replace('/8',''),8,{where:"lotidstring = '"+cid+"'",outFields:fields,returnGeometry:'true',outSR:4283,resultRecordCount:20},5000);
-    fs=(j.features||[]).filter(f=>f.geometry?.rings).map(f=>({...f,geometry:{...f.geometry,spatialReference:f.geometry.spatialReference||j.spatialReference||{wkid:4283}}}));
+    fs=R.requireComplete(j,{arcgisQuery:true,limit:20,idField:'cadid',requiredFields:['lotnumber','planlabel'],geometry:g=>Array.isArray(g?.rings)&&g.rings.length>0}).map(f=>({...f,geometry:{...f.geometry,spatialReference:f.geometry.spatialReference||j.spatialReference||{wkid:4283}}}));
     if(!fs.length){
       const m=String(property.cadastralIdentifier).match(/^([^/]*)\/[^/]*\/(.+)$/);
       if(m){
         j=await arcQuery(UPSTREAM.cadastre.replace('/8',''),8,{where:"lotnumber = '"+safe(m[1])+"' AND planlabel = '"+safe(m[2])+"'",outFields:fields,returnGeometry:'true',outSR:4283,resultRecordCount:20},5000);
-        fs=(j.features||[]).filter(f=>f.geometry?.rings).map(f=>({...f,geometry:{...f.geometry,spatialReference:f.geometry.spatialReference||j.spatialReference||{wkid:4283}}}));
+        fs=R.requireComplete(j,{arcgisQuery:true,limit:20,idField:'cadid',requiredFields:['lotnumber','planlabel'],geometry:g=>Array.isArray(g?.rings)&&g.rings.length>0}).map(f=>({...f,geometry:{...f.geometry,spatialReference:f.geometry.spatialReference||j.spatialReference||{wkid:4283}}}));
       }
     }
   }
   if(!fs.length&&property.point){
     const j=await arcQuery(UPSTREAM.cadastre.replace('/8',''),8,{where:'1=1',geometry:property.point.x+','+property.point.y,geometryType:'esriGeometryPoint',inSR:4283,spatialRel:'esriSpatialRelIntersects',outFields:fields,returnGeometry:'true',outSR:4283,resultRecordCount:20},5000);
-    fs=(j.features||[]).filter(f=>f.geometry?.rings).map(f=>({...f,geometry:{...f.geometry,spatialReference:f.geometry.spatialReference||j.spatialReference||{wkid:4283}}}));
+    fs=R.requireComplete(j,{arcgisQuery:true,limit:20,idField:'cadid',requiredFields:['lotnumber','planlabel'],geometry:g=>Array.isArray(g?.rings)&&g.rings.length>0}).map(f=>({...f,geometry:{...f.geometry,spatialReference:f.geometry.spatialReference||j.spatialReference||{wkid:4283}}}));
   }
   return parcelEvidence(fs,property,{spatialReference:{wkid:4283},supplementaryAreas:property.supplementaryAreas||[]});
 }
 async function spatial(base,id,geom,type,lga,fields='*',timeout=6000){
   const j=await arcQuery(base,id,{where:'1=1',geometry:JSON.stringify(geom),geometryType:type,inSR:4283,spatialRel:'esriSpatialRelIntersects',outFields:fields,returnGeometry:base===UPSTREAM.primary&&id===LAYER.zone?'true':'false',outSR:4283,resultRecordCount:50},timeout);
-  if(!Array.isArray(j.features)||j.exceededTransferLimit)throw new Error('Official spatial query did not return a complete feature set');
+  R.requireComplete(j,R.queryOptions(base+'/'+id+'/query',50));
   // Primary EPI polygons already establish spatial applicability. Legacy council
   // names must not remove an intersecting LEP control following amalgamations.
   let fs=j.features.map(f=>f.geometry?{...f,geometry:{...f.geometry,spatialReference:f.geometry.spatialReference||j.spatialReference||{wkid:4283}}}:f);if(lga&&base!==UPSTREAM.primary)fs=fs.filter(f=>sameLga(attrs(f),lga));sourceChecks.set(fs,sourceChecks.get(j));return fs;
 }
 async function identify(base,point,timeout=6000){
   const d=.015,x=+point.x,y=+point.y;
-  return fetchJson(base+'/identify',{method:'POST',params:{geometry:JSON.stringify(point),geometryType:'esriGeometryPoint',sr:4283,layers:'all',tolerance:1,mapExtent:[x-d,y-d,x+d,y+d].join(','),imageDisplay:'900,700,96',returnGeometry:'false'},timeout}).then(j=>{if(!Array.isArray(j?.results)||j.exceededTransferLimit)throw new Error('Official identify query did not return a complete result set');const results=j.results;sourceChecks.set(results,sourceChecks.get(j));return results});
+  return fetchJson(base+'/identify',{method:'POST',params:{geometry:JSON.stringify(point),geometryType:'esriGeometryPoint',sr:4283,layers:'all',tolerance:1,mapExtent:[x-d,y-d,x+d,y+d].join(','),imageDisplay:'900,700,96',returnGeometry:'false'},timeout}).then(j=>{const results=R.requireComplete(j,{field:'results',completeCollection:true,label:'Official identify'});sourceChecks.set(results,sourceChecks.get(j));return results});
 }
 function rowLabels(fs,keys=['LAY_CLASS','SYM_CODE','H_NAME','H_ID']){return unique((fs||[]).map(f=>first(attrs(f),keys)))}
 function formatZone(fs){return unique(fs.map(f=>{const a=attrs(f);return [first(a,['SYM_CODE','ZONE','ZONE_CODE']),first(a,['LAY_CLASS','ZONE_NAME'])].filter(Boolean).join(' · ')||null})).join(' / ')||null}
@@ -256,7 +240,7 @@ async function planningFor(property){
     localIdentify:identify(UPSTREAM.local,property.point)
   };
   const councilPromise=councilEvidence(property,parcel.geometry,arcQuery);
-  const frontagePromise=parcel.geometry?arcQuery(UPSTREAM.cadastre.replace('/8',''),5,{where:'1=1',geometry:JSON.stringify(parcel.geometry),geometryType:'esriGeometryPolygon',inSR:4283,spatialRel:'esriSpatialRelIntersects',outFields:'*',returnGeometry:'true',outSR:4283,resultRecordCount:100},3500).then(j=>frontage(parcel.geometry,(j.features||[]).map(f=>({id:String(f.attributes?.roadnameoid||f.attributes?.objectid||''),name:f.attributes?.roadnamelabel||'',geometry:{...f.geometry,spatialReference:f.geometry?.spatialReference||j.spatialReference||{wkid:4283}}})),property.streetName||'')).catch(()=>({status:'review',reason:'Official road geometry unavailable.'})):Promise.resolve({status:'review',reason:'Parcel geometry unavailable.'});
+  const frontagePromise=parcel.geometry?arcQuery(UPSTREAM.cadastre.replace('/8',''),5,{where:'1=1',geometry:JSON.stringify(parcel.geometry),geometryType:'esriGeometryPolygon',inSR:4283,spatialRel:'esriSpatialRelIntersects',outFields:'*',returnGeometry:'true',outSR:4283,resultRecordCount:100},3500).then(j=>frontage(parcel.geometry,R.requireComplete(j,{arcgisQuery:true,limit:100,idField:'cadid',requiredFields:['roadnamelabel'],geometry:g=>Array.isArray(g?.rings)&&g.rings.length>0}).map(f=>({id:String(f.attributes?.roadnameoid||f.attributes?.objectid||''),name:f.attributes?.roadnamelabel||'',geometry:{...f.geometry,spatialReference:f.geometry?.spatialReference||j.spatialReference||{wkid:4283}}})),property.streetName||'')).catch(()=>({status:'review',reason:'Official road geometry unavailable.'})):Promise.resolve({status:'review',reason:'Parcel geometry unavailable.'});
   const keys=Object.keys(jobs),settled=await Promise.allSettled(Object.values(jobs)),data={},errors=parcelError?['parcel: '+parcelError]:[],failed=parcelError?['parcel']:[];
   settled.forEach((r,i)=>{const k=keys[i];if(r.status==='fulfilled')data[k]=r.value;else{data[k]=[];failed.push(k);errors.push(k+': '+(r.reason?.message||'failed'))}});
   const missing=(k,label)=>failed.includes(k)?'Source check did not complete — Needs Review':label;
@@ -270,7 +254,7 @@ async function planningFor(property){
   const [council,frontageEvidence]=await Promise.all([councilPromise,frontagePromise]);
   const fsrEvidence=FSR.resolve({records:data.fsr,error:failed.includes('fsr')?'Official FSR retrieval failed':null,parcelResolved:!!parcel.geometry,queryComplete:!failed.includes('fsr'),instrument:localInstrument,source:UPSTREAM.primary+'/1',checkedAt:sourceChecks.get(data.fsr)?.checkedAt||null});
   return {
-    parcel:{frontage:frontageEvidence,lot:parcel.lot,dp:parcel.dp,area:parcel.area,parcels:parcel.parcels,geometryResolved:!!parcel.geometry,identityEvidence:parcel.identityEvidence||null,areaEvidence:parcel.areaEvidence||null,status:parcel.status||'review'},
+    parcel:{associations:(parcel.features||[]).map(f=>({cadid:f.attributes?.cadid??null,lot:f.attributes?.lotnumber??null,dp:f.attributes?.planlabel??null,cadastralIdentifier:f.attributes?.lotidstring??null})),frontage:frontageEvidence,lot:parcel.lot,dp:parcel.dp,area:parcel.area,parcels:parcel.parcels,geometryResolved:!!parcel.geometry,identityEvidence:parcel.identityEvidence||null,areaEvidence:parcel.areaEvidence||null,status:parcel.status||'review'},
     planning:{
       controls:Object.fromEntries(['zone','lot','height','fsr','heritage','application'].map(k=>[k,(data[k]||[]).map(f=>attrs(f))])),
       controlSources:{zone:UPSTREAM.primary+'/2',lot:UPSTREAM.primary+'/4',height:UPSTREAM.primary+'/5',fsr:UPSTREAM.primary+'/1',heritage:UPSTREAM.primary+'/0',application:UPSTREAM.primary+'/6'},

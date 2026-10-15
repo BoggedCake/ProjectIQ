@@ -1,0 +1,8 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> test:security
+> node qa/migration-security.cjs && node qa/api-origin-regression.cjs && python3 qa/secret-scanner-regression.py
+
+Migration guard and packaging regressions passed
+API destination regression passed: query cannot redirect property data
+Secret scanner regression passed: historical detection and redaction

@@ -1,0 +1,9 @@
+{
+  "scope": "Deterministic synthetic planar comparison; 120 convex polygon sets with cross-feature boundary events, duplicates, parcel holes and two zone groups. Not live NSW survey validation.",
+  "GEOS": "3.14.1",
+  "shapely": "2.2.0",
+  "cases": 120,
+  "max_absolute_error_sqm": 5.684341886080802e-14,
+  "area_tolerance_sqm": 1e-06,
+  "pass": true
+}
