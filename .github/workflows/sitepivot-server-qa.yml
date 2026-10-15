@@ -8,6 +8,7 @@ on:
       - 'index.html'
       - 'address-evidence.js'
       - 'response-evidence.js'
+      - 'contributions-evidence.js'
       - 'commercial-engine.js'
       - 'property-evidence.js'
       - 'planning-intelligence.js'

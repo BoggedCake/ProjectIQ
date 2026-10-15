@@ -4,8 +4,8 @@
 const validId=id=>typeof id==='number'?Number.isFinite(id):typeof id==='string'&&id.trim()!=='';
 // Official NBC layer metadata read 2026-10-15; exact source field names/types.
 // Layer 126 uses LGA_NAME; flood uses Risk; acid layers use CLASS/ASS_CLASS/Tag.
-const councilSchemas={126:{LGA_NAME:'string'},158:{Risk:'string'},159:{Risk:'string'},160:{Risk:'string'},161:{Risk:'string'},16:{CLASS:'integer'},45:{ASS_CLASS:'string'},92:{Tag:'string'},100:{Tag:'string'}};
-function councilOptions(id,limit=100){return{arcgisQuery:true,limit,nonemptyAttributes:true,idField:'OBJECTID',attributeTypes:councilSchemas[id]||{},record: a=>!!councilSchemas[id]&&Number.isSafeInteger(a.OBJECTID)&&a.OBJECTID>=0&&(Number(id)!==126||a.LGA_NAME.trim().toUpperCase()==='NORTHERN BEACHES')};}
+const councilSchemas={126:{LGA_NAME:'string'},13:{Description:'string'},14:{H_ID:'string',H_NAME:'string',H_TYPE:'string'},43:{H_ID:'string',H_NAME:'string',H_TYPE:'string'},44:{H_ID:'string',H_NAME:'string',H_TYPE:'string'},91:{H_ID:'string',H_NAME:'string',H_TYPE:'string'},103:{Tag:'string'},158:{Risk:'string'},159:{Risk:'string'},160:{Risk:'string'},161:{Risk:'string'},16:{CLASS:'integer'},45:{ASS_CLASS:'string'},92:{Tag:'string'},100:{Tag:'string'}};
+function councilOptions(id,limit=100){return{arcgisQuery:true,limit,nonemptyAttributes:true,idField:'OBJECTID',attributeTypes:councilSchemas[id]||{},record: a=>!!councilSchemas[id]&&Number.isSafeInteger(a.OBJECTID)&&a.OBJECTID>=0&&(Number(id)!==126||a.LGA_NAME.trim().toUpperCase().replace(/\s+COUNCIL$/,'')==='NORTHERN BEACHES')};}
 
 const semanticScalar=v=>validId(v)&&String(v).trim()!=='-9999';
 function semanticAttributes(a,keys){const value=keys.map(k=>a[k]).find(v=>v!==undefined&&v!==null&&v!==''&&String(v)!=='-9999'&&Number(v)!==-9999);return semanticScalar(value);}

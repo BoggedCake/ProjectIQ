@@ -7,6 +7,7 @@ on:
       - 'index.html'
       - 'address-evidence.js'
       - 'response-evidence.js'
+      - 'contributions-evidence.js'
       - 'commercial-engine.js'
       - 'property-evidence.js'
       - 'planning-intelligence.js'
@@ -48,7 +49,7 @@ jobs:
             curl -L -s -o /tmp/sitepivot-conversation.js "https://boggedcake.github.io/ProjectIQ/conversation.js?qa=${GITHUB_SHA}"
             curl -L -s -o /tmp/sitepivot-voice.js "https://boggedcake.github.io/ProjectIQ/voice.js?qa=${GITHUB_SHA}"
             modules_match=true
-            for module in address-evidence response-evidence property-evidence planning-intelligence comparison-engine fsr-evidence zoning-evidence; do
+            for module in address-evidence response-evidence property-evidence planning-intelligence contributions-evidence comparison-engine fsr-evidence zoning-evidence; do
               curl -L -s -o "/tmp/${module}.js" "https://boggedcake.github.io/ProjectIQ/${module}.js?qa=${GITHUB_SHA}"
               cmp -s "${module}.js" "/tmp/${module}.js" || modules_match=false
             done
@@ -110,6 +111,11 @@ jobs:
           node qa/premium-browser.cjs
         env:
           SITEPIVOT_URL: https://boggedcake.github.io/ProjectIQ/
+      - name: Verify real 19 Waratah buyer price-only journey, reports and saved recheck
+        if: ${{ !cancelled() && steps.runtime.outcome == 'success' && steps.deployed.outcome == 'success' }}
+        run: node qa/waratah-browser.cjs
+        env:
+          SITEPIVOT_URL: https://boggedcake.github.io/ProjectIQ/
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -121,3 +127,4 @@ jobs:
             qa-artifacts/ownership/
             qa-artifacts/financial/
             qa-artifacts/premium/
+            qa-artifacts/waratah/

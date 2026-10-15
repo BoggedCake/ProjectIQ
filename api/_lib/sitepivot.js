@@ -6,6 +6,7 @@ const R=require('../../response-evidence');
 const {frontage,parcelEvidence}=require('../../property-evidence');
 const FSR=require('../../fsr-evidence');
 const Z=require('../../zoning-evidence');
+const P=require('../../planning-intelligence');
 const UPSTREAM={
   geocoder:'https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer',
   address:'https://portal.spatial.nsw.gov.au/server/rest/services/Hosted/NSW_Address_Point_Formatted/FeatureServer/0',
@@ -193,9 +194,10 @@ async function parcelFor(property){
 async function spatial(base,id,geom,type,lga,fields='*',timeout=6000){
   const j=await arcQuery(base,id,{where:'1=1',geometry:JSON.stringify(geom),geometryType:type,inSR:4283,spatialRel:'esriSpatialRelIntersects',outFields:fields,returnGeometry:base===UPSTREAM.primary&&id===LAYER.zone?'true':'false',outSR:4283,resultRecordCount:50},timeout);
   R.requireComplete(j,R.queryOptions(base+'/'+id+'/query',50));
-  // Primary EPI polygons already establish spatial applicability. Legacy council
-  // names must not remove an intersecting LEP control following amalgamations.
-  let fs=j.features.map(f=>f.geometry?{...f,geometry:{...f.geometry,spatialReference:f.geometry.spatialReference||j.spatialReference||{wkid:4283}}}:f);if(lga&&base!==UPSTREAM.primary)fs=fs.filter(f=>sameLga(attrs(f),lga));sourceChecks.set(fs,sourceChecks.get(j));return fs;
+  // Intersecting official polygons establish spatial applicability. Legacy LGA
+  // labels (for example MANLY) must not erase a valid flood/heritage/acid
+  // feature after amalgamation into NORTHERN BEACHES.
+  let fs=j.features.map(f=>f.geometry?{...f,geometry:{...f.geometry,spatialReference:f.geometry.spatialReference||j.spatialReference||{wkid:4283}}}:f);sourceChecks.set(fs,sourceChecks.get(j));return fs;
 }
 async function identify(base,point,timeout=6000){
   const d=.015,x=+point.x,y=+point.y;
@@ -253,11 +255,11 @@ async function planningFor(property){
   ]);
   const [council,frontageEvidence]=await Promise.all([councilPromise,frontagePromise]);
   const fsrEvidence=FSR.resolve({records:data.fsr,error:failed.includes('fsr')?'Official FSR retrieval failed':null,parcelResolved:!!parcel.geometry,queryComplete:!failed.includes('fsr'),instrument:localInstrument,source:UPSTREAM.primary+'/1',checkedAt:sourceChecks.get(data.fsr)?.checkedAt||null});
-  return {
+  const result={
     parcel:{associations:(parcel.features||[]).map(f=>({cadid:f.attributes?.cadid??null,lot:f.attributes?.lotnumber??null,dp:f.attributes?.planlabel??null,cadastralIdentifier:f.attributes?.lotidstring??null})),frontage:frontageEvidence,lot:parcel.lot,dp:parcel.dp,area:parcel.area,parcels:parcel.parcels,geometryResolved:!!parcel.geometry,identityEvidence:parcel.identityEvidence||null,areaEvidence:parcel.areaEvidence||null,status:parcel.status||'review'},
     planning:{
-      controls:Object.fromEntries(['zone','lot','height','fsr','heritage','application'].map(k=>[k,(data[k]||[]).map(f=>attrs(f))])),
-      controlSources:{zone:UPSTREAM.primary+'/2',lot:UPSTREAM.primary+'/4',height:UPSTREAM.primary+'/5',fsr:UPSTREAM.primary+'/1',heritage:UPSTREAM.primary+'/0',application:UPSTREAM.primary+'/6'},
+      controls:Object.fromEntries(['zone','lot','height','fsr','heritage','flood','acid','application'].map(k=>[k,(data[k]||[]).map(f=>attrs(f))])),
+      controlSources:{zone:UPSTREAM.primary+'/2',lot:UPSTREAM.primary+'/4',height:UPSTREAM.primary+'/5',fsr:UPSTREAM.primary+'/1',heritage:UPSTREAM.primary+'/0',flood:UPSTREAM.hazard+'/1',acid:UPSTREAM.protection+'/1',application:UPSTREAM.primary+'/6'},
       councilEvidence:council,spatialScope:parcel.geometry?'parcel':'address-point',
       instrument:localInstrument,allEpiNames:epis,epiNames:epis,statePolicies,sepp:statePolicies,
       zone:failed.includes('zone')?null:['single-zone','boundary-review'].includes(zoningEvidence.state)&&zoningEvidence.primaryZone?[zoningEvidence.primaryZone.code,zoningEvidence.primaryZone.label].filter(Boolean).join(' · '):formatZone(data.zone),zoningEvidence,
@@ -288,6 +290,8 @@ async function planningFor(property){
     timingMs:now()-t,
     providers:['NSW Land Parcel Property Theme','NSW Planning Portal EPI Primary Planning Layers','NSW Planning Portal Protection/Hazard','NSW Bush Fire Prone Land','NSW Planning Portal Development Control']
   };
+  result.planning.overlayEvidence=P.overlayEvidence(result.planning);
+  return result;
 }
 
 module.exports={UPSTREAM,LAYER,suggestAddress,resolveProperty,planningFor};

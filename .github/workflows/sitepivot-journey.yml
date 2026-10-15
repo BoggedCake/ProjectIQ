@@ -41,6 +41,9 @@ jobs:
           node qa/master-financial-browser.cjs
           node qa/premium-browser.cjs
         if: ${{ !cancelled() && steps.browsers.outcome == 'success' }}
+      - name: Verify real 19 Waratah buyer journey in Chromium and WebKit desktop and mobile
+        run: node qa/waratah-browser.cjs
+        if: ${{ !cancelled() && steps.browsers.outcome == 'success' }}
       - run: node qa/property-intelligence-browser.cjs
         if: ${{ !cancelled() && steps.browsers.outcome == 'success' }}
       - run: node qa/mobile-journey.cjs
@@ -63,4 +66,5 @@ jobs:
             qa-artifacts/ownership/
             qa-artifacts/financial/
             qa-artifacts/premium/
+            qa-artifacts/waratah/
             qa-artifacts/duplex/
