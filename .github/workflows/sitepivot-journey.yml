@@ -60,6 +60,7 @@ jobs:
             qa-artifacts/founder-repair/
             qa-artifacts/property-intelligence/
             qa-artifacts/residential/
+            qa-artifacts/ownership/
             qa-artifacts/financial/
             qa-artifacts/premium/
             qa-artifacts/duplex/

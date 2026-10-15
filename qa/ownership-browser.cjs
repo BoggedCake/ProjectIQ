@@ -84,7 +84,7 @@ const notes='Synthetic QA professional finding, 15 October 2026: investigate des
     await page.reload();assert.equal(await page.locator('#addressSearch').isDisabled(),true);await(await reveal('[data-reopen-project]')).click();await page.locator('#view-passport.active').waitFor();
     const reopened=await snapshot();assert.equal(reopened.ownershipRole,role);assert.deepEqual(reopened.scope,beforeSave.scope);assert.equal(reopened.professionalFindings,notes);assert.equal(reopened.assessment,null,'Saved assessment must be recomputed');
     assert.deepEqual(reopened.property.planning,beforeSave.property.planning,'Synthetic source/provision evidence retained');assert.equal(reopened.property.lot,fixture.lot);assert.equal(reopened.property.dp,fixture.dp);
-    assert.match(await page.locator('#projectSaveStatus').innerText(),/recheck current planning evidence.*user supplied/i);
+    await reveal('#projectSaveStatus');assert.match(await page.locator('#projectSaveStatus').innerText(),/recheck current planning evidence.*user supplied/i);
     await(await reveal('#reassessProject')).click();await page.locator('#view-scope.active').waitFor();await roleInputs();assert.equal(await page.locator('#professionalFindings').inputValue(),notes);
     await page.locator('#runAssessment').click();const recalculated=check(await snapshot());near(recalculated.total,f.total,'Saved/reopened calculation');near(recalculated.profit,f.profit,'Saved/reopened profit');
     await overflow();assert.deepEqual(errors,[],'No uncaught browser errors');assert.deepEqual(consoleErrors,[],'No console errors');await capture('reopened-assessment');

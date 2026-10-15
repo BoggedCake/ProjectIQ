@@ -22,7 +22,7 @@ function assess(property={},proposal={}){
  const addSource=s=>{if(s&&!r.sources.some(x=>x.id===s.id))r.sources.push(s)};
  if(!fresh){r.gaps.push('The provision snapshot requires a date-specific refresh. Historical and future assessments cannot use the current version automatically.');return finish(r)}
  if(pl.loading){r.gaps.push('Planning sources are still loading.');return finish(r)}
- if((pl.failedKeys||[]).includes('zone')||ze?.state==='service-failure'||['failed','unavailable'].includes(pl.sourceChecks?.zone?.status)){r._sourceUnavailable=true;r.gaps.push('The zoning source is temporarily unavailable or did not complete. Retry the planning check before relying on the applicable instrument or assessing this development.');return finish(r)}
+ if((pl.failedKeys||[]).includes('zone')||ze?.state==='service-failure'||['failed','unavailable'].includes(pl.sourceChecks?.zone?.status)){r._sourceUnavailable=true;r.gaps.push(pl.savedSnapshot?'Saved planning snapshot requires a current source check before relying on the applicable instrument or assessing this development.':'The zoning source is temporarily unavailable or did not complete. Retry the planning check before relying on the applicable instrument or assessing this development.');return finish(r)}
  if(r._splitZone){r.gaps.push(instrumentConflict?'The controlling instrument conflicts with the measured primary zoning evidence; resolve the applicable LEP before costing.':'Whole-parcel zoning is split or unresolved; resolve the boundary and mapped development footprint before costing.');return finish(r)}
  if(area===null)r.gaps.push('Site area is missing, conflicted or stale; obtain the registered plan or survey.');
  if(!zone)r.gaps.push('Land zoning is unresolved.');
