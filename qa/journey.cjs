@@ -59,7 +59,7 @@ async function main(){
  await test('address search, exact selection, dwelling confirmation and disclosure',async()=>{
   const p=await browser.newPage();const errors=[];p.on('pageerror',e=>errors.push(e.message));
   await p.route('**/api/address/suggest?*',r=>r.fulfill({json:{suggestions:[{text:'57 Griffiths Street, Fairlight NSW 2094',magicKey:'test-only'}]}}));
-  await p.route('**/api/property/resolve?*',r=>r.fulfill({json:{property:{addressId:'qa-57',address:'57 GRIFFITHS ST, FAIRLIGHT NSW 2094',lga:'NORTHERN BEACHES',lot:'32',dp:'DP1729',point:{x:151.27,y:-33.79}}}}));
+  await p.route('**/api/property/resolve?*',r=>r.fulfill({json:{property:{addressId:'qa-57',identityEvidence:{status:'confirmed-address',complete:true,sourceIds:{objectid:'qa-57'}},suburb:'FAIRLIGHT',postcode:'2094',addressComponents:{streetnumber1:'57',streetname:'GRIFFITHS',streettype:'ST'},address:'57 GRIFFITHS ST, FAIRLIGHT NSW 2094',lga:'NORTHERN BEACHES',lot:'32',dp:'DP1729',point:{x:151.27,y:-33.79}}}}));
   await p.route('**/api/planning/property',r=>r.fulfill({json:{parcel:{lot:'32',dp:'DP1729',area:416.3,parcels:1},planning:{zone:'R1 General Residential',height:'8.5 m',fsr:'0.6:1',minLot:'250 m²',instrument:'Manly Local Environmental Plan 2013',dcpPlans:['Manly Development Control Plan 2013'],flood:'Needs Review',failedKeys:['flood'],liveErrors:['flood unavailable']}}}));
   await p.goto(base);await p.locator('#addressSearch').fill('57 Griffiths Street Fairlight');
   await p.locator('#searchResults [role="option"]').waitFor({timeout:3000});

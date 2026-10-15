@@ -42,28 +42,29 @@ PASS malformed-records
 PASS malformed-records
 PASS malformed-records
 P0 zoning: 0 failed
-✔ R1 malformed council coverage cannot establish mapped clear (9.257014ms)
-✔ R1 each layer schema and duplicate collection fails closed consistently with cache admission (18.999279ms)
-✔ R2 common Australian canonical street types and explicit abbreviations preserve exact identity (3.432155ms)
-✔ R3 malformed scalar identifiers cannot establish address or complete collections (2.092837ms)
-✔ malformed offsets cannot establish completed empty evidence (0.467746ms)
-✔ malformed zone code or instrument never establishes completed controlling evidence (0.999562ms)
-✔ selected comma-delimited address preserves locality before city hierarchy (1.32744ms)
-✔ authoritative building-name prefix requires stable ID and structured number confirmation (1.909453ms)
-✔ structured source disambiguates street names and localities containing street type words (1.73816ms)
-✔ invalid or unsupported council parcel geometry cannot establish mapped clear (0.923491ms)
-ℹ tests 10
+✔ R1 malformed council coverage cannot establish mapped clear (11.625615ms)
+✔ R1 each layer schema and duplicate collection fails closed consistently with cache admission (15.148208ms)
+✔ R2 common Australian canonical street types and explicit abbreviations preserve exact identity (4.477755ms)
+✔ R3 malformed scalar identifiers cannot establish address or complete collections (1.179418ms)
+✔ malformed offsets cannot establish completed empty evidence (0.867658ms)
+✔ malformed zone code or instrument never establishes completed controlling evidence (1.426964ms)
+✔ selected comma-delimited address preserves locality before city hierarchy (1.232616ms)
+✔ authoritative building-name prefix requires stable ID and structured number confirmation (0.945686ms)
+✔ structured source disambiguates street names and localities containing street type words (2.1812ms)
+✔ invalid or unsupported council parcel geometry cannot establish mapped clear (1.448459ms)
+✔ live ArcGIS trailing country segment preserves locality hierarchy without relaxing identity (1.022308ms)
+ℹ tests 11
 ℹ suites 0
-ℹ pass 10
+ℹ pass 11
 ℹ fail 0
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 431.348982
-✔ trigger layers reject unusable semantics before filtering and successful cache admission (426.841259ms)
-✔ trigger semantic contract preserves consumed string/numeric labels (0.38142ms)
-✔ malformed positive trigger response does not poison retry cache (33.603756ms)
-✔ malformed zone metadata cannot enter successful cache; later valid retry recovers (7.496802ms)
+ℹ duration_ms 234.554565
+✔ trigger layers reject unusable semantics before filtering and successful cache admission (350.642871ms)
+✔ trigger semantic contract preserves consumed string/numeric labels (0.545289ms)
+✔ malformed positive trigger response does not poison retry cache (33.742218ms)
+✔ malformed zone metadata cannot enter successful cache; later valid retry recovers (8.372874ms)
 ℹ tests 4
 ℹ suites 0
 ℹ pass 4
@@ -71,7 +72,7 @@ P0 zoning: 0 failed
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 755.3684
+ℹ duration_ms 590.535959
 npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
 
 > test:reliability
@@ -196,6 +197,10 @@ PASS conflicted area still names the known local duplex benchmark
 PASS mapped nonresidential zoning is known even when duplex rules are unresolved
 PASS failed zoning retrieval is unavailable evidence, not a verified instrument conflict
 PASS failed zoning cannot restore previously supported pathway evidence
+PASS missing measured primary instrument is unresolved rather than a confirmed conflict
+PASS two present contradictory instruments still require conflict review
+PASS missing primary instrument cannot enter conditional Manly boundary costing
+PASS missing primary instrument cannot enter single-zone Manly costing
 PASS subdivide and build two properties does not silently choose duplex
 PASS explicit Torrens title is retained without generic duplex switch
 PASS granny flat is not dual occupancy or generic renovation

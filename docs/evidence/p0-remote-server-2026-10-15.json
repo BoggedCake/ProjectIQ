@@ -1,0 +1,282 @@
+{
+  "commit": "ed83973ed1865c563978ff30d00090bb4994c5ce",
+  "workflow": "https://github.com/BoggedCake/ProjectIQ/actions/runs/38669245359",
+  "started": "2026-10-15T02:06:39.286Z",
+  "identity": [
+    {
+      "q": "12 Fishbourne Road Allambie Heights NSW 2100",
+      "pass": true,
+      "address": "12 FISHBOURNE RD, ALLAMBIE HEIGHTS NSW 2100",
+      "lga": "NORTHERN BEACHES",
+      "lot": "119",
+      "dp": "DP12764",
+      "suggestionMs": 590,
+      "resolveMs": 4781
+    },
+    {
+      "q": "57 Griffiths Street Fairlight NSW 2094",
+      "pass": true,
+      "address": "57 GRIFFITHS ST, FAIRLIGHT NSW 2094",
+      "lga": "NORTHERN BEACHES",
+      "lot": "32",
+      "dp": "DP1729",
+      "suggestionMs": 202,
+      "resolveMs": 1021
+    },
+    {
+      "q": "1 Waratah Street Balgowlah NSW 2093",
+      "pass": true,
+      "address": "1 WARATAH ST, BALGOWLAH NSW 2093",
+      "lga": "NORTHERN BEACHES",
+      "lot": "54",
+      "dp": "DP9860",
+      "suggestionMs": 48,
+      "resolveMs": 475
+    },
+    {
+      "q": "9 Waratah Street Balgowlah NSW 2093",
+      "pass": true,
+      "address": "9 WARATAH ST, BALGOWLAH NSW 2093",
+      "lga": "NORTHERN BEACHES",
+      "lot": "50",
+      "dp": "DP9860",
+      "suggestionMs": 48,
+      "resolveMs": 1028
+    },
+    {
+      "q": "84/2-8 Dixon Street Sydney NSW 2000",
+      "pass": true,
+      "address": "84/2-8 DIXON ST, SYDNEY NSW 2000",
+      "lga": "SYDNEY",
+      "lot": "52",
+      "dp": "SP68567",
+      "suggestionMs": 57,
+      "resolveMs": 657
+    },
+    {
+      "q": "290 King Street Newcastle NSW 2300",
+      "pass": true,
+      "address": "TOWN HALL 290 KING ST, NEWCASTLE NSW 2300",
+      "lga": "NEWCASTLE",
+      "lot": "4",
+      "dp": "DP1250295",
+      "suggestionMs": 44,
+      "resolveMs": 1026
+    },
+    {
+      "q": "41 Burelli Street Wollongong NSW 2500",
+      "pass": true,
+      "address": "COUNCIL CHAMBERS 41 BURELLI ST, WOLLONGONG NSW 2500",
+      "lga": "WOLLONGONG",
+      "lot": "401",
+      "dp": "DP715513",
+      "suggestionMs": 45,
+      "resolveMs": 282
+    },
+    {
+      "q": "49 Mann Street Gosford NSW 2250",
+      "pass": false,
+      "error": "No authoritative address identity matches the distinguishing components."
+    },
+    {
+      "q": "135 Byng Street Orange NSW 2800",
+      "pass": true,
+      "address": "CIVIC CENTRE 135 BYNG ST, ORANGE NSW 2800",
+      "lga": "ORANGE",
+      "lot": "100",
+      "dp": "DP1072260",
+      "suggestionMs": 45,
+      "resolveMs": 859
+    },
+    {
+      "q": "243 Baylis Street Wagga Wagga NSW 2650",
+      "pass": true,
+      "address": "243 BAYLIS ST, WAGGA WAGGA NSW 2650",
+      "lga": "WAGGA WAGGA",
+      "lot": "333",
+      "dp": "DP1009142",
+      "suggestionMs": 44,
+      "resolveMs": 287
+    },
+    {
+      "q": "3 Armstrong Crescent Dubbo NSW 2830",
+      "pass": true,
+      "address": "3 ARMSTRONG CR, DUBBO NSW 2830",
+      "lga": "DUBBO REGIONAL",
+      "lot": "211",
+      "dp": "DP251858",
+      "suggestionMs": 43,
+      "resolveMs": 1022
+    },
+    {
+      "q": "2 Civic Place Katoomba NSW 2780",
+      "pass": false,
+      "error": "No authoritative address identity matches the distinguishing components."
+    }
+  ],
+  "planning": [
+    {
+      "q": "12 Fishbourne Road Allambie Heights NSW 2100",
+      "pass": true,
+      "contractPass": true,
+      "semanticPass": true,
+      "zone": "R2 · Low Density Residential",
+      "instrument": "Warringah Local Environmental Plan 2011",
+      "failedKeys": [
+        "riparian",
+        "biodiversity",
+        "wetlands",
+        "sensitive",
+        "flood",
+        "landslide",
+        "dcp",
+        "contribution",
+        "localProvision",
+        "apu",
+        "keySites",
+        "urbanRelease",
+        "sepp",
+        "localIdentify"
+      ],
+      "errors": [
+        "riparian: Upstream request timed out",
+        "biodiversity: Upstream request timed out",
+        "wetlands: Upstream request timed out",
+        "sensitive: Upstream request timed out",
+        "flood: Upstream request timed out",
+        "landslide: Upstream request timed out",
+        "dcp: Upstream request timed out",
+        "contribution: Upstream request timed out",
+        "localProvision: Upstream request timed out",
+        "apu: Upstream request timed out",
+        "keySites: Upstream request timed out",
+        "urbanRelease: Upstream request timed out",
+        "sepp: Upstream request timed out",
+        "localIdentify: Upstream request timed out"
+      ]
+    },
+    {
+      "q": "49 Mann Street Gosford NSW 2250",
+      "pass": false,
+      "error": "identity prerequisite failed"
+    },
+    {
+      "q": "84/2-8 Dixon Street Sydney NSW 2000",
+      "pass": true,
+      "contractPass": true,
+      "semanticPass": true,
+      "zone": "SP5 · Metropolitan Centre",
+      "instrument": "Sydney Local Environmental Plan 2012",
+      "failedKeys": [
+        "parcel",
+        "application",
+        "acid",
+        "riparian",
+        "biodiversity",
+        "wetlands",
+        "sensitive",
+        "flood",
+        "landslide",
+        "bushfire",
+        "dcp",
+        "contribution",
+        "localProvision",
+        "apu",
+        "keySites",
+        "urbanRelease",
+        "sepp",
+        "localIdentify"
+      ],
+      "errors": [
+        "parcel: Upstream request timed out",
+        "application: Upstream request timed out",
+        "acid: Upstream request timed out",
+        "riparian: Upstream request timed out",
+        "biodiversity: Upstream request timed out",
+        "wetlands: Upstream request timed out",
+        "sensitive: Upstream request timed out",
+        "flood: Upstream request timed out",
+        "landslide: Upstream request timed out",
+        "bushfire: Upstream request timed out",
+        "dcp: Upstream request timed out",
+        "contribution: Upstream request timed out",
+        "localProvision: Upstream request timed out",
+        "apu: Upstream request timed out",
+        "keySites: Upstream request timed out",
+        "urbanRelease: Upstream request timed out",
+        "sepp: Upstream request timed out",
+        "localIdentify: Upstream request timed out"
+      ]
+    },
+    {
+      "q": "2 Civic Place Katoomba NSW 2780",
+      "pass": false,
+      "error": "identity prerequisite failed"
+    },
+    {
+      "q": "135 Byng Street Orange NSW 2800",
+      "pass": true,
+      "contractPass": true,
+      "semanticPass": true,
+      "zone": "MU1 · Mixed Use",
+      "instrument": "Orange Local Environmental Plan 2011",
+      "failedKeys": [
+        "sepp"
+      ],
+      "errors": [
+        "sepp: Upstream request timed out"
+      ]
+    },
+    {
+      "q": "57 Griffiths Street Fairlight NSW 2094",
+      "pass": true,
+      "contractPass": true,
+      "semanticPass": true,
+      "zone": "R1 · General Residential",
+      "instrument": "Manly Local Environmental Plan 2013",
+      "failedKeys": [
+        "sepp"
+      ],
+      "errors": [
+        "sepp: Upstream request timed out"
+      ]
+    },
+    {
+      "q": "290 King Street Newcastle NSW 2300",
+      "pass": true,
+      "contractPass": true,
+      "semanticPass": true,
+      "zone": "MU1 · Mixed Use / E2 · Commercial Centre / RE1 · Public Recreation",
+      "instrument": "Newcastle Local Environmental Plan 2012 / State Environmental Planning Policy (Resilience and Hazards) 2021 / State Environmental Planning Policy (Biodiversity and Conservation) 2021 / State Environmental Planning Policy (Exempt and Complying Development Codes) 2008 / State Environmental Planning Policy (Precincts—Central River City) 2021 / State Environmental Planning Policy (Planning Systems) 2021 / State Environmental Planning Policy (Transport and Infrastructure) 2021 / State Environmental Planning Policy (Housing) 2021 / State Environmental Planning Policy (Sustainable Buildings) 2022 / State Environmental Planning Policy (Industry and Employment) 2021 / State Environmental Planning Policy (Primary Production) 2021 / State Environmental Planning Policy (Resources and Energy) 2021",
+      "failedKeys": [
+        "sepp"
+      ],
+      "errors": [
+        "sepp: Upstream request timed out"
+      ]
+    },
+    {
+      "q": "41 Burelli Street Wollongong NSW 2500",
+      "pass": true,
+      "contractPass": true,
+      "semanticPass": true,
+      "zone": "E2 · Commercial Centre / MU1 · Mixed Use / SP2 · Infrastructure",
+      "instrument": "Wollongong Local Environmental Plan 2009 / State Environmental Planning Policy (Resilience and Hazards) 2021 / State Environmental Planning Policy (Biodiversity and Conservation) 2021 / State Environmental Planning Policy (Exempt and Complying Development Codes) 2008 / State Environmental Planning Policy (Planning Systems) 2021 / State Environmental Planning Policy (Transport and Infrastructure) 2021 / State Environmental Planning Policy (Housing) 2021 / State Environmental Planning Policy (Sustainable Buildings) 2022 / State Environmental Planning Policy (Industry and Employment) 2021 / State Environmental Planning Policy (Primary Production) 2021 / State Environmental Planning Policy (Resources and Energy) 2021",
+      "failedKeys": [
+        "sepp"
+      ],
+      "errors": [
+        "sepp: Upstream request timed out"
+      ]
+    }
+  ],
+  "performance": {
+    "maxSuggestionMs": 590,
+    "medianSuggestionMs": 45,
+    "p95SuggestionMs": 590
+  },
+  "apiContractPass": true,
+  "exactNumberRegression": true,
+  "failureContractPass": false,
+  "pass": false
+}
