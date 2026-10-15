@@ -105,6 +105,7 @@ jobs:
       - name: Verify deployed financial UI using labelled regression fixtures across desktop and mobile
         if: ${{ !cancelled() && steps.runtime.outcome == 'success' && steps.deployed.outcome == 'success' }}
         run: |
+          node qa/ownership-browser.cjs
           node qa/master-financial-browser.cjs
           node qa/premium-browser.cjs
         env:
@@ -117,5 +118,6 @@ jobs:
             qa-artifacts/p0/
             qa-artifacts/residential/
             qa-artifacts/duplex/
+            qa-artifacts/ownership/
             qa-artifacts/financial/
             qa-artifacts/premium/

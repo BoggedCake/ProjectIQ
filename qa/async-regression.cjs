@@ -15,7 +15,7 @@ const suiteTimeout=setTimeout(()=>{console.error('FAIL async suite did not finis
  await test('late intent cannot override a manual pathway',async()=>{let release;const w=dom(()=>new Promise(r=>release=r)).window,a=w.SitePivot;a.selectProperty(a.FIXTURES[0]);a.show('passport');w.document.getElementById('assistantInput').value='Something nicer somehow';const pending=a.interpretIntent();await until(()=>release);a.chooseGoal('extend');release(response({status:'confirmation',profile:{goal:'develop',quality:'premium',basementPreference:'none',rooms:{},compareMove:false}}));await pending;assert.equal(a.app.goal,'extend');assert.equal(a.app.intent,null)});
  await test('start over ignores a pending identity response',async()=>{
   let release;const w=dom(async url=>String(url).includes('/suggest')?response({suggestions:[{text:'57 Griffiths Street Fairlight NSW 2094'}]}):new Promise(r=>release=r));
-  const d=w.window.document;d.getElementById('addressSearch').value='57 Griffiths Street Fairlight';d.getElementById('addressContinue').click();await until(()=>release);
+  const d=w.window.document;d.querySelector('[data-ownership="owner"]').click();d.getElementById('addressSearch').value='57 Griffiths Street Fairlight';d.getElementById('addressContinue').click();await until(()=>release);
   d.getElementById('restartBtn').click();release(response({property:{addressId:57,address:'57 Griffiths Street Fairlight NSW 2094',lga:'NORTHERN BEACHES',point:{x:151.27,y:-33.79}}}));
   await tick();await tick();assert.equal(w.window.SitePivot.app.view,'landing');assert.equal(w.window.SitePivot.app.property,null);w.window.close();
  });

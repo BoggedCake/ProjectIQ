@@ -1,4 +1,5 @@
 'use strict';
+const chooseOwner=require('./choose-owner.cjs');
 // Actual-property regression: never inject fixture evidence or intercept planning responses.
 // Run against existing Pages with SITEPIVOT_URL=https://boggedcake.github.io/ProjectIQ/.
 // Without SITEPIVOT_URL, the optional founder server exercises the same real public lookup.
@@ -28,7 +29,7 @@ const near=(actual,expected,label)=>assert.ok(Number.isFinite(actual)&&Math.abs(
    async function resolveProperty(){
     for(let attempt=1;attempt<=3;attempt++){
      try{
-      await page.goto(url.href);await page.locator('#addressSearch').fill(address);
+      await page.goto(url.href);await chooseOwner(page);await page.locator('#addressSearch').fill(address);
       const result=page.locator('[data-live-index]').filter({hasText:/31.*SEAVIEW.*BALGOWLAH/i}).first();await result.click();
       await page.locator('#view-property.active').waitFor();await page.locator('#confirmProperty').click();await page.locator('#saveDwellingProfile').waitFor();
       for(const[id,n]of [['confirmBeds',3],['confirmBaths',2],['confirmCars',1]])await fill(id,n);

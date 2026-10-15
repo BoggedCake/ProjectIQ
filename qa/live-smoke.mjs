@@ -1,3 +1,4 @@
+import chooseOwner from './choose-owner.cjs';
 import { chromium } from 'playwright';
 import {failedRequest, liveContext, waitForIdentity, waitForPlanning} from './live-readiness.mjs';
 
@@ -14,7 +15,7 @@ page.on('requestfailed',r=>requestFailures.push(failedRequest(r)));
 const result={url:URL,address,started:new Date().toISOString()};
 try{
   const navStart=Date.now();
-  await page.goto(URL,{waitUntil:'domcontentloaded',timeout:30000});
+  await page.goto(URL,{waitUntil:'domcontentloaded',timeout:30000});await chooseOwner(page);
   result.navigationMs=Date.now()-navStart;
   await page.waitForSelector('#addressSearch',{timeout:10000});
   result.fixtureToolsHidden=await page.locator('#fixtureTools').evaluate(el=>el.classList.contains('hidden'));
@@ -201,7 +202,7 @@ try{
 
   const mobile=await browser.newPage({viewport:{width:390,height:844}});
   try{
-    await mobile.goto(URL+'&mobile=1',{waitUntil:'domcontentloaded',timeout:30000});
+    await mobile.goto(URL+'&mobile=1',{waitUntil:'domcontentloaded',timeout:30000});await chooseOwner(mobile);
     await mobile.waitForSelector('#addressSearch',{timeout:10000});
     result.mobile={
       width:await mobile.evaluate(()=>innerWidth),

@@ -1,4 +1,5 @@
 'use strict';
+const chooseOwner=require('./choose-owner.cjs');
 // Synthetic provider payloads exercise the real browser UI; live-source suites
 // remain separate and must not treat these cases as NSW factual verification.
 const {chromium,webkit}=require('playwright'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
@@ -23,7 +24,7 @@ const results=[];
      else j={features:[],exceededTransferLimit:false};
      return route.fulfill({contentType:cb?'application/javascript':'application/json',body:cb?cb+'('+JSON.stringify(j)+');':JSON.stringify(j)});
     });
-    await page.goto(base,{waitUntil:'domcontentloaded'});await page.locator('#addressSearch').fill('12 Example Street Manly');await page.locator('[data-live-index]').first().click();
+    await page.goto(base,{waitUntil:'domcontentloaded'});await chooseOwner(page);await page.locator('#addressSearch').fill('12 Example Street Manly');await page.locator('[data-live-index]').first().click();
     await page.waitForFunction(()=>['verified','unavailable'].includes(SitePivot.app.dataState.identity?.status),{},{timeout:10000});
     const state=await page.evaluate(()=>({identity:SitePivot.app.dataState.identity.status,address:SitePivot.app.property?.address||null,view:SitePivot.app.view}));
     assert.equal(state.identity,accepted?'verified':'unavailable');if(accepted){assert.equal(state.address,feature.attributes.formattedaddress);assert.equal(await page.locator('#confirmProperty').isVisible(),true)}else{assert.equal(state.address,null);assert.equal(state.view,'landing');assert.match(await page.locator('#searchResults').innerText(),/retry|try again|address|identity|truncat|ambiguous/i)}

@@ -1,4 +1,5 @@
 'use strict';
+const chooseOwner=require('./choose-owner.cjs');
 const {chromium,webkit}=require('playwright'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
 const root=path.join(__dirname,'..'),out=path.join(root,'qa-artifacts/financial');fs.mkdirSync(out,{recursive:true});
 // Both local and deployed runs intentionally use labelled regression property fixtures.
@@ -28,7 +29,7 @@ const near=(actual,expected,label)=>assert.ok(Number.isFinite(actual)&&Math.abs(
    };
    const checkFacts=s=>{assert.equal(s.scope.moveSale,2700000);assert.equal(s.scope.targetPurchase,3300000);assert.equal(s.scope.moveLoanBalance,1900000);assert.equal(s.scope.moveContractDate,'2026-10-10');assert.equal(s.scope.residentialFunding.existingBalance,1900000);assert.equal(s.scope.residentialFunding.existingTermYears,25);assert.equal(s.scope.residentialFunding.termYears,30);assert.equal(s.scope.residentialFunding.monthlyRent,4000);assert.equal(s.scope.residentialFunding.accommodationMonths,12)};
    try{
-    await page.goto(url.href);
+    await page.goto(url.href);await chooseOwner(page);
     assert.match(await page.locator('#fixtureTools').innerText(),/QA test fixtures/);
     await page.locator('[data-sample="fairlight"]').click();await page.locator('#confirmProperty').click();
     assert.equal(await page.evaluate(()=>!!SitePivot.app.property.live),false);
