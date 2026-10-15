@@ -62,3 +62,9 @@ Retain exact range/unit rejection when official evidence does not establish the 
 4. Fairlight, 49 Mann Street Gosford and 84/2–8 Dixon Street Sydney: record exact address, parcel, zone, source timestamps and visible retry/unavailable state. Missing evidence must never become permission or a prohibition.
 5. Start over during a pending lookup, retry a failed lookup, and change property. Old responses must not replace the new property. Voice/text, renovation, extension, comparison and sell/buy journeys must remain available.
 
+
+### Live integration correction after first deployment
+
+The first remote run at `be9263686556` passed security, Pages byte parity and the 16 synthetic P0 Chromium/WebKit cases, but real-source QA exposed an application parsing defect. Actual ArcGIS Northern Beaches suggestions end with a sixth `, AUS` segment; the hierarchy parser rejected the otherwise exact official address. A fail-first captured Fishbourne fixture test and actual Fairlight response reproduce it. Only an explicit terminal country segment is stripped before the existing hierarchy checks. Independent review passed 11 review cases and separate wrong-component/country probes; the source matcher remains strict. Browser synthetic payloads now include this actual country suffix, and asset version tags are advanced to avoid retaining the first deployment's module.
+
+Initial remote server results: 6/12 identity and 4/8 planning cases passed. Dixon resolved in 659 ms with a 57 ms suggestion and returned SP5; parcel attributes and SEPP failures remained visible. Newcastle/Orange/Wollongong building-name matching succeeded. The country correction requires fresh remote verification. Unqualified Gosford/Katoomba range relationships remain unresolved, not successful property matches.

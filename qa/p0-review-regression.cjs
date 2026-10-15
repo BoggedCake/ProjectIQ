@@ -73,3 +73,11 @@ test('invalid or unsupported council parcel geometry cannot establish mapped cle
   const e=await councilEvidence(property,g,async(base,id)=>collection(id===126?[row(attrs(id))]:[]));for(const k of ['flood','acid']){assert.equal(e[k].state,'manual-review-required');assert.equal(e[k].spatialScope,'address-point');}
  }
 });
+
+test('live ArcGIS trailing country segment preserves locality hierarchy without relaxing identity',()=>{
+ const f=require('./fixtures/property-evidence/fishbourne-address.json').response.features[0];
+ for(const country of ['AUS','Australia']){
+  assert.equal(A.match('12 Fishbourne Road, Allambie Heights, Sydney, New South Wales, 2100, '+country,f.attributes).matched,true);
+  assert.equal(A.match('12 Fishbourne Road, Manly, Sydney, New South Wales, 2100, '+country,f.attributes).matched,false);
+ }
+});

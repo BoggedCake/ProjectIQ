@@ -3,7 +3,7 @@
 // remain separate and must not treat these cases as NSW factual verification.
 const {chromium,webkit}=require('playwright'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
 const root=path.resolve(__dirname,'..'),out=path.join(root,'qa-artifacts/p0');fs.mkdirSync(out,{recursive:true});
-const deployed=process.env.SITEPIVOT_URL,base=deployed||'https://boggedcake.github.io/ProjectIQ/',query='12 Example Street, Manly, Sydney, New South Wales, 2095';
+const deployed=process.env.SITEPIVOT_URL,base=deployed||'https://boggedcake.github.io/ProjectIQ/',query='12 Example Street, Manly, Sydney, New South Wales, 2095, AUS';
 const feature={attributes:{objectid:12,ap_gurasid:'synthetic-address-12',formattedaddress:'12 EXAMPLE ST, MANLY NSW 2095',streetnumber1:'12',streetname:'EXAMPLE',streettype:'STREET',localityname:'MANLY',postcode:'2095',lganame:'NORTHERN BEACHES',cadastralidentifier:'1//DP1'},geometry:{x:151.28,y:-33.8}};
 const cases=[['exact',{features:[feature],exceededTransferLimit:false},true],['wrong-street',{features:[{...feature,attributes:{...feature.attributes,formattedaddress:'12 OTHER RD, MANLY NSW 2095',streetname:'OTHER',streettype:'ROAD'}}],exceededTransferLimit:false},false],['truncated',{features:[feature],exceededTransferLimit:true},false],['ambiguous',{features:[feature,{...feature,attributes:{...feature.attributes,objectid:13,ap_gurasid:'synthetic-address-13'}}],exceededTransferLimit:false},false]];
 const results=[];

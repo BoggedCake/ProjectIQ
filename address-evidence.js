@@ -10,7 +10,7 @@ function parse(input,hint){
  // ArcGIS suggestions explicitly separate locality, city and state with commas.
  // Only use that hierarchy when the state/postcode suffix and both named
  // segments are unambiguous; unstructured extra words remain contradictions.
- const segments=String(input??'').split(',').map(norm);
+ const segments=String(input??'').replace(/,\s*(?:AUS|AUSTRALIA)\s*$/i,'').split(',').map(norm);
  if((segments.length===4||segments.length===5)&&/^[A-Z][A-Z '-]*$/.test(segments[1])&&/^[A-Z][A-Z '-]*$/.test(segments[2])&&/^NSW \d{4}$/.test(segments.slice(3).join(' ')))body=[segments[0],segments[1],...segments.slice(3)].join(' ');
 
  const u=body.match(/^(?:(?:UNIT|APARTMENT|APT|FLAT)\s*)?([A-Z0-9-]+)\s*\/\s*/)||body.match(/\b(?:UNIT|APARTMENT|APT|FLAT)\s+([A-Z0-9-]+)\s*\/?\s*/);
