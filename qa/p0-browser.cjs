@@ -25,9 +25,10 @@ const results=[];
      return route.fulfill({contentType:cb?'application/javascript':'application/json',body:cb?cb+'('+JSON.stringify(j)+');':JSON.stringify(j)});
     });
     await page.goto(base,{waitUntil:'domcontentloaded'});await chooseOwner(page);await page.locator('#addressSearch').fill('12 Example Street Manly');await page.locator('[data-live-index]').first().click();
-    await page.waitForFunction(()=>['verified','unavailable'].includes(SitePivot.app.dataState.identity?.status),{},{timeout:10000});
-    const state=await page.evaluate(()=>({identity:SitePivot.app.dataState.identity.status,address:SitePivot.app.property?.address||null,view:SitePivot.app.view}));
-    assert.equal(state.identity,accepted?'verified':'unavailable');if(accepted){assert.equal(state.address,feature.attributes.formattedaddress);assert.equal(await page.locator('#confirmProperty').isVisible(),true)}else{assert.equal(state.address,null);assert.equal(state.view,'landing');assert.match(await page.locator('#searchResults').innerText(),/retry|try again|address|identity|truncat|ambiguous/i)}
+    const expectedStatus=accepted?'verified':name==='truncated'?'unavailable':'needs-review';
+    await page.waitForFunction(status=>SitePivot.app.dataState.identity?.status===status,expectedStatus,{timeout:10000});
+    const state=await page.evaluate(()=>({identity:SitePivot.app.dataState.identity.status,address:SitePivot.app.property?.address||null,view:SitePivot.app.view,review:SitePivot.app.dataState.identity.review||null}));
+    assert.equal(state.identity,expectedStatus);if(name==='wrong-street')assert.equal(state.review.category,'unmatched');if(name==='ambiguous')assert.equal(state.review.category,'ambiguous');if(accepted){assert.equal(state.address,feature.attributes.formattedaddress);assert.equal(await page.locator('#confirmProperty').isVisible(),true)}else{assert.equal(state.address,null);assert.equal(state.view,'landing');assert.match(await page.locator('#searchResults').innerText(),/retry|try again|address|identity|truncat|ambiguous/i)}
     assert.deepEqual(errors,[]);assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));results.push({engine:engine.name(),width,case:name,scope:'synthetic browser provider contract',pass:true,...state});
    }catch(e){results.push({engine:engine.name(),width,case:name,pass:false,error:e.stack});await page.screenshot({path:path.join(out,engine.name()+'-'+width+'-'+name+'.png')}).catch(()=>{})}finally{await page.close()}
   }}finally{await browser.close()}

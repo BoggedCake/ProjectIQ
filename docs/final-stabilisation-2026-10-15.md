@@ -22,3 +22,5 @@ Existing $3.5m site/$2m construction/$8m completed-value owner/buyer arithmetic 
 Local full `npm test` completes unit suites and then is blocked at Playwright launch by absent browser executables. Remote CI Chromium/WebKit are the required browser evidence; no local or physical-iPhone success is claimed. Final Actions and real-source outcomes are reported in the handover after deployment.
 
 Founder site: https://boggedcake.github.io/ProjectIQ/. Save/reopen remains local to the browser/device, with saved planning requiring refresh. No cross-device storage, document upload, paid API, hosting/visibility change, commercial launch or merge to main.
+
+First CI exposed an outdated P0 browser readiness assertion: complete wrong/ambiguous identities now settle as needs-review, while incomplete/truncated transport remains unavailable. Its exact expected status and category were updated; original refusal, null property, landing, retry and overflow assertions are retained. This is a test-contract migration, not relaxed identity matching.
