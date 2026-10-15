@@ -19,7 +19,7 @@
     "test:premium": "node qa/premium-feasibility-regression.cjs && node qa/premium-ui.cjs",
     "test:reliability": "node qa/client-reliability.cjs && node qa/server-reliability.cjs",
     "test:p0": "node qa/p0-address-regression.cjs && node qa/p0-completeness-regression.cjs && node qa/p0-road-regression.cjs && node qa/p0-zoning-regression.cjs && node --test qa/p0-review-regression.cjs && node --test qa/p0-trigger-regression.cjs",
-    "test:ownership": "node qa/ownership-finance.cjs && node qa/ownership-ui.cjs && node qa/market-profile-regression.cjs && node qa/release-range-diagnostic.cjs"
+    "test:ownership": "node qa/ownership-finance.cjs && node qa/ownership-ui.cjs && node qa/market-profile-regression.cjs && node qa/release-range-diagnostic.cjs && node qa/market-readiness.cjs && node qa/market-value-readiness.cjs && node qa/identity-review-contract.cjs && node qa/qa-outcomes-regression.cjs"
   },
   "devDependencies": {
     "jsdom": "30.1.2",

@@ -1,5 +1,6 @@
 'use strict';
 const P=require('../planning-intelligence');
+const {identityOutcome}=require('./qa-outcomes.cjs');
 const {suggestAddress,resolveProperty,planningFor}=require('../api/_lib/sitepivot');
 const addressHandler=require('../api/address/suggest');
 const propertyHandler=require('../api/property/resolve');
@@ -10,7 +11,7 @@ let addressProbe=null;
 global.fetch=async(...args)=>{
  const response=await originalFetch(...args);
  if(String(args[0]).includes('NSW_Address_Point_Formatted')){
-  try{const j=await response.clone().json();addressProbe={exceededTransferLimit:j.exceededTransferLimit,rows:(j.features||[]).map(f=>({address:f.attributes.formattedaddress,number:f.attributes.streetnumber1,unit:f.attributes.complexunitidentifier}))}}catch(e){}
+  try{const j=await response.clone().json();addressProbe={exceededTransferLimit:j.exceededTransferLimit,rows:(j.features||[]).map(f=>({address:f.attributes.formattedaddress,number:f.attributes.streetnumber1,endNumber:f.attributes.streetnumber2,unit:f.attributes.complexunitidentifier,objectid:f.attributes.objectid,cadastralIdentifier:f.attributes.cadastralidentifier}))}}catch(e){}
  }
  return response;
 };
@@ -51,7 +52,7 @@ out.apiContract.planningInvalid=await routeCase(planningHandler,{method:'POST',b
 out.apiContractPass=out.apiContract.addressOptions.status===204&&out.apiContract.addressShort.status===400&&out.apiContract.propertyLong.status===400&&out.apiContract.planningInvalid.status===400;
 
 for(const q of cases){
- const t0=Date.now();
+ const t0=Date.now();addressProbe=null;
  try{
    const s=await suggestAddress(q);
    const suggestionMs=Date.now()-t0;
@@ -59,14 +60,15 @@ for(const q of cases){
    const t1=Date.now();
    const r=await resolveProperty(s.suggestions[0]);
    out.identity.push({q,pass:suggestionMs<3000&&!!r.property.lga&&!!r.property.lot&&!!r.property.dp,suggestionMs,resolveMs:Date.now()-t1,address:r.property.address,lga:r.property.lga,lot:r.property.lot,dp:r.property.dp,property:r.property});
- }catch(e){out.identity.push({q,pass:false,error:e.message,addressProbe})}
+ }catch(e){out.identity.push({q,pass:false,error:e.message,code:e.code||null,identityReview:e.identityReview||null,addressProbe})}
 }
+for(const x of out.identity)Object.assign(x,identityOutcome(x.q,x));
 const one=out.identity.find(x=>x.q.startsWith('1 Waratah')),nine=out.identity.find(x=>x.q.startsWith('9 Waratah'));
 out.exactNumberRegression=!!one&&!!nine&&one.pass&&nine.pass&&/^1\s/i.test(one.address)&&/^9\s/i.test(nine.address)&&one.address!==nine.address;
 
 for(const q of ['12 Fishbourne Road Allambie Heights NSW 2100','49 Mann Street Gosford NSW 2250','84/2-8 Dixon Street Sydney NSW 2000','2 Civic Place Katoomba NSW 2780','135 Byng Street Orange NSW 2800','57 Griffiths Street Fairlight NSW 2094','290 King Street Newcastle NSW 2300','41 Burelli Street Wollongong NSW 2500']){
  const id=out.identity.find(x=>x.q===q);
- if(!id?.pass){out.planning.push({q,pass:false,error:'identity prerequisite failed'});continue}
+ if(!id?.pass){out.planning.push({q,pass:false,status:'not-assessed',expectedReview:id?.status==='needs-review',error:'identity prerequisite not confirmed; planning was not requested'});continue}
  const t=Date.now();
  try{
    const p=await planningFor(id.property);
@@ -80,9 +82,11 @@ const suggestions=out.identity.map(x=>x.suggestionMs).filter(Number.isFinite).so
 const pct=(arr,p)=>arr.length?arr[Math.min(arr.length-1,Math.max(0,Math.ceil(arr.length*p)-1))]:null;
 out.performance={maxSuggestionMs:suggestions.at(-1)||null,medianSuggestionMs:pct(suggestions,.5),p95SuggestionMs:pct(suggestions,.95)};
 // Contract regression: failed planning sources must remain visible to the UI as Needs Review.
-out.failureContractPass=out.planning.length>0&&out.planning.every(x=>x.contractPass===true);
+out.failureContractPass=out.planning.length>0&&out.planning.filter(x=>!x.expectedReview).every(x=>x.contractPass===true);
 
-out.pass=out.identity.every(x=>x.pass)&&out.exactNumberRegression&&out.planning.every(x=>x.pass)&&out.performance.p95SuggestionMs<3000&&out.failureContractPass&&out.apiContractPass;
+out.pass=out.identity.every(x=>x.accepted)&&out.exactNumberRegression&&out.planning.every(x=>x.pass||x.expectedReview)&&out.performance.p95SuggestionMs<3000&&out.failureContractPass&&out.apiContractPass;
+out.counts={confirmedIdentity:out.identity.filter(x=>x.pass).length,needsReviewIdentity:out.identity.filter(x=>x.status==='needs-review').length,failedIdentity:out.identity.filter(x=>!x.accepted).length,confirmedPlanning:out.planning.filter(x=>x.pass).length,withheldPlanning:out.planning.filter(x=>x.expectedReview).length};
+out.releaseStatus=out.pass?(out.counts.needsReviewIdentity?'pass-with-needs-review':'pass'):'fail';
 console.log('SITEPIVOT_SERVER_QA_START');
 console.log(JSON.stringify(out,null,2));
 console.log('SITEPIVOT_SERVER_QA_END');

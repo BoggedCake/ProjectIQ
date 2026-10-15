@@ -1,0 +1,11 @@
+'use strict';
+const {JSDOM,VirtualConsole}=require('jsdom'),fs=require('node:fs'),assert=require('node:assert/strict');
+const dom=new JSDOM(fs.readFileSync('index.html','utf8'),{url:'https://boggedcake.github.io/ProjectIQ/?fixtures=1',runScripts:'dangerously',virtualConsole:new VirtualConsole(),beforeParse(w){w.scrollTo=()=>{};for(const f of ['address-evidence','response-evidence','property-evidence','zoning-evidence','fsr-evidence','planning-intelligence','commercial-engine','comparison-engine','conversation','voice'])w.eval(fs.readFileSync(f+'.js','utf8'));}});
+const a=dom.window.SitePivot,subject={type:'house',beds:3,baths:2,land:500,quality:'premium'},comp={id:'a',propertyId:'p1',source:'Synthetic',soldDate:'2026-09-01',price:3000000,type:'house',beds:3,baths:2,land:500,distance:.5,days:44,quality:'premium',eligibleForValuation:true};
+let fail=0;function test(n,f){try{f();console.log('PASS '+n)}catch(e){fail++;console.error('FAIL '+n+': '+e.message)}}
+test('synthetic independent recent sales produce a dated explained indicative range',()=>{const r=a.marketRange([comp,{...comp,id:'b',propertyId:'p2',price:3200000}],subject);assert.equal(r.status,'indicative');assert.ok(r.low<r.mid&&r.mid<r.high);assert.match(r.reason,/indicative|scenario/i);assert.equal(r.scored.length,2)});
+test('repeated property transactions are not independent comparable properties',()=>{assert.equal(a.marketRange([comp,{...comp,id:'b'}],subject).mid,null)});
+test('unverified or partial interest provider rows cannot drive valuation',()=>{assert.equal(a.marketRange([comp,{...comp,id:'b',propertyId:'p2',eligibleForValuation:false}],subject).mid,null)});
+test('old sales and unknown subject characteristics withhold current appraisal',()=>{assert.equal(a.marketRange([comp,{...comp,id:'b',propertyId:'p2',days:900}],subject).mid,null);assert.equal(a.marketRange([comp,{...comp,id:'b',propertyId:'p2'}],{type:'house',beds:null,baths:null}).mid,null)});
+test('materially dispersed prices withhold a range rather than imply a confidence interval',()=>{const r=a.marketRange([comp,{...comp,id:'b',propertyId:'p2',price:6000000}],subject);assert.equal(r.status,'review');assert.equal(r.mid,null)});
+dom.window.close();process.exitCode=fail?1:0;

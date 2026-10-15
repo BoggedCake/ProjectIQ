@@ -131,7 +131,7 @@ async function authoritativeAddress(candidate,input){
     returnGeometry:'true',outSR:4283,resultRecordCount:100
   },6000);
   const rows=R.requireComplete(j,{arcgisQuery:true,limit:100,requiredFields:['formattedaddress'],geometry:g=>Number.isFinite(g?.x)&&Number.isFinite(g?.y)});
-  const identity=A.select(input,rows);if(identity.status!=='confirmed-address')throw new Error(identity.reason);
+  const identity=A.select(input,rows);if(identity.status!=='confirmed-address'){const error=new Error(identity.reason);error.code='identity-unresolved';error.identityReview={...identity.review,complete:true,checkedAt:new Date().toISOString()};throw error;}
   return {...identity.feature,identityEvidence:{status:identity.status,complete:true,sourceIds:identity.sourceIds}};
 }
 function titleFromIdentifier(a){

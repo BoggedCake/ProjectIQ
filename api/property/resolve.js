@@ -13,6 +13,6 @@ module.exports=async(req,res)=>{
     const out=await resolveProperty({text,magicKey});
     return res.status(200).json(out);
   }catch(e){
-    return res.status(502).json({error:e?.message||'Property resolution failed'});
+    res.setHeader('Cache-Control','no-store');return res.status(e.code==='identity-unresolved'?422:502).json({error:e?.message||'Property resolution failed',code:e.code==='identity-unresolved'?e.code:'provider-unavailable',identityReview:e.identityReview||null});
   }
 };

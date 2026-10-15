@@ -1,3 +1,4 @@
+import outcomes from './qa-outcomes.cjs';
 import chooseOwner from './choose-owner.cjs';
 import { chromium } from 'playwright';
 import {failedRequest, liveContext, waitForIdentity, waitForPlanning} from './live-readiness.mjs';
@@ -188,10 +189,12 @@ try{
         const r=await window.SitePivot.resolveLiveIdentity(suggestions[0]);
         const identityMs=Math.round(performance.now()-ti);
         out.push({q,pass:suggestMs<3000&&!!r.p.lga,suggestMs,identityMs,address:r.p.address,lga:r.p.lga,lot:r.p.lot,dp:r.p.dp});
-      }catch(e){out.push({q,pass:false,error:String(e)})}
+      }catch(e){out.push({q,pass:false,error:String(e),code:e.code||null,identityReview:e.identityReview||null})}
     }
     return out;
   });
+  for(const x of result.matrix)Object.assign(x,outcomes.identityOutcome(x.q,x));
+  result.identityCounts={confirmed:result.matrix.filter(x=>x.pass).length,needsReview:result.matrix.filter(x=>x.status==='needs-review').length,failed:result.matrix.filter(x=>!x.accepted).length};
   result.exactNumberRegression=(()=>{
     const one=result.matrix.find(x=>x.q.startsWith('1 Waratah'));
     const nine=result.matrix.find(x=>x.q.startsWith('9 Waratah'));
@@ -227,4 +230,4 @@ console.log(JSON.stringify(result,null,2));
 console.log('SITEPIVOT_LIVE_QA_END');
 await browser.close();
 
-if(!result.suggestionMs || result.suggestionMs>3000 || !result.propertyResolved || !result.lga || !result.lot || !result.dp || !result.zone || !result.dcp?.length || !result.founderJourney?.pass || !result.exactNumberRegression || result.matrix?.some(x=>!x.pass) || !result.fixtureToolsHidden || result.keyboardActiveSuggestion!==1 || !result.consumerUx?.pass || result.pathways?.some(x=>!x.pass) || result.developmentChoices?.some(x=>!x.pass) || !result.assistant?.textAvailable || !result.assistant?.speechClean || (result.assistantRendered||0)<3 || !result.mobile?.pass || consoleErrors.some(e=>e.startsWith('PAGEERROR '))) process.exitCode=1;
+if(!result.suggestionMs || result.suggestionMs>3000 || !result.propertyResolved || !result.lga || !result.lot || !result.dp || !result.zone || !result.dcp?.length || !result.founderJourney?.pass || !result.exactNumberRegression || result.matrix?.some(x=>!x.accepted) || !result.fixtureToolsHidden || result.keyboardActiveSuggestion!==1 || !result.consumerUx?.pass || result.pathways?.some(x=>!x.pass) || result.developmentChoices?.some(x=>!x.pass) || !result.assistant?.textAvailable || !result.assistant?.speechClean || (result.assistantRendered||0)<3 || !result.mobile?.pass || consoleErrors.some(e=>e.startsWith('PAGEERROR '))) process.exitCode=1;

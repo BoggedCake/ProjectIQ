@@ -1,0 +1,10 @@
+'use strict';
+const assert=require('node:assert/strict'),A=require('../address-evidence');
+const features=[{attributes:{objectid:1,formattedaddress:'COUNCIL ADMINISTRATION BLDG 49-51 MANN ST, GOSFORD NSW 2250',streetnumber1:'49',streetnumber2:'51',streetname:'MANN',streettype:'ST',localityname:'GOSFORD',postcode:'2250'},geometry:{x:151,y:-33}}];
+const r=A.select('49 Mann Street Gosford NSW 2250',features);
+assert.equal(r.status,'unresolved');assert.equal(r.review?.category,'unproven-range');assert.equal(r.review?.source,'NSW Address Point');assert.equal(r.review?.candidates[0].number,'49-51');
+assert.equal(A.select('49 Other Street Gosford NSW 2250',features).review?.category,'unmatched');
+assert.equal(A.select('49 Mann Street Gosford NSW 2250',[]).review?.category,'unmatched');
+assert.equal(A.select('49-51 Mann Street Gosford NSW 2250',features).status,'confirmed-address');
+assert.equal(A.select('49-51 Mann Street Gosford NSW 2250',[...features,{...features[0],attributes:{...features[0].attributes,objectid:2}}]).review?.category,'ambiguous');
+console.log('PASS identity review distinguishes unproven ranges, ambiguity and unmatched results without granting identity');
