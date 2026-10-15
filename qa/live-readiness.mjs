@@ -12,7 +12,7 @@ export async function liveContext(page) {
     const identity = state?.identity;
     return {
       view: api?.app?.view || null,
-      identity: identity ? {status: identity.status, startedAt: identity.startedAt, deadlineMs: identity.deadlineMs} : null,
+      identity: identity ? {status: identity.status, startedAt: identity.startedAt, deadlineMs: identity.deadlineMs, review:identity.review||null} : null,
       planning: planning ? {loading: planning.loading, failedKeys: planning.failedKeys || []} : null,
       externalDataUnavailable: identity?.status === 'unavailable' || !!planning?.failedKeys?.length,
       requests: (api?.requestDiagnostics || []).map(({service, method, attempt, status, outcome, elapsedMs, checkedAt, cache}) => ({service, method, attempt, status, outcome, elapsedMs, checkedAt, cache}))
@@ -25,13 +25,13 @@ export async function waitForIdentity(page) {
   if (!Number.isFinite(deadlineMs) || deadlineMs <= 0) throw new Error('Frontend readiness contract missing identity deadline');
   try {
     // One polling interval of grace lets the app publish its deadline outcome.
-    await page.waitForFunction(() => ['verified', 'unavailable'].includes(window.SitePivot?.app?.dataState?.identity?.status), null, {timeout: deadlineMs + 1000});
+    await page.waitForFunction(() => ['verified', 'unavailable', 'needs-review'].includes(window.SitePivot?.app?.dataState?.identity?.status), null, {timeout: deadlineMs + 1000});
   } catch {
     throw new Error('Frontend identity lifecycle did not settle: ' + JSON.stringify(await liveContext(page)));
   }
   const context = await liveContext(page);
   if (context.identity.status !== 'verified') {
-    throw new Error('Live identity unavailable: ' + JSON.stringify(context));
+    throw new Error((context.identity.status==='needs-review'?'Live identity requires review: ':'Live identity unavailable: ') + JSON.stringify(context));
   }
   await page.locator('#view-property.active').waitFor();
   return context;
