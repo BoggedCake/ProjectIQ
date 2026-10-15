@@ -43,3 +43,53 @@ Follow-up also clarifies buyer improvement titles, defaults improvement exit to 
 Final persistence safety check: at the ten-project browser limit, a new save is now refused with a clear message rather than silently evicting an older project. Existing projects can still be updated. Reopening also invalidates pending address-suggestion sequence IDs in addition to cancelling transports. A fail-first storage-limit regression proves previously saved records remain unchanged. This does not establish encrypted or cross-device persistence.
 
 Privacy regression: the new acquisition form state is not copied into optional structured-intent requests. Buyer/owner context is retained, while purchase cash and acquisition borrowing remain in the local financial model; a fail-first request-body regression verifies this boundary. No lender/broker submission or new provider is activated. Existing message/context behaviour of the optional conversation service is unchanged.
+
+
+## Final application release and independently checked results
+
+Tested and deployed application commit: `6b68f938c12c78634a769fd48bbbeb3364b36c40` on `sitepivot-concept`. The following evidence is for that exact code, not a prior deployment. Documentation-only follow-up does not change application assets.
+
+| Check | Final result | Evidence |
+| --- | --- | --- |
+| Consumer regression | **PASS**; 416 explicit PASS log lines, zero FAIL lines (not a claim of 416 distinct tests) | [38696718695](https://github.com/BoggedCake/ProjectIQ/actions/runs/38696718695) |
+| Security preparation | **PASS** | [38696718762](https://github.com/BoggedCake/ProjectIQ/actions/runs/38696718762) |
+| GitHub Pages | **PASS**; deployed parity step checked all 11 application assets against commit | [38696717406](https://github.com/BoggedCake/ProjectIQ/actions/runs/38696717406), live QA wait/parity step |
+| Live QA | **FAIL overall** only at regional address smoke; every other test step passed | [38696718702](https://github.com/BoggedCake/ProjectIQ/actions/runs/38696718702) |
+| Server-data QA | **FAIL overall**: 10/12 identity and 6/8 planning; same two identity prerequisites unresolved | [38696718800](https://github.com/BoggedCake/ProjectIQ/actions/runs/38696718800) |
+| Local unit/security/package | **PASS**; unit log 327 explicit PASS lines, zero FAIL, async completion, plus Node test groups | `npm run test:unit`, `npm run test:security`, `npm run build:founder` |
+| Local browser execution | **BLOCKED** by absent executables and truncated browser installer downloads | Superseded for browser verification by successful remote Chromium/WebKit runs; not claimed locally successful |
+
+Final deployed browser results include 16 P0 identity cases; eight founder repair cases; full desktop/iPhone-sized text and voice journeys; property/planning comparisons; real residential addresses; distinct Violet/Nield/Eileen DA/CDC cases; eight Owner/Buyer cases (390/1280px, Chromium/WebKit); four financial cases; and four actual Seaview premium cases. Consumer and deployed financial runs verify native level selection, manual-area preservation, lifts/pools, profit ledgers, reports and save/reopen. Browser voice lifecycle verification uses automation, not physical iPhone audio.
+
+The remaining smoke/server failures are exact `49 Mann Street Gosford` versus authoritative `49–51` records, and `2 Civic Place Katoomba` versus `2–6`. A relationship cannot be asserted without distinguishing authoritative evidence. They remain blocked rather than being silently substituted. Dixon unit 84/2–8 identifies to lot52/SP68567, but missing required authoritative parcel attributes leave parcel-derived measurements unknown. Newcastle retained a SEPP timeout in this server run. Fairlight returned planning without errors in the final server run. One otherwise successful deployed text/voice journey recorded a failed request, so no universal claim that external services never fail is made.
+
+### Required same-project Owner/Buyer reconciliation
+
+A second deterministic check uses automatic dated ordinary NSW duty **$173,787** for a $3.5m purchase, rather than the earlier $180,000 explicit fixture override. The official 2026/27 rule was independently checked against Revenue NSW. Full machine-readable assumptions/results: [financial evidence](evidence/owner-buyer-financial-2026-10-15.json).
+
+| Same $3.5m site, $2m construction, $8m completed value | Owner, confirmed $1.5m debt | Buyer, $2.45m acquisition loan |
+| --- | ---: | ---: |
+| Purchase cash, including deposit | $0 | $1,050,000 |
+| Acquisition expenses | $0 | $182,787 |
+| Construction borrowing | $1,000,000 | $1,000,000 |
+| Finance expense | $200,000 | $246,000 |
+| Economic total development cost | $5,700,000 | $5,928,787 |
+| Estimated scenario profit | $2,300,000 | $2,071,213 |
+| Profit on revenue | 28.75% | 25.89% |
+| Return on total development cost | 40.35% | 34.93% |
+| Conservative peak new cash | $1,200,000 | $2,478,787 |
+| Return on total equity committed | 71.88% | 83.56% |
+
+Buyer deposit $350,000 is part of purchase cash, not an extra expense. Owner retained land equity $2m is separate from new cash; buyer purchase equity is $1.05m. Borrowed principal is funding, not an expense. Rates (10% development, 8% acquisition) and zero ancillary lines in this accounting fixture are explicit illustrative inputs, not lender quotes or verified exemptions. This table tests arithmetic, not bankable project viability. Owner cash-only return would include realization of pre-existing land and is therefore not comparable to buyer cash return; the UI uses the separately labelled total-equity measure for owner economic comparison. Rates/periods and acquisition costs explain the differing results while construction is identical.
+
+The RBA page was also checked: the latest available August2026 new owner-occupier P&I benchmark remained6.15%. That category is not represented as a verified development/construction loan rate. Existing dated rate/duty code required no replacement.
+
+### Actual interactive founder website check
+
+Manual browser interaction on the final code resolved Fairlight, followed the Buyer kitchen-renovation journey, edited acquisition price/cash/loan/rate, calculated repayments, saved a user-supplied professional note, reloaded, reopened and reassessed. Price $3.5m, deposit $350k, cash $1.05m and loan $2.45m remained intact. Current-property sale actions were absent for the unowned subject. Saved planning was visibly a dated snapshot requiring refresh. The view distinguished works-only expenditure from acquisition plus project expenditure. This supplements CI rather than replacing its desktop/mobile assertions.
+
+### Founder acceptance and remaining scope
+
+Open https://boggedcake.github.io/ProjectIQ/ and reload once. Choose Owner or Buyer before entering the address. Test the same property under each role, confirm acquisition versus retained-land treatment, change the building arrangement, manually enter an area and confirm it stays fixed, then save/reopen and add findings for reassessment. Use actual personal assumptions only if comfortable storing them in this browser. Saving is local to this browser/device; clearing browser data loses it, and ten existing projects are not silently evicted. Physical iPhone speech/audio and comfortable real-device interaction remain founder checks.
+
+Research adapters are integration-ready, not active property enrichment. No verified live bedrooms, internal floor area, comparable sales or current market valuation has been invented. Licensed data rights/access, resolved regional address-range relationships, missing parcel attributes, professional planning/QS/lender evidence, document upload and cross-device persistence remain dependencies. No paid service, production launch, main merge, repository visibility or hosting change occurred.
