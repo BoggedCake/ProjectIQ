@@ -103,6 +103,11 @@ jobs:
         run: node qa/duplex-browser.cjs
         env:
           SITEPIVOT_URL: https://boggedcake.github.io/ProjectIQ/
+      - name: Verify deployed FSR-guided area and conditional buyer feasibility on desktop and mobile
+        if: ${{ !cancelled() && steps.runtime.outcome == 'success' && steps.deployed.outcome == 'success' }}
+        run: node qa/fsr-buyer-browser.cjs
+        env:
+          SITEPIVOT_URL: https://boggedcake.github.io/ProjectIQ/
       - name: Verify deployed financial UI using labelled regression fixtures across desktop and mobile
         if: ${{ !cancelled() && steps.runtime.outcome == 'success' && steps.deployed.outcome == 'success' }}
         run: node qa/ownership-browser.cjs
@@ -136,6 +141,7 @@ jobs:
             qa-artifacts/p0/
             qa-artifacts/residential/
             qa-artifacts/duplex/
+            qa-artifacts/fsr-buyer/
             qa-artifacts/ownership/
             qa-artifacts/financial/
             qa-artifacts/premium/

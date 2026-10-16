@@ -157,7 +157,8 @@ function titleFromIdentifier(a){
 async function resolveProperty(item){
   const t=now();
   const candidate=await geocode(item);
-  const official=await authoritativeAddress(candidate,item.requestedText||item.text||'');
+  const identityQuery=item.requestedText?A.selectionQuery(item.requestedText,item.text):item.text||'';
+  const official=await authoritativeAddress(candidate,identityQuery);
   const a=attrs(official),title=titleFromIdentifier(a);
   return {
     property:{

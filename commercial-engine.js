@@ -22,6 +22,45 @@ const COST_CONFIGS={
  'two-storey-basement':{label:'3 levels — basement + 2 above ground',aboveGroundLevels:2,basementLevels:1,totalLevels:3,structuralRate:[0,0,0],defaultLiftsPerDwelling:0},
  'three-level-basement':{label:'4 levels — basement + 3 above ground',aboveGroundLevels:3,basementLevels:1,totalLevels:4,structuralRate:[200,350,600],defaultLiftsPerDwelling:0}
 };
+// Area is not yield: mapped statutory GFA and costed constructed quantities are separate.
+// No additional above-ground exclusions or planning concessions are inferred here.
+function developmentAreaModel(input={}){
+ const configuration=input.configuration==='custom'?input.buildingConfiguration:input.configuration||'two-storey',config=COST_CONFIGS[configuration],warnings=[];
+ const warn=(code,message)=>warnings.push({code,message});
+ const share=input.workingGfaShare??.9,evidence=input.fsrEvidence;
+ const ratio=value=>{if(typeof value==='boolean'||value==null)return null;const m=String(value).trim().match(/^(\d+(?:\.\d+)?)\s*(?::\s*1)?$/);return m&&Number.isFinite(+m[1])?+m[1]:null;};
+ const evidenceRatio=ratio(evidence?.value),suppliedRatio=ratio(input.fsr);
+ const instrumentMatches=!input.instrument||String(evidence?.provenance?.instrument||'').trim().toLowerCase()===String(input.instrument).trim().toLowerCase();
+ const verified=evidence?.state==='mapped'&&evidence.parcelResolved===true&&evidence.queryComplete===true&&instrumentMatches&&evidenceRatio!==null&&(input.fsr==null||suppliedRatio===evidenceRatio);
+ const capacity=verified&&positive(input.siteArea)?+input.siteArea*evidenceRatio:null;
+ const manual=['manual','user'].includes(input.areaSource),manualBasement=manual||['manual','user'].includes(input.basementAreaSource);
+ let above=null,basement=null,total=null;
+ const assumptions=['A working area scenario only, not a measured design, approved yield or confirmation of FSR, height, setbacks, landscape, parking or subdivision compliance.',`${share*100}% of verified mapped FSR capacity is the explicit starter working share; this is a modelling assumption, not a statutory entitlement.`, 'All above-ground constructed area is conservatively treated as counted GFA; no extra excluded above-ground area is invented.','Starter basement footprint equals one average above-ground floorplate; excavation, ramp, setbacks and actual basement definition need design review.'];
+ const invalid=!config||!positive(input.siteArea)||!numeric(share)||+share<=0||+share>1||['totalConstructedArea','basementConstructedArea'].some(k=>input[k]!=null&&(!numeric(input[k])||+input[k]<0));
+ if(invalid)warn('invalid-area-input','Confirm site area, building configuration, a working GFA share greater than zero and no more than one, and nonnegative area quantities.');
+ if(!verified)warn('fsr-unverified','Mapped FSR capacity is unknown or unresolved; any retained constructed area is an unverified working assumption, not a verified planning envelope.');
+ if(!invalid){
+  if(!manual&&capacity!==null){above=capacity* +share;basement=manualBasement&&input.basementConstructedArea!=null?+input.basementConstructedArea:config.basementLevels?above/config.aboveGroundLevels*config.basementLevels:0;total=above+basement;}
+  else if(positive(input.totalConstructedArea)){
+   total=+input.totalConstructedArea;
+   basement=input.basementConstructedArea!=null?+input.basementConstructedArea:config.basementLevels?total/config.totalLevels*config.basementLevels:0;
+   above=total-basement;
+   if(input.basementConstructedArea==null&&config.basementLevels)warn('basement-area-assumption','Basement area is an unmeasured level-share allowance; confirm its separate constructed quantity.');
+  }else warn('area-required','Confirm constructed quantities; no verified FSR is available to derive a starter area.');
+  if(total!==null&&(basement>=total||above<=0))warn('invalid-area-input','Basement area must be less than total constructed area, leaving positive above-ground constructed area.');
+  if(basement>0&&!config.basementLevels||basement===0&&config.basementLevels)warn('configuration-conflict','Your entered areas are retained, but basement quantity conflicts with the selected building levels.');
+ }
+ const use=input.basementUse||'unknown',hasBasement=basement>0,conditional=['parking','storage'].includes(use);
+ const classification=!hasBasement?'none':use==='habitable'?'counted':conditional?'potential-exclusion':'needs-review';
+ const basementStatutoryGfa={classification,use,countedArea:!hasBasement?0:use==='habitable'?basement:null,potentiallyExcludedArea:hasBasement&&conditional?basement:0,requiresReview:hasBasement&&use!=='habitable',basis:use==='parking'?'Only qualifying car parking meeting consent-authority requirements (including access) may be excluded; excess parking and other uses require assessment.':use==='storage'?'Storage must actually be in a qualifying basement and meet the applicable GFA definition; naming a space storage does not establish exclusion.':use==='habitable'?'Habitable basement constructed area is conservatively counted in statutory GFA.':'Actual basement definition, measured area and use classification require designer/planner review.'};
+ if(basementStatutoryGfa.requiresReview)warn('basement-gfa-review',basementStatutoryGfa.basis);
+ const estimated=above===null?null:basementStatutoryGfa.countedArea===null?null:above+basementStatutoryGfa.countedArea;
+ const conservative=total;
+ if(capacity!==null&&above!==null&&(above>capacity+1e-8||estimated!==null&&estimated>capacity+1e-8))warn('fsr-conflict','Entered or selected counted areas exceed verified mapped FSR capacity; your quantities are retained for comparison, not presented as compliant yield.');
+ else if(capacity!==null&&conservative!==null&&conservative>capacity+1e-8&&basementStatutoryGfa.requiresReview)warn('fsr-exclusion-dependent','If the basement is counted, the scenario exceeds mapped FSR capacity; any exclusion depends on actual qualifying use and a measured statutory area schedule.');
+ const conflict=warnings.some(w=>['invalid-area-input','configuration-conflict','fsr-conflict','area-required'].includes(w.code));
+ return{status:conflict?'review':capacity===null?'assumption':'indicative',decisionReady:false,version:'fsr-area-2026-10-16-v1',configuration,configurationDetails:config?{...config}:null,areaSource:manual?'user':'starter',fsrVerified:verified,statutoryGfaCapacity:capacity,aboveGroundConstructedArea:above,basementConstructedArea:basement,totalConstructedArea:total,aboveGroundFloorplate:above===null||!config?null:above/config.aboveGroundLevels,workingGfaShare:+share,basementStatutoryGfa,estimatedStatutoryGfa:estimated,estimatedStatutoryGfaConservative:conservative,warnings,assumptions};
+}
 const COST_BANDS={volume:[2300,2700,3200],standard:[3100,3550,4100],custom:[3100,3550,4100],premium:[3700,4500,5200],prestige:[4000,5000,6200],luxury:[4800,6100,8000],'luxury-development':[4800,6100,8000]};
 const COST_SPECIFICATIONS={volume:'Volume-builder duplex: repeatable shelf design and basic specification',standard:'Standard custom duplex: unique design, economical fixtures',custom:'Standard custom duplex: unique design, economical fixtures',premium:'Premium custom duplex: quality modern finishes and envelope',prestige:'Prestige architectural duplex: complex envelope, higher joinery and fixture specification',luxury:'Luxury development: bespoke design and top-end fitout','luxury-development':'Luxury development: bespoke design and top-end fitout'};
 const COST_EXCLUSIONS=['land','demolition','authorityContributions','finance','holding','selling','marketing','legal','taxSensitivity','exceptionalGround','contamination','pool','looseFurniture','serviceUpgrades'];
@@ -445,4 +484,4 @@ function renovationCost({components=[],extent='replace',quality='premium',comple
 }
 function deliveryComposition(cost){if(!positive(cost?.mid))return[];if(!Array.isArray(cost.components))return[{label:'Delivered total — breakdown unavailable',amount:cost.mid,share:1,version:cost.version||VERSION,source:'No measured component breakdown supplied'}];return cost.components.filter(l=>l.mid>0).map(l=>({...l,amount:l.mid,share:l.mid/cost.mid,version:cost.version||VERSION,source:l.source||'Actual working cost component; included once in delivered total'}))}
 
-return{acquisitionScenario,COST_CONFIGS,siteAllowances,nswTransferDuty,DUTY_VERSIONS,interpretIntent,normalizeIntent,RENOVATION_LABELS,RENOVATION_COMPONENTS,renovationCost,deliveryComposition,rateCard,deliveredCost,feasibility,financeSchedule,residentialFinance,assessContributions,FINANCE_ASSUMPTION,CONTRIBUTION_PLAN,roomArea,ROOMS,moveComparison,parseMoney,formatMoney,frontage};});
+return{acquisitionScenario,COST_CONFIGS,developmentAreaModel,siteAllowances,nswTransferDuty,DUTY_VERSIONS,interpretIntent,normalizeIntent,RENOVATION_LABELS,RENOVATION_COMPONENTS,renovationCost,deliveryComposition,rateCard,deliveredCost,feasibility,financeSchedule,residentialFinance,assessContributions,FINANCE_ASSUMPTION,CONTRIBUTION_PLAN,roomArea,ROOMS,moveComparison,parseMoney,formatMoney,frontage};});

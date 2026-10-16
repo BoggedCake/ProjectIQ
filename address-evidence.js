@@ -75,6 +75,20 @@ function selectionQuery(input,selected){
  // when a geocoder suggestion is selected.
  if(q.unit!==s.unit)return String(input||selected);
  const same=['number','street','type'].every(k=>q[k]&&q[k]===s[k]);
+ // Autocomplete may omit a road suffix while the consumer is still typing
+ // it (e.g. "wes"). Complete only an isolated, unambiguous direction token;
+ // the deliberate suggestion supplies locality, not authoritative identity.
+ // Strict matching of the completed query against official records follows.
+ if(same&&q.locality&&s.locality&&(!q.postcode||q.postcode===s.postcode)){
+  const token=q.locality,expanded=directions[token]||[...new Set(Object.values(directions))].filter(d=>token.length>=2&&d.startsWith(token));
+  const direction=typeof expanded==='string'?expanded:expanded.length===1?expanded[0]:'';
+  const selectedDirection=Object.keys(directions).sort((a,b)=>b.length-a.length).find(d=>s.locality.startsWith(d+' '));
+  // WEST in a locality such as West Pennant Hills is not a road suffix.
+  if(direction&&!selectedDirection&&!s.locality.startsWith(token+' ')){
+   const locality=s.locality;
+   return [(q.unit?q.unit+'/':'')+q.number,q.street,q.type,direction,locality,'NSW',s.postcode].filter(Boolean).join(' ');
+  }
+ }
  if(same&&(!q.postcode||q.postcode===s.postcode)){
   const split=locality=>{for(const direction of Object.keys(directions).sort((a,b)=>b.length-a.length))if(locality.startsWith(direction+' '))return{direction:directions[direction],locality:locality.slice(direction.length+1)};return{direction:'',locality};};
   const a=split(q.locality),b=split(s.locality);
