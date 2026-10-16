@@ -5,6 +5,7 @@ const types={ST:'STREET',STREET:'STREET',RD:'ROAD',ROAD:'ROAD',AVE:'AVENUE',AV:'
 const validId=id=>typeof id==='number'?Number.isFinite(id):typeof id==='string'&&id.trim()!=='';
 const hasId=a=>{const ids=[a.ap_gurasid,a.objectid].filter(id=>id!==undefined&&id!==null);return ids.length>0&&ids.every(validId)};
 const norm=s=>String(s??'').toUpperCase().replace(/NEW SOUTH WALES/g,'NSW').replace(/\bAUSTRALIA\b|\bAUS\b/g,' ').replace(/[,.]/g,' ').replace(/\s+/g,' ').trim();
+const directions={N:'NORTH',NORTH:'NORTH',S:'SOUTH',SOUTH:'SOUTH',E:'EAST',EAST:'EAST',W:'WEST',WEST:'WEST',NE:'NORTH EAST','NORTH EAST':'NORTH EAST',NW:'NORTH WEST','NORTH WEST':'NORTH WEST',SE:'SOUTH EAST','SOUTH EAST':'SOUTH EAST',SW:'SOUTH WEST','SOUTH WEST':'SOUTH WEST'};
 function parse(input,hint){
  let raw=norm(input),body=raw,unit='';
  // ArcGIS suggestions explicitly separate locality, city and state with commas.
@@ -23,7 +24,15 @@ function parse(input,hint){
  const street=typeof hint?.streetname==='string'?norm(hint.streetname):'',type=types[norm(hint?.streettype||hint?.streettypedescription)];
  if(street&&type)for(let i=1;i<words.length;i++)if(words.slice(0,i).join(' ')===street&&types[words[i]]===type){at=i;break}
  if(at<0)for(let i=1;i<words.length;i++)if(types[words[i]]){at=i;break}
- return{raw,number,unit,street:at>=0?words.slice(0,at).join(' '):'',type:at>=0?types[words[at]]:'',locality:at>=0?words.slice(at+1).join(' '):'',postcode};
+ let locality=at>=0?words.slice(at+1).join(' '):'',suffix='';
+ // NSW stores a street direction separately from the locality. Use the
+ // authoritative locality boundary, never strip WEST from West Pennant Hills.
+ const officialLocality=norm(hint?.localityname);
+ if(officialLocality&&locality.endsWith(' '+officialLocality)){
+  const direction=locality.slice(0,-officialLocality.length).trim();
+  if(directions[direction]){suffix=directions[direction];locality=officialLocality}
+ }
+ return{raw,number,unit,street:at>=0?words.slice(0,at).join(' '):'',type:at>=0?types[words[at]]:'',suffix,locality,postcode};
 }
 function sourceLabel(a){
  const text=norm(a.formattedaddress),p=parse(a.formattedaddress,a);
@@ -37,9 +46,10 @@ function sourceLabel(a){
 }
 function components(a){const p=sourceLabel(a);const set=(key,value)=>{if(value!==undefined&&value!==null&&String(value).trim())p[key]=norm(value)};
  if(a.streetnumber1!==undefined&&a.streetnumber1!==null&&String(a.streetnumber1).trim()){const n=norm(a.streetnumber1)+(norm(a.streetnumbersuffix1)||'');const end=norm(a.streetnumber2)+(norm(a.streetnumbersuffix2)||'');p.number=n+(end&&end!==n?'-'+end:'');if(!a.streetnumbersuffix1&&!end&&p.raw){const displayed=parse(p.raw,a).number;if(displayed.startsWith(n+'-')||(displayed.startsWith(n)&&displayed.length===n.length+1&&/^[A-Z]$/.test(displayed.slice(-1))))p.number=displayed}}
- set('street',a.streetname);if(a.streettype||a.streettypedescription)p.type=types[norm(a.streettype||a.streettypedescription)]||norm(a.streettype||a.streettypedescription);set('locality',a.localityname);set('postcode',a.postcode);set('unit',a.complexunitidentifier);return p;
+ set('street',a.streetname);if(a.streettype||a.streettypedescription)p.type=types[norm(a.streettype||a.streettypedescription)]||norm(a.streettype||a.streettypedescription);if(a.streetsuffix)p.suffix=directions[norm(a.streetsuffix)]||norm(a.streetsuffix);set('locality',a.localityname);set('postcode',a.postcode);set('unit',a.complexunitidentifier);return p;
 }
 function compare(q,p){
+ if(q.suffix!==p.suffix)return{matched:false,reason:'Contradictory or missing address street direction.'};
  for(const key of ['number','street','type'])if(!q[key]||!p[key])return{matched:false,reason:'Address '+key+' is unresolved.'};
  for(const key of ['number','street','type','locality','postcode','unit']){if(q[key]&&p[key]!==q[key]||key==='unit'&&p[key]&&!q[key])return{matched:false,reason:'Contradictory or missing address '+key+'.'}}
  if(!q.locality&&!q.postcode)return{matched:false,reason:'Address locality or postcode is required.'};return{matched:true,reason:null};
@@ -59,5 +69,22 @@ function review(input,features,ambiguous){
  return{status:'needs-review',source:'NSW Address Point',category:ambiguous?'ambiguous':related.length?'unproven-range':'unmatched',candidates:related.slice(0,10),reason:related.length?'The official address is a range. Its relationship to the entered address and parcel needs confirmation; no property was selected.':'An exact authoritative property identity has not been established.'};
 }
 function select(input,features){const matches=features.filter(f=>match(input,f.attributes||{}).matched);if(matches.length!==1)return{status:'unresolved',reason:matches.length?'Authoritative address identity is ambiguous; confirmation required.':'No authoritative address identity matches the distinguishing components.',candidates:matches,review:review(input,features,matches.length>0)};const f=matches[0],a=f.attributes||{};if(!hasId(a))return{status:'unresolved',reason:'Authoritative address stable identifier is missing.',candidates:matches};return{status:'confirmed-address',feature:f,candidates:matches,sourceIds:{objectid:a.objectid??null,ap_gurasid:a.ap_gurasid??null,ss_addressstringoid:a.ss_addressstringoid??null,ss_principaladdresssiteoid:a.ss_principaladdresssiteoid??null,ss_propid:a.ss_propid??null,prop_gurasid:a.prop_gurasid??null,ss_sppropid:a.ss_sppropid??null,lot_cadid:a.lot_cadid??null}}}
-return{parse,components,match,select};
+function selectionQuery(input,selected){
+ const q=parse(input),s=parse(selected);
+ // Unit contradictions must reach authoritative validation, not disappear
+ // when a geocoder suggestion is selected.
+ if(q.unit!==s.unit)return String(input||selected);
+ const same=['number','street','type'].every(k=>q[k]&&q[k]===s[k]);
+ if(same&&(!q.postcode||q.postcode===s.postcode)){
+  const split=locality=>{for(const direction of Object.keys(directions).sort((a,b)=>b.length-a.length))if(locality.startsWith(direction+' '))return{direction:directions[direction],locality:locality.slice(direction.length+1)};return{direction:'',locality};};
+  const a=split(q.locality),b=split(s.locality);
+  if(a.direction&&b.direction&&a.direction!==b.direction&&a.locality===b.locality)return String(input);
+ }
+ if(same&&s.locality&&q.locality.endsWith(' '+s.locality)&&(!q.postcode||q.postcode===s.postcode)){
+  const extra=q.locality.slice(0,-s.locality.length).trim();
+  if(directions[extra])return String(input);
+ }
+ return String(selected||input||'');
+}
+return{parse,components,match,select,selectionQuery};
 });

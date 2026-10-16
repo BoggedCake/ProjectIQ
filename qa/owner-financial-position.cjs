@@ -1,0 +1,30 @@
+'use strict';
+const assert=require('node:assert/strict'),E=require('../commercial-engine.js');
+const near=(a,b)=>assert.ok(Math.abs(a-b)<.01,`${a} != ${b}`);
+// Independent ledger fixture: no inferred Waratah floor area, specification or approval.
+const base={ownershipRole:'owner',eligibility:{readyForFeasibility:true},land:3500000,landDebt:1500000,cost:{mid:2000000,constructionMid:2000000/1.1},products:[{count:2,value:4000000}],contributions:{status:'verified-exemption',source:'Synthetic fixture',reason:'Arithmetic only'},otherAuthorityCosts:0,exitStrategy:'sell',interestRate:.1,constructionBorrowingRatio:.5,preconstructionMonths:0,constructionMonths:12,settlementMonths:0,capitaliseInterest:false,financeEstablishment:0,holding:0,marketing:10000,legal:0,saleLegal:3000,saleSettlement:500,disposalCosts:1500};
+const sell=E.feasibility(base);
+// 150k existing-debt interest + 50k weighted construction interest; no 4% revenue deduction.
+near(sell.finance,200000);near(sell.total,5891000);near(sell.profit,2109000);
+assert.equal(sell.taxAssumptions.status,'unresolved');assert.equal(sell.taxAssumptions.rate,null);
+assert.equal(sell.taxAssumptions.gstStatus,'unresolved');assert.equal(sell.resultBasis,'pretax');
+near(sell.pretaxProfit,2109000);near(sell.taxSensitivity,0);
+const p=sell.ownerFinancialPosition;
+near(p.currentEquity,2000000);near(p.currentDebt,1500000);near(p.completionDebt,2500000);near(p.completionEquity,5500000);
+near(p.saleReceiptsAfterDebt,5500000);near(p.saleNetProceeds,5309000);near(p.disposalCash,191000);
+near(p.cashEquityRequired,1391000);near(p.nonDisposalCashInvested,1200000);near(p.peakCashRequirement,1391000);
+near(p.equityCreated,2109000);near(p.saleNetProceeds-p.nonDisposalCashInvested-p.currentEquity,p.equityCreated);
+near(sell.costReconciliation.reduce((n,l)=>n+l.amount,0),sell.total);
+assert.equal(sell.costReconciliation.filter(l=>l.key==='landOpportunity').length,1);
+assert.equal(sell.costReconciliation.filter(l=>l.key==='interest').length,1);
+assert.match(p.interestBasis,/existing.*debt.*full project period/i);
+assert.match(p.interestBasis,/counterfactual.*not modelled/i);
+const taxed=E.feasibility({...base,taxPct:.04});near(taxed.taxSensitivity,320000);near(taxed.total,6211000);near(taxed.profit,1789000);near(taxed.pretaxProfit,2109000);
+assert.equal(taxed.resultBasis,'explicit-tax-sensitivity');assert.equal(taxed.taxAssumptions.status,'user-sensitivity');assert.equal(taxed.taxAssumptions.gstStatus,'unresolved');near(taxed.ownerFinancialPosition.equityCreated,taxed.profit);
+const zero=E.feasibility({...base,taxPct:0});assert.equal(zero.taxAssumptions.status,'user-sensitivity');assert.equal(zero.taxAssumptions.gstStatus,'unresolved');
+const cap=E.feasibility({...base,capitaliseInterest:true});near(cap.ownerFinancialPosition.completionDebt,2500000+cap.finance);near(cap.ownerFinancialPosition.cashEquityRequired,1191000);near(cap.ownerFinancialPosition.equityCreated,cap.profit);
+const hold=E.feasibility({...base,exitStrategy:'retain'});assert.equal(hold.profit,null);assert.equal(hold.ownerFinancialPosition.saleNetProceeds,null);assert.equal(hold.ownerFinancialPosition.saleReceiptsAfterDebt,null);near(hold.ownerFinancialPosition.equityCreated,hold.holdModel.unrealisedSurplus);near(hold.ownerFinancialPosition.equityCreated,hold.ownerFinancialPosition.completionEquity-hold.ownerFinancialPosition.currentEquity-hold.ownerFinancialPosition.cashEquityRequired);
+const bond=E.feasibility({...base,refundableBond:8000});near(bond.ownerFinancialPosition.peakCashRequirement,sell.ownerFinancialPosition.peakCashRequirement+8000);near(bond.ownerFinancialPosition.equityCreated,sell.profit);
+const debtFree=E.feasibility({...base,landDebt:0});near(debtFree.total,sell.total-150000);near(debtFree.ownerFinancialPosition.currentEquity,3500000);
+assert.equal(E.feasibility({...base,eligibility:{category:'prohibited'}}).status,'review');
+console.log('PASS owner independent pretax economic / sale / retain / cash / equity ledgers and explicit unresolved tax sensitivity');

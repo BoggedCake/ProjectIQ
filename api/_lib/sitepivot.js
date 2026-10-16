@@ -29,6 +29,7 @@ const LAYER={
 };
 
 const cache=new Map();
+const inFlight=new Map();
 const now=()=>Date.now();
 const unique=a=>[...new Set((a||[]).filter(v=>v!==undefined&&v!==null&&String(v).trim()!=='').map(v=>String(v).trim()))];
 const attrs=f=>f&&f.attributes?f.attributes:{};
@@ -65,7 +66,19 @@ function cachePut(key,value,fetchedAt,url,params={}){
   while(cache.size>=CACHE_MAX_ENTRIES||total>CACHE_MAX_BYTES){const oldest=cache.keys().next().value;total-=cache.get(oldest).bytes;cache.delete(oldest)}
   cache.set(key,{exp:fetchedAt+CACHE_TTL,fetchedAt,bytes,value});
 }
-async function fetchJson(url,{method='GET',params={},timeout=6000,signal:callerSignal}={}){
+function fetchJson(url,options={}){
+  // A caller-owned signal must retain independent cancellation. Only identical
+  // uncancelled operations with the same deadline budget may share work.
+  if(options.signal)return fetchJsonRequest(url,options);
+  const key=JSON.stringify([options.method||'GET',url,options.params||{},options.timeout??6000]);
+  if(inFlight.has(key))return inFlight.get(key);
+  const request=fetchJsonRequest(url,options);
+  inFlight.set(key,request);
+  const clear=()=>{if(inFlight.get(key)===request)inFlight.delete(key)};
+  request.then(clear,clear);
+  return request;
+}
+async function fetchJsonRequest(url,{method='GET',params={},timeout=6000,signal:callerSignal}={}){
   if(callerSignal?.aborted)throw upstreamError('Upstream request cancelled','cancelled');
   const key=method+':'+url+':'+JSON.stringify(params),hit=cache.get(key);
   if(hit&&hit.exp>now()){sourceChecks.set(hit.value,{checkedAt:new Date(hit.fetchedAt).toISOString(),cached:true});return hit.value}
@@ -128,7 +141,7 @@ async function authoritativeAddress(candidate,input){
   const j=await arcQuery(UPSTREAM.address.replace('/0',''),0,{
     where,geometry:JSON.stringify(candidate.location),geometryType:'esriGeometryPoint',inSR:4283,spatialRel:'esriSpatialRelIntersects',
     distance:100,units:'esriSRUnit_Meter',
-    outFields:'objectid,formattedaddress,localityname,lganame,cadastralidentifier,pl_ptlotsecpn,streetnumber1,streetnumber2,streetname,streettype,streettypedescription,postcode,complexunitidentifier,complexlevelnumber,ss_addresspointtype,ss_classsubtype,ss_principaladdresstype,ss_addressstringoid,ss_principaladdresssiteoid,ss_propid,ss_sppropid,lot_cadid,ap_gurasid,prop_gurasid',
+    outFields:'objectid,formattedaddress,localityname,lganame,cadastralidentifier,pl_ptlotsecpn,streetnumber1,streetnumber2,streetname,streettype,streettypedescription,streetsuffix,postcode,complexunitidentifier,complexlevelnumber,ss_addresspointtype,ss_classsubtype,ss_principaladdresstype,ss_addressstringoid,ss_principaladdresssiteoid,ss_propid,ss_sppropid,lot_cadid,ap_gurasid,prop_gurasid',
     returnGeometry:'true',outSR:4283,resultRecordCount:100
   },6000);
   const rows=R.requireComplete(j,{arcgisQuery:true,limit:100,requiredFields:['formattedaddress'],geometry:g=>Number.isFinite(g?.x)&&Number.isFinite(g?.y)});
@@ -144,7 +157,7 @@ function titleFromIdentifier(a){
 async function resolveProperty(item){
   const t=now();
   const candidate=await geocode(item);
-  const official=await authoritativeAddress(candidate,item.text||'');
+  const official=await authoritativeAddress(candidate,item.requestedText||item.text||'');
   const a=attrs(official),title=titleFromIdentifier(a);
   return {
     property:{
@@ -153,10 +166,10 @@ async function resolveProperty(item){
       postcode:String(a.postcode||candidate.attributes?.Postal||''),
       lga:a.lganame||null,
       point:official.geometry||candidate.location,
-      addressId:a.ap_gurasid??a.objectid??null,identityEvidence:official.identityEvidence,addressComponents:{streetnumber1:a.streetnumber1??null,streetnumber2:a.streetnumber2??null,streetname:a.streetname??null,streettype:a.streettype??null,complexunitidentifier:a.complexunitidentifier??null},
+      addressId:a.ap_gurasid??a.objectid??null,identityEvidence:official.identityEvidence,addressComponents:{streetnumber1:a.streetnumber1??null,streetnumber2:a.streetnumber2??null,streetname:a.streetname??null,streettype:a.streettype??null,streetsuffix:a.streetsuffix??null,complexunitidentifier:a.complexunitidentifier??null},
       cadastralIdentifier:a.cadastralidentifier||a.pl_ptlotsecpn||null,
       cadid:a.lot_cadid||null,
-      propertyId:a.ss_propid||null,propertyGurasid:a.prop_gurasid||null,streetName:[a.streetname,a.streettype].filter(Boolean).join(' '),
+      propertyId:a.ss_propid||null,propertyGurasid:a.prop_gurasid||null,streetName:[a.streetname,a.streettype,a.streetsuffix].filter(Boolean).join(' '),
       lot:title.lot,dp:title.dp,title:title.title,
       strata:title.title.startsWith('Strata'),
       unit:a.complexunitidentifier||null,

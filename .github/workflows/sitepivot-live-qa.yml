@@ -29,7 +29,7 @@ concurrency:
 jobs:
   live-qa:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -123,6 +123,11 @@ jobs:
         run: node qa/waratah-browser.cjs
         env:
           SITEPIVOT_URL: https://boggedcake.github.io/ProjectIQ/
+      - name: Verify deployed New Street West and three-input owner funding and equity
+        if: ${{ !cancelled() && steps.runtime.outcome == 'success' && steps.deployed.outcome == 'success' }}
+        run: node qa/p0-founder-browser.cjs
+        env:
+          SITEPIVOT_URL: https://boggedcake.github.io/ProjectIQ/
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -135,3 +140,4 @@ jobs:
             qa-artifacts/financial/
             qa-artifacts/premium/
             qa-artifacts/waratah/
+            qa-artifacts/p0-founder/

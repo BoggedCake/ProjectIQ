@@ -12,7 +12,7 @@ concurrency:
 jobs:
   consumer-journey:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -47,6 +47,9 @@ jobs:
       - name: Verify real 19 Waratah buyer journey in Chromium and WebKit desktop and mobile
         run: node qa/waratah-browser.cjs
         if: ${{ !cancelled() && steps.browsers.outcome == 'success' }}
+      - name: Verify New Street West identity and three-input owner finance across browsers
+        run: node qa/p0-founder-browser.cjs
+        if: ${{ !cancelled() && steps.browsers.outcome == 'success' }}
       - run: node qa/property-intelligence-browser.cjs
         if: ${{ !cancelled() && steps.browsers.outcome == 'success' }}
       - run: node qa/mobile-journey.cjs
@@ -70,4 +73,5 @@ jobs:
             qa-artifacts/financial/
             qa-artifacts/premium/
             qa-artifacts/waratah/
+            qa-artifacts/p0-founder/
             qa-artifacts/duplex/

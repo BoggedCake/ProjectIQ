@@ -1,5 +1,6 @@
 'use strict';
 const P=require('../planning-intelligence');
+const A=require('../address-evidence');
 const {identityOutcome}=require('./qa-outcomes.cjs');
 const {suggestAddress,resolveProperty,planningFor}=require('../api/_lib/sitepivot');
 const addressHandler=require('../api/address/suggest');
@@ -31,6 +32,7 @@ async function routeCase(handler,req){const res=fakeRes();await handler(req,res)
 const cases=[
  '12 Fishbourne Road Allambie Heights NSW 2100',
  '57 Griffiths Street Fairlight NSW 2094',
+ '61 New Street West Balgowlah Heights NSW 2093',
  '1 Waratah Street Balgowlah NSW 2093',
  '9 Waratah Street Balgowlah NSW 2093',
  '84/2-8 Dixon Street Sydney NSW 2000',
@@ -58,7 +60,9 @@ for(const q of cases){
    const suggestionMs=Date.now()-t0;
    if(!s.suggestions.length)throw new Error('no suggestions');
    const t1=Date.now();
-   const r=await resolveProperty(s.suggestions[0]);
+   const selected=s.suggestions[0],request={...selected,requestedText:A.selectionQuery(q,selected.text)};
+   const r=await resolveProperty(request);
+   if(q.startsWith('61 New Street West')&&(!(r.property.addressId===72720191)||r.property.cadid!==102197818))throw new Error('New Street West authoritative identity differs from recorded NSW regression evidence; review source, do not accept another address');
    out.identity.push({q,pass:suggestionMs<3000&&!!r.property.lga&&!!r.property.lot&&!!r.property.dp,suggestionMs,resolveMs:Date.now()-t1,address:r.property.address,lga:r.property.lga,lot:r.property.lot,dp:r.property.dp,property:r.property});
  }catch(e){out.identity.push({q,pass:false,error:e.message,code:e.code||null,identityReview:e.identityReview||null,addressProbe})}
 }
@@ -80,7 +84,8 @@ for(const q of ['12 Fishbourne Road Allambie Heights NSW 2100','49 Mann Street G
 }
 const suggestions=out.identity.map(x=>x.suggestionMs).filter(Number.isFinite).sort((a,b)=>a-b);
 const pct=(arr,p)=>arr.length?arr[Math.min(arr.length-1,Math.max(0,Math.ceil(arr.length*p)-1))]:null;
-out.performance={maxSuggestionMs:suggestions.at(-1)||null,medianSuggestionMs:pct(suggestions,.5),p95SuggestionMs:pct(suggestions,.95)};
+const identities=out.identity.map(x=>x.resolveMs).filter(Number.isFinite).sort((a,b)=>a-b);
+out.performance={maxSuggestionMs:suggestions.at(-1)||null,medianSuggestionMs:pct(suggestions,.5),p95SuggestionMs:pct(suggestions,.95),p95IdentityMs:pct(identities,.95),targets:{suggestionMs:500,identityMs:1500,initialSummaryMs:3000},targetNote:'Engineering targets, not passed merely by this legacy three-second availability gate. Failures have no fabricated latency.'};
 // Contract regression: failed planning sources must remain visible to the UI as Needs Review.
 out.failureContractPass=out.planning.length>0&&out.planning.filter(x=>!x.expectedReview).every(x=>x.contractPass===true);
 
