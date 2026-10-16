@@ -17,6 +17,7 @@
 @media print{#assistantSection,.topbar,.tabs,.actions,.ghostBtn,.primaryBtn,.secondaryBtn,.demoTag{display:none!important}.view{display:none!important}.view.active{display:block!important}.container{max-width:none;padding:0}.panel{box-shadow:none}.tabPanel{display:block!important;break-inside:avoid}.notice{break-inside:avoid}}
 
 /* Consumer progression: one result page, one evidence disclosure. */
+.ownerPosition .financialRows dd{max-width:58%;white-space:normal;overflow-wrap:anywhere}.ownerPosition .financialRows dt{overflow-wrap:anywhere}
 input[type="checkbox"]{width:20px;height:20px;padding:0;flex:0 0 20px;accent-color:var(--accent)}
 .wide{grid-column:1/-1}.choicesCompact{gap:8px}.choicesCompact label,.checkLabel{display:flex!important;align-items:center;gap:10px;margin:0!important;padding:10px;border:1px solid var(--line);border-radius:10px;font-weight:600!important;font-size:15px!important;min-height:44px}
 .consumerAssessment section{padding:16px 0;border-bottom:1px solid var(--line)}.consumerAssessment section:first-child{padding-top:0}.consumerAssessment section:last-child{border:0;padding-bottom:0}.consumerAssessment .value{font-size:26px}.projectList{padding-left:20px;margin:8px 0}.financialRows{margin:12px 0}.financialRows>div{display:flex;justify-content:space-between;gap:14px;padding:8px 0;border-bottom:1px solid var(--line)}.financialRows dt{flex:1;min-width:0}.financialRows dd{margin:0;text-align:right;font-weight:750;white-space:nowrap}.checkItem{margin:12px 0}.checkItem p{margin:5px 0}.decisionGate{background:var(--accent2);padding:16px!important;border-radius:12px}
@@ -145,17 +146,17 @@ input[type="checkbox"]{width:20px;height:20px;padding:0;flex:0 0 20px;accent-col
 </main>
 </div>
 <div class="modal" id="sourcesModal"><div class="modalCard"><div class="sectionTitle"><div><div class="eyebrow">Evidence coverage</div><h2 style="font-size:30px">NSW source registry</h2></div><button class="secondaryBtn" id="closeSources">Close</button></div><div class="notice warn"><strong>Important:</strong> Property searches use official NSW records where available. Identifying a council plan does not confirm every design requirement. Unresolved checks stay clearly marked.</div><div id="sourceRegistry"></div></div></div>
-<script src="address-evidence.js?v=20261016-owner-p0-1"></script>
-<script src="response-evidence.js?v=20261016-owner-p0-1"></script>
-<script src="property-evidence.js?v=20261016-owner-p0-1"></script>
-<script src="zoning-evidence.js?v=20261016-owner-p0-1"></script>
-<script src="fsr-evidence.js?v=20261016-owner-p0-1"></script>
-<script src="planning-intelligence.js?v=20261016-owner-p0-1"></script>
-<script src="contributions-evidence.js?v=20261016-owner-p0-1"></script>
-<script src="commercial-engine.js?v=20261016-owner-p0-1"></script>
-<script src="comparison-engine.js?v=20261016-owner-p0-1"></script>
-<script src="conversation.js?v=20261016-owner-p0-1"></script>
-<script src="voice.js?v=20261016-owner-p0-1"></script>
+<script src="address-evidence.js?v=20261016-owner-p0-2"></script>
+<script src="response-evidence.js?v=20261016-owner-p0-2"></script>
+<script src="property-evidence.js?v=20261016-owner-p0-2"></script>
+<script src="zoning-evidence.js?v=20261016-owner-p0-2"></script>
+<script src="fsr-evidence.js?v=20261016-owner-p0-2"></script>
+<script src="planning-intelligence.js?v=20261016-owner-p0-2"></script>
+<script src="contributions-evidence.js?v=20261016-owner-p0-2"></script>
+<script src="commercial-engine.js?v=20261016-owner-p0-2"></script>
+<script src="comparison-engine.js?v=20261016-owner-p0-2"></script>
+<script src="conversation.js?v=20261016-owner-p0-2"></script>
+<script src="voice.js?v=20261016-owner-p0-2"></script>
 <script>
 (()=>{'use strict';
 const E=window.SitePivotCommercial,C=window.SitePivotConversation,V=window.SitePivotVoice,P=window.SitePivotPlanning,G=window.PropertyEvidence,Q=window.SitePivotComparison,F=window.SitePivotFSR,Z=window.SitePivotZoning;
@@ -1007,7 +1008,7 @@ function workingFeasibilityHTML(f,c){
  const heading=app.devType==='duplex'?'Your duplex feasibility':'Your development feasibility',p=f?.ownerFinancialPosition;
  if(!f||f.status==='review'||!p)return '<section id="workingFeasibility"><h3>'+heading+'</h3><h4>Is the development financially worthwhile?</h4><p>'+esc(f?.reason||'Confirm scope and working values.')+'</p><h4>What could your financial position look like?</h4><p>Confirm the current property value, existing debt and development scope to estimate equity and funding.</p></section>';
  const retain=f.exitStrategy==='retain',unknownDebt=app.scope.landDebt==null&&app.scope.residentialFunding?.existingBalance==null&&app.scope.moveLoanBalance==null;
- const pretaxSurplus=retain?f.holdModel?.unrealisedSurplus:f.pretaxProfit??f.profit,ratio=base=>Number.isFinite(pretaxSurplus)&&base>0?num(pretaxSurplus/base*100)+'%':'Needs review';
+ const pretaxSurplus=retain?f.holdModel?.unrealisedSurplus:f.pretaxProfit??f.profit,ratio=base=>Number.isFinite(pretaxSurplus)&&base>0?new Intl.NumberFormat('en-AU',{minimumFractionDigits:2,maximumFractionDigits:2}).format(pretaxSurplus/base*100)+'%':'Needs review';
  const costGaps=[...(!f.contributions?.decisionReady?['Council contributions remain an unverified working allowance ('+money(f.contributions?.amount)+').']:[]),...(f.otherAuthorityCostsStatus==='unresolved'?['Other authority / HPC charges are unassessed and excluded from the priced subtotal.']:[])],costWarning=costGaps.length?'<p class="small ownerCostWarning">'+esc(costGaps.join(' '))+'</p>':'';
  return '<section id="workingFeasibility"><h3>'+heading+'</h3><p class="small">Conditional working scenario, not bankable feasibility. Values, consent, contributions and lending require verification. Before project GST adjustments and income tax; construction GST is included, credits not assessed.</p>'+costWarning+'<section class="ownerEconomics"><h4>Is the development financially worthwhile?</h4>'+financialRows([['Current property value',p.currentPropertyValue],['Total completed value — working assumption',f.grv],['Total economic development cost before tax',f.pretaxTotal??f.total],[retain?'Unrealised economic surplus before tax':'Estimated development profit before tax',pretaxSurplus],[retain?'Unrealised surplus margin on completed value before tax':'Profit margin on completed value before tax',ratio(f.grv)],[retain?'Unrealised return on economic cost before tax':'Return on economic cost before tax',ratio(f.pretaxTotal??f.total)]])+'<p class="small">Includes the entire current property value as an opportunity cost, not a new cash payment. '+esc(p.interestBasis||'Existing property debt interest is modelled over the whole project, not only incremental interest versus doing nothing.')+'</p></section><section class="ownerPosition"><h4>What could your financial position look like?</h4>'+financialRows([['Current equity',unknownDebt?'Existing debt needed':p.currentEquity],['Existing property debt',unknownDebt?'Unknown — modelled at $0, not confirmed debt-free':p.currentDebt],['Debt at completion',p.completionDebt],['Equity at completion before any sale',p.completionEquity],...(!retain?[['Sale proceeds after debt and selling costs',p.saleNetProceeds]]:[]),['Additional cash funding required',p.cashEquityRequired],['Peak cash requirement, including refundable bond',p.peakCashRequirement],['Additional equity created / lost after project cash',p.equityCreated]])+'<p class="small">'+(f.resultBasis==='explicit-tax-sensitivity'?'Funding and equity include your explicit tax sensitivity of '+money(f.taxSensitivity)+'; economic profit above is shown before that sensitivity. ':'')+'Equity is not development profit. Additional cash is separate from the property equity you already own. Debt principal is funding, not an extra project expense. '+(retain?'Retained equity is unrealised and refinancing is not approved.':'Sale proceeds include your existing equity; they are not all new profit.')+'</p></section><details><summary>Detailed feasibility, funding and assumptions</summary>'+detailedFeasibilityHTML(f,c).replace('id="workingFeasibility"','class="professionalFeasibility"')+'</details></section>';
 }

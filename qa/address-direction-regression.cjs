@@ -20,6 +20,9 @@ const westLocality={objectid:1,formattedaddress:'12 EXAMPLE STREET WEST PENNANT 
 assert.equal(A.match('12 Example St West Pennant Hills NSW 2125',westLocality).matched,true,'West in locality is not a street direction');
 assert.equal(A.parse('12 Example St West Pennant Hills NSW 2125',westLocality).suffix,'');
 assert.equal(A.match('61 New Street West Balgowlah Heights NSW 2093',{...official,formattedaddress:'61 NEW ST EAST, BALGOWLAH HEIGHTS NSW 2093'}).matched,false,'contradictory source label direction veto remains');
+const aliased={...official,authoritativeAliases:[{source:'NSW Address Point',addressId:72720191,formattedaddress:'61 OLD ST WEST BALGOWLAH HEIGHTS NSW 2093'}]};
+assert.equal(A.match('61 Old Street West Balgowlah Heights NSW 2093',aliased).matched,true,'explicit same-ID official alias retains its direction');
+assert.equal(A.match('61 Old Street East Balgowlah Heights NSW 2093',aliased).matched,false,'official alias cannot erase a contradictory direction');
 console.log('PASS authoritative direction, locality and missing-direction veto');
 const fs=require('node:fs'),vm=require('node:vm'),path=require('node:path'),{createRequire}=require('node:module');
 const filename=path.resolve(__dirname,'../api/_lib/sitepivot.js');let requestedFields='';

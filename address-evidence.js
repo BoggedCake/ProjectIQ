@@ -61,7 +61,7 @@ function match(input,a){const q=parse(input,a),p=components(a),display=sourceLab
  if(q.unit&&q.unit===norm(a.complexunitidentifier)&&q.number===norm(a.streetnumber1)&&!q.number.includes('-')&&display.number.startsWith(q.number+'-')&&hasId(a))q.number=display.number;
  const result=compare(q,p),label=compare(q,display);if(result.matched&&label.matched)return result;
  const id=a.ap_gurasid??a.objectid;
- for(const alias of a.authoritativeAliases||[])if(alias.source==='NSW Address Point'&&hasId(a)&&String(alias.addressId)===String(id)&&compare(q,parse(alias.formattedaddress)).matched)return{matched:true,reason:'Authoritative address alias.',aliasSource:alias.source};
+ for(const alias of a.authoritativeAliases||[])if(alias.source==='NSW Address Point'&&hasId(a)&&String(alias.addressId)===String(id)&&compare(q,parse(alias.formattedaddress,a)).matched)return{matched:true,reason:'Authoritative address alias.',aliasSource:alias.source};
  return result.matched?label:result;
 }
 function review(input,features,ambiguous){
