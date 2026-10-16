@@ -19,7 +19,7 @@ const near=(a,b)=>assert.ok(Math.abs(a-b)<.01,`${a} ≠ ${b}`);
     const fixture=supported(JSON.parse(JSON.stringify(await page.evaluate(()=>SitePivot.FIXTURES[0]))));
     fixture.address='43 Hope Street, Seaforth NSW 2092 [synthetic scenario]';fixture.area=575.3;fixture.lga='Northern Beaches Council';fixture.suburb='Seaforth';fixture.planning.fsr='0.5:1';fixture.planning.pathwayEvidence.address=fixture.address;fixture.planning.pathwayEvidence.area=575.3;
     await page.evaluate(({fixture,role})=>{const a=SitePivot,p=fixture;p.planning.fsrEvidence=SitePivotFSR.resolve({records:[{FSR:.5,EPI_NAME:p.planning.instrument}],parcelResolved:true,queryComplete:true,source:'Synthetic FSR regression',checkedAt:'2026-10-17T00:00:00Z'});a.app.ownershipRole=role;a.selectProperty(p);a.app.goal='develop';a.app.devType='duplex';a.show('scope')},{fixture,role});
-    near(await page.locator('#scopeGfa').inputValue().then(Number),258.885);
+    assert.equal(await page.locator('#scopeGfa').getAttribute('value'),'258.9');near(await page.evaluate(()=>SitePivot.app.scope.gfa),258.885);
     assert.match(await page.locator('#areaPlanningSummary').innerText(),/287.7/);
     await page.locator('#scopeConfiguration').selectOption('two-storey-basement');
     let first=await page.evaluate(()=>SitePivot.projectCost());near(first.areaBreakdown.aboveGround,258.885);near(first.areaBreakdown.basement,129.4425);
