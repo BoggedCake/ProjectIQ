@@ -60,7 +60,7 @@ const near=(actual,expected,label)=>assert.ok(Number.isFinite(actual)&&Math.abs(
     return s;
    }
    async function visibleSummary(container='#consumerResult'){
-    const el=page.locator(container),text=await el.innerText();assert.match(text,/Working project feasibility/);assert.match(text,/conditional/i);assert.match(text,/profit/i);assert.match(text,/margin|revenue/i);assert.ok(text.includes('$14,000,000'),'visible GRV');
+    const el=page.locator(container),text=await el.innerText();assert.match(text,/Your duplex feasibility/);assert.match(text,/Is the development financially worthwhile/);assert.match(text,/What could your financial position look like/);assert.match(text,/conditional/i);assert.match(text,/profit/i);assert.match(text,/margin|revenue/i);assert.ok(text.includes('$14,000,000'),'visible GRV');
     const f=(await snapshot()).assessment.feas;for(const value of [f.total,f.profit])assert.ok(text.includes(money(value)),`visible financial result ${money(value)}`);
     const summary=el.locator('#workingFeasibility');assert.ok(await summary.isVisible(),'main summary visible without opening detailed feasibility');
     assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'no horizontal overflow');return text;
@@ -86,7 +86,7 @@ const near=(actual,expected,label)=>assert.ok(Number.isFinite(actual)&&Math.abs(
     await page.locator('#runAssessment').click();let baseline=check(await snapshot());
     const contribution=baseline.assessment.feas.contributions,evidence=contribution.evidence;assert.equal(evidence.framework,'section-7.12');assert.equal(evidence.statutoryCostBase.verified,false);assert.ok(evidence.missingInputs.length>0);assert.ok(evidence.statutoryCostBase.includedComponents.includes('demolition'));assert.notEqual(evidence.statutoryCostBase.amount,baseline.assessment.cost.mid,'Statutory working base is distinct from delivery');near(contribution.amount,Math.round(evidence.statutoryCostBase.amount*evidence.rate*100)/100,'Published plan rate on provisional statutory cost');
     assert.equal(baseline.assessment.feas.contributions.status,'provisional');
-    const baselineText=await visibleSummary();assert.match(baselineText,/provisional/i);assert.match(baselineText,/debt/i);await capture('assessment');
+    const baselineText=await visibleSummary();assert.match(baselineText,/contributions remain an unverified working allowance/i);assert.match(baselineText,/debt/i);await capture('assessment');
     await page.locator('#editScope').click();await fill('feas-landDebt',0);await select('feas-financeMode','debt');
     await select('scopeLiftChoice','2');await select('scopeLiftAllocation','both');await select('scopePoolConfiguration','per-dwelling');
     await fill('scopePoolLength',8);await fill('scopePoolWidth',4);await fill('scopePoolDepth',1.5);await select('scopePoolType','concrete');await (await reveal('scopePoolHeating')).uncheck();await capture('lifts-pools-inputs');
