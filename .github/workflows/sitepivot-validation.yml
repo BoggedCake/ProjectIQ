@@ -1,0 +1,177 @@
+name: SitePivot validation only
+
+on:
+  push:
+    branches: [sitepivot-validation-20261017]
+  pull_request:
+    branches: [sitepivot-concept]
+    types: [opened, synchronize, reopened, ready_for_review]
+
+# No Pages, deployment, OIDC, PR-write or secret access is needed.
+permissions:
+  contents: read
+concurrency:
+  group: sitepivot-validation-${{ github.event.pull_request.head.ref || github.ref_name }}
+  cancel-in-progress: true
+
+env:
+  CANDIDATE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+  PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+  EVENT_SHA: ${{ github.sha }}
+  NODE_USE_ENV_PROXY: '1'
+
+jobs:
+  consumer:
+    if: github.event_name == 'push' || (github.event.pull_request.head.ref == 'sitepivot-validation-20261017' && github.event.pull_request.head.repo.full_name == github.repository)
+    timeout-minutes: 30
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.CANDIDATE_SHA }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify and record exact candidate checkout
+        shell: bash
+        run: |
+          set -euo pipefail
+          checkout_sha=$(git rev-parse HEAD)
+          test "$checkout_sha" = "$CANDIDATE_SHA"
+          git merge-base --is-ancestor 36841deddcd7427922a254c1b3d321f0fde40975 HEAD
+          mkdir -p qa-artifacts/validation
+          printf 'PR head SHA: %s\nEvent SHA: %s\nTested checkout SHA: %s\n' "${PR_HEAD_SHA:-not-a-PR}" "$EVENT_SHA" "$checkout_sha" | tee qa-artifacts/validation/checkout.txt >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - name: Install locked dependencies and both browsers
+        id: runtime
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium webkit
+      - name: Full npm suite including planning, parcel, performance, renovation and finance
+        if: ${{ !cancelled() && steps.runtime.outcome == 'success' }}
+        run: npm test
+        env:
+          QA_OUTPUT: journey-results.json
+      - name: Founder repair browser journeys
+        if: ${{ !cancelled() && steps.runtime.outcome == 'success' }}
+        run: SITEPIVOT_FOUNDER_PREVIEW=1 node qa/founder-repair-browser.cjs
+      - name: Remaining existing Chromium and WebKit consumer journeys
+        if: ${{ !cancelled() && steps.runtime.outcome == 'success' }}
+        shell: bash
+        run: |
+          status=0
+          for suite in qa/p0-browser.cjs qa/duplex-browser.cjs qa/fsr-buyer-browser.cjs qa/residential-browser.cjs qa/ownership-browser.cjs qa/master-financial-browser.cjs qa/premium-browser.cjs qa/waratah-browser.cjs qa/p0-founder-browser.cjs qa/property-intelligence-browser.cjs qa/mobile-journey.cjs qa/conversation-browser.cjs qa/voice-browser.cjs; do
+            if node "$suite"; then
+              printf '| `%s` | PASS |\n' "$suite" >> "$GITHUB_STEP_SUMMARY"
+            else
+              printf '| `%s` | FAIL |\n' "$suite" >> "$GITHUB_STEP_SUMMARY"
+              status=1
+            fi
+          done
+          exit "$status"
+      - name: WebKit mobile navigation and local server contracts
+        if: ${{ !cancelled() && steps.runtime.outcome == 'success' }}
+        run: |
+          QA_BROWSER=webkit node --test qa/mobile-navigation.cjs
+          node qa/founder-server-regression.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: validation-consumer-${{ env.CANDIDATE_SHA }}
+          path: |
+            journey-results.json
+            qa-artifacts/
+            mobile-qa/
+          retention-days: 14
+
+  security-preview:
+    if: github.event_name == 'push' || (github.event.pull_request.head.ref == 'sitepivot-validation-20261017' && github.event.pull_request.head.repo.full_name == github.repository)
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.CANDIDATE_SHA }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify and record exact candidate checkout
+        shell: bash
+        run: |
+          set -euo pipefail
+          checkout_sha=$(git rev-parse HEAD)
+          test "$checkout_sha" = "$CANDIDATE_SHA"
+          git merge-base --is-ancestor 36841deddcd7427922a254c1b3d321f0fde40975 HEAD
+          mkdir -p qa-artifacts/validation
+          printf 'PR head SHA: %s\nEvent SHA: %s\nTested checkout SHA: %s\n' "${PR_HEAD_SHA:-not-a-PR}" "$EVENT_SHA" "$checkout_sha" | tee qa-artifacts/validation/checkout.txt >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+        id: dependencies
+      - name: Existing security and secrets regressions
+        if: ${{ !cancelled() && steps.dependencies.outcome == 'success' }}
+        run: npm run test:security
+      - name: Redacted reachable-history and working-tree secret scan
+        if: ${{ !cancelled() && steps.dependencies.outcome == 'success' }}
+        run: python3 scripts/scan-secrets.py
+      - name: Locked dependency audit
+        if: ${{ !cancelled() && steps.dependencies.outcome == 'success' }}
+        run: npm audit --audit-level=moderate
+      - name: Build staging preview artifact only; no deployment
+        if: ${{ !cancelled() && steps.dependencies.outcome == 'success' }}
+        run: node qa/build-staging-preview.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: validation-staging-${{ env.CANDIDATE_SHA }}
+          path: |
+            qa-artifacts/validation/
+            qa-artifacts/staging-preview/
+          retention-days: 14
+
+  live-nsw:
+    if: github.event_name == 'push' || (github.event.pull_request.head.ref == 'sitepivot-validation-20261017' && github.event.pull_request.head.repo.full_name == github.repository)
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.CANDIDATE_SHA }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify and record exact candidate checkout
+        shell: bash
+        run: |
+          set -euo pipefail
+          checkout_sha=$(git rev-parse HEAD)
+          test "$checkout_sha" = "$CANDIDATE_SHA"
+          git merge-base --is-ancestor 36841deddcd7427922a254c1b3d321f0fde40975 HEAD
+          mkdir -p qa-artifacts/validation
+          printf 'PR head SHA: %s\nEvent SHA: %s\nTested checkout SHA: %s\n' "${PR_HEAD_SHA:-not-a-PR}" "$EVENT_SHA" "$checkout_sha" | tee qa-artifacts/validation/checkout.txt >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - name: Live statewide identity and planning QA
+        id: statewide
+        shell: bash
+        run: |
+          set -o pipefail
+          node qa/serverless-smoke.cjs | tee qa-artifacts/validation/server-data.log
+      - name: Live founder parcel-control acceptance gate
+        if: ${{ !cancelled() && steps.statewide.outcome != 'skipped' }}
+        shell: bash
+        run: |
+          set -o pipefail
+          node qa/live-parcel-controls.cjs | tee qa-artifacts/validation/parcel-controls.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: validation-live-nsw-${{ env.CANDIDATE_SHA }}
+          path: |
+            qa-artifacts/validation/
+            qa-artifacts/nsw-spatial/
+          retention-days: 14
