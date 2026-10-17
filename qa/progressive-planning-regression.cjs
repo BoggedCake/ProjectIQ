@@ -13,7 +13,7 @@ async function run(aborted=false){
  const box={LIVE:{primary:'primary',protection:'protection',hazard:'hazard',bushfire:'bushfire',controls:'controls',sepp:'sepp',local:'local'},LIVE_LAYER:{fsr:1,zone:2,lot:4,height:5},
  spatialLayer:async(base,id)=>base==='primary'&&core.has(id)?records:secondary,
  identifyPoint:()=>secondary,pullCouncilEvidence:()=>secondary,
- Z:{resolve:()=>({state:'single-zone',primaryZone:{code:'R1',label:'General Residential',instrument:'Synthetic LEP'}})},F:{resolve:()=>({value:'0.6:1'})},P:{overlayEvidence:()=>({})},
+ Z:{resolve:()=>({state:'single-zone',primaryZone:{code:'R1',label:'General Residential',instrument:'Synthetic LEP'}})},F:{resolve:()=>({value:'0.6:1'}),resolveControl:()=>({value:null,requiresReview:true})},P:{overlayEvidence:()=>({})},
  epiNames:()=>[],uniq:a=>[...new Set(a)],formatZone:()=>'',formatHeight:()=> '8.5 m',formatLot:()=> '250 m²',triggerText:()=>'',planNames:()=>[],rowLabels:()=>[],attrs:x=>x.attributes||{},Date,Promise,performance};
  vm.runInNewContext(html.slice(html.indexOf('async function pullPlanning('),html.indexOf('function parseTitleFromLots(')),box);
  const work=box.pullPlanning({x:151,y:-33},{geometry:{rings:[]}},'SYNTHETIC',controller.signal,x=>seen.push(x));

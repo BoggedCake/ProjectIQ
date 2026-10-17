@@ -31,8 +31,8 @@ function developmentAreaModel(input={}){
  const ratio=value=>{if(typeof value==='boolean'||value==null)return null;const m=String(value).trim().match(/^(\d+(?:\.\d+)?)\s*(?::\s*1)?$/);return m&&Number.isFinite(+m[1])?+m[1]:null;};
  const evidenceRatio=ratio(evidence?.value),suppliedRatio=ratio(input.fsr);
  const instrumentMatches=!input.instrument||String(evidence?.provenance?.instrument||'').trim().toLowerCase()===String(input.instrument).trim().toLowerCase();
- const verified=evidence?.state==='mapped'&&evidence.parcelResolved===true&&evidence.queryComplete===true&&instrumentMatches&&evidenceRatio!==null&&(input.fsr==null||suppliedRatio===evidenceRatio);
- const capacity=verified&&positive(input.siteArea)?+input.siteArea*evidenceRatio:null;
+ const verified=evidence?.state==='mapped'&&evidence.spatiallyVerified!==false&&evidence.requiresReview!==true&&(evidence.capacityAreaFraction==null||positive(evidence.capacityAreaFraction)&&+evidence.capacityAreaFraction<=1)&&evidence.parcelResolved===true&&evidence.queryComplete===true&&instrumentMatches&&evidenceRatio!==null&&(input.fsr==null||suppliedRatio===evidenceRatio);
+ const capacity=verified&&positive(input.siteArea)?+input.siteArea*evidenceRatio*(evidence.capacityAreaFraction==null?1:+evidence.capacityAreaFraction):null;
  const manual=['manual','user'].includes(input.areaSource),manualBasement=manual||['manual','user'].includes(input.basementAreaSource);
  let above=null,basement=null,total=null;
  const assumptions=['A working area scenario only, not a measured design, approved yield or confirmation of FSR, height, setbacks, landscape, parking or subdivision compliance.',`${share*100}% of verified mapped FSR capacity is the explicit starter working share; this is a modelling assumption, not a statutory entitlement.`, 'All above-ground constructed area is conservatively treated as counted GFA; no extra excluded above-ground area is invented.','Starter basement footprint equals one average above-ground floorplate; excavation, ramp, setbacks and actual basement definition need design review.'];
@@ -458,7 +458,7 @@ function interpretIntent(text){
 }
 // Founder component assumptions: GST, ordinary installation, local services and 10% room contingency included.
 // These are NOT verified quotes. Houzz AU 2023 median kitchen $30k/bath $19k is historical context only.
-const RENO_VERSION='renovation-components-2026-10-07-v1';
+const RENO_VERSION='renovation-scope-2026-10-17-v2';
 const RENOVATION_COMPONENTS={
  kitchen:{label:'Kitchen',band:[25000,40000,65000],includes:['Cabinetry, benchtop, standard appliances','Room electrical/plumbing, finishes and installation']},
  bathroom:{label:'Bathroom',band:[18000,28000,45000],includes:['Fixtures, waterproofing, tiling','Room electrical/plumbing and installation']},
@@ -475,12 +475,53 @@ const RENOVATION_COMPONENTS={
  wholehome:{label:'Whole-home shared finishes',band:[30000,55000,95000],includes:['Shared dry-room finishes, flooring, painting and ordinary electrical','Excludes separately selected kitchen, bathroom and structural work']},
  outdoor:{label:'Outdoor / alfresco improvement',band:[10000,22000,40000],includes:['Modest existing outdoor area finishes and connection']}
 };
-function renovationCost({components=[],extent='replace',quality='premium',complexity='normal',region=1,counts={}}={}){
- const unique=[...new Set(components)],unknown=unique.some(k=>!RENOVATION_COMPONENTS[k]);const keys=unique.filter(k=>RENOVATION_COMPONENTS[k]&&!(unique.includes('wholehome')&&['flooring','painting','electrical','living','office'].includes(k)));
- if(!keys.length||unknown)return{status:'review',low:null,mid:null,high:null,reason:'Describe the additional work so a designer or builder can price it.',version:RENO_VERSION,components:[]};
- const qualityAdjustment={standard:1,premium:1.2,luxury:1.6}[quality]||1.2,complexityAdjustment={simple:.95,normal:1,hard:1.2}[complexity]||1,regionAdjustment=positive(region)?+region:1;
- const lines=keys.map(k=>{const c=RENOVATION_COMPONENTS[k],extentAdjustment=k==='openplan'?1:extent==='refresh'?.55:extent==='structural'?1.25:1,n=Math.max(1,Math.min(20,+counts[k]||1)),factor=qualityAdjustment*complexityAdjustment*regionAdjustment*extentAdjustment*n;return{key:k,label:c.label,low:Math.round(c.band[0]*factor),mid:Math.round(c.band[1]*factor),high:Math.round(c.band[2]*factor),count:n,qualityAdjustment,complexityAdjustment,regionAdjustment,extentAdjustment,version:RENO_VERSION,inclusions:[...c.includes,'GST and ordinary room contingency'],exclusions:['Extensions or additional levels','Major service relocation, hazardous materials or exceptional structure','Unselected rooms, furnishings and temporary accommodation']}});
- return{status:'indicative',low:lines.reduce((n,c)=>n+c.low,0),mid:lines.reduce((n,c)=>n+c.mid,0),high:lines.reduce((n,c)=>n+c.high,0),components:lines,version:RENO_VERSION,qualityAdjustment,complexityAdjustment,regionAdjustment,note:'Selected room allowances include ordinary installation, services, GST and room contingency. These working estimates need a measured scope and builder pricing; exceptional work is excluded.'};
+function renovationCost({components=[],extent='replace',quality='premium',complexity='normal',region=1,counts={},quantities={},allowances={},accessCondition='ordinary',contingencyPct=0}={}){
+ const review=reason=>({status:'review',decisionReady:false,low:null,mid:null,high:null,reason,version:RENO_VERSION,components:[]});
+ const validNumber=n=>typeof n!=='boolean'&&numeric(n)&&+n>=0;
+ if(extent==='reconstruction')return review('Substantial reconstruction needs a measured structural scope and project-specific QS/builder estimate; room packages do not price rebuilding.');
+ if(!['replace','refresh','layout','structural'].includes(extent)||!['standard','premium','luxury'].includes(quality)||!['simple','normal','hard'].includes(complexity)||!positive(region))return review('Confirm renovation extent, finish, complexity and regional working factor.');
+ if(!['ordinary','restricted','unknown'].includes(accessCondition)||!validNumber(contingencyPct)||+contingencyPct>1)return review('Confirm site access and incremental contingency from zero to 100%.');
+ const limits={windowDoorArea:1000,finishArea:10000,structuralOpenings:20,plumbingRelocations:50};
+ for(const [k,v]of Object.entries(quantities))if(!(k in limits)||!validNumber(v)||+v>limits[k]||(['structuralOpenings','plumbingRelocations'].includes(k)&&!Number.isInteger(+v)))return review('Confirm nonnegative measured quantities; openings and service relocations must be whole numbers.');
+ for(const [k,v]of Object.entries(counts))if(!validNumber(v)||!Number.isInteger(+v)||+v<1||+v>20)return review('Confirm each selected room count from one to twenty.');
+ const allowanceKeys=['preliminaries','consultants','approvals','demolition','conditions','access'];
+ for(const [k,v]of Object.entries(allowances))if(!allowanceKeys.includes(k)||!validNumber(v))return review('Confirm nonnegative additional project allowances.');
+ const unique=[...new Set(components)];
+ if(!unique.length||unique.some(k=>!RENOVATION_COMPONENTS[k]))return review('Describe the additional work so a designer or builder can price it.');
+ const structural=unique.includes('openplan')||['layout','structural'].includes(extent)||+quantities.structuralOpenings>0;
+ const effective={windowDoorArea:quantities.windowDoorArea??8,finishArea:quantities.finishArea??100,structuralOpenings:quantities.structuralOpenings??(structural?counts.openplan??1:0),plumbingRelocations:quantities.plumbingRelocations??0};
+ if(structural&&effective.structuralOpenings===0||unique.includes('windows')&&effective.windowDoorArea===0||unique.some(k=>['flooring','painting','wholehome'].includes(k))&&effective.finishArea===0)return review('Selected structural, glazing or shared-finish work needs a positive quantity.');
+ if(structural&&!unique.includes('openplan'))unique.push('openplan');
+ const keys=unique.filter(k=>!(unique.includes('wholehome')&&['flooring','painting','electrical','living','office'].includes(k)));
+ const qualityAdjustment={standard:1,premium:1.2,luxury:1.6}[quality],complexityAdjustment={simple:.95,normal:1,hard:1.2}[complexity],regionAdjustment=+region;
+ const exclusions=['Extensions or additional levels','Major service upgrades, hazardous materials, exceptional structure or ground conditions unless explicitly allowed','Unselected rooms, loose furnishings, accommodation and household finance'];
+ const lines=keys.map(k=>{
+  const c=RENOVATION_COMPONENTS[k],extentAdjustment=k==='openplan'?1:extent==='refresh'?.55:1;
+  const n=k==='openplan'?effective.structuralOpenings:counts[k]??1;
+  const quantityFactor=k==='windows'?effective.windowDoorArea/8:['flooring','painting','wholehome'].includes(k)?effective.finishArea/100:1;
+  const factor=qualityAdjustment*complexityAdjustment*regionAdjustment*extentAdjustment*n*quantityFactor;
+  const inclusions=[...c.includes,'GST and ordinary room contingency included; embedded amounts not separately verified'];
+  if(k==='openplan')inclusions.push('Ordinary beam installation, temporary support, local demolition and making good; ordinary opening engineering included once');
+  return{key:k,label:c.label,low:Math.round(c.band[0]*factor),mid:Math.round(c.band[1]*factor),high:Math.round(c.band[2]*factor),count:n,quantity:k==='windows'?effective.windowDoorArea:['flooring','painting','wholehome'].includes(k)?effective.finishArea:n,unit:k==='windows'||['flooring','painting','wholehome'].includes(k)?'m²':'package',quantityFactor,qualityAdjustment,complexityAdjustment,regionAdjustment,extentAdjustment,version:RENO_VERSION,taxBasis:'gst-inclusive',source:'Internal legacy room allowance; not a QS or builder quote',inclusions,exclusions:[...exclusions]};
+ });
+ const add=(key,label,values,inclusions,taxBasis='ex-gst',extra={})=>lines.push({key,label,low:Math.round(values[0]),mid:Math.round(values[1]),high:Math.round(values[2]),version:RENO_VERSION,taxBasis,source:'Internal incremental working allowance; not an external quote',inclusions,exclusions:[...exclusions],...extra});
+ if(effective.plumbingRelocations){const factor=effective.plumbingRelocations*qualityAdjustment*regionAdjustment;add('plumbingRelocations','Additional plumbing relocations',[1500,3000,6000].map(v=>v*factor),['Rerouting beyond ordinary in-room fixture connections; excludes authority/main-service upgrades'],'ex-gst',{count:effective.plumbingRelocations,unit:'relocation'});}
+ for(const [key,label,included]of [
+  ['preliminaries','Additional project preliminaries','Extra project setup, supervision and sequencing beyond ordinary room execution'],
+  ['consultants','Additional design / consultants','Additional measured design/documentation; excludes engineering already included in structural opening packages'],
+  ['demolition','Additional demolition / making good','Work outside room strip-out and structural-opening demolition already included'],
+  ['conditions','Additional site / existing-condition allowance','Explicit allowance for separately identified conditions; omitted amount remains unverified']
+ ]){const amount=+(allowances[key]??0);add(key,label,[amount,amount,amount],[included]);}
+ const access=allowances.access!=null?[+allowances.access,+allowances.access,+allowances.access]:accessCondition==='restricted'?[5000,10000,20000]:[0,0,0];
+ add('access','Additional restricted-access allowance',access,['Extra logistics / handling beyond ordinary room access; conditions require confirmation']);
+ const incremental=['low','mid','high'].map(b=>lines.filter(l=>l.taxBasis==='ex-gst').reduce((n,l)=>n+l[b],0));
+ add('contingency','Additional contingency on incremental scope',incremental.map(v=>v* +contingencyPct),['Explicit additional risk allowance on incremental ex-GST items only; no second contingency on room packages']);
+ const approvals=+(allowances.approvals??0);add('approvals','Additional statutory / approval fees',[approvals,approvals,approvals],['Explicit gross government-fee allowance; taxable consultant/report fees belong in consultants'],'gross-statutory');
+ const taxable=['low','mid','high'].map(b=>lines.filter(l=>l.taxBasis==='ex-gst').reduce((n,l)=>n+l[b],0));
+ add('gst','GST on incremental taxable allowances',taxable.map(v=>v*.1),['GST 10% added once to incremental ex-GST items; room-package GST is already included'],'gst');
+ const warnings=['Legacy room packages include ordinary GST and room contingency, but their embedded split is unverified; no artificial rebasing or second allowance is applied.','Zero additional preliminaries, consultants, approvals, demolition or conditions means no separately priced extra; it does not verify those costs are unnecessary.','Glazing default 8 m² per selected package and shared-finish default 100 m² are internal unmeasured reference quantities; confirm actual scope.','Flooring/painting shared quantities exclude selected room finishes. Ordinary room services and structural-opening engineering/support/demo/making good must not be charged again as extras.'];
+ if(accessCondition==='unknown')warnings.push('Site access remains unknown; no restricted-access amount has been assumed.');
+ return{status:'indicative',decisionReady:false,scenarioClass:structural?'structural':extent==='refresh'?'cosmetic':'replacement',low:lines.reduce((n,l)=>n+l.low,0),mid:lines.reduce((n,l)=>n+l.mid,0),high:lines.reduce((n,l)=>n+l.high,0),components:lines,version:RENO_VERSION,qualityAdjustment,complexityAdjustment,regionAdjustment,quantities:effective,allowances:{...Object.fromEntries(allowanceKeys.map(k=>[k,+(allowances[k]??(k==='access'?access[1]:0))]))},accessCondition,contingencyPct:+contingencyPct,warnings,assumptions:{basis:'Internal scope estimates; no project-specific builder/QS quote or freshly verified 2026 renovation tariff',quantityInputs:Object.fromEntries(Object.keys(effective).map(k=>[k,quantities[k]!=null?'user':'unmeasured working default'])),gst:'Opaque room-package GST retained; 10% applied once only to incremental ex-GST items; statutory fees treated gross',contingency:'Ordinary room contingency remains included but undisaggregated; additional contingency defaults to zero and applies only to incremental scope'},note:'Scope-led internal estimate, not a complete measured project budget or external quote. Ordinary room packages are retained; added quantities and separately identified project scope are priced once. Confirm all zero exclusions, structure, services, access, fees and conditions with a designer/QS/builder.'};
 }
 function deliveryComposition(cost){if(!positive(cost?.mid))return[];if(!Array.isArray(cost.components))return[{label:'Delivered total — breakdown unavailable',amount:cost.mid,share:1,version:cost.version||VERSION,source:'No measured component breakdown supplied'}];return cost.components.filter(l=>l.mid>0).map(l=>({...l,amount:l.mid,share:l.mid/cost.mid,version:cost.version||VERSION,source:l.source||'Actual working cost component; included once in delivered total'}))}
 

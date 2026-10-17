@@ -14,7 +14,7 @@ test('real planning route streams safe milestones and retains the legacy JSON co
   while(!events.some(x=>x.phase==='core'))assert.equal(await read(),false);
   const parcel=events.find(x=>x.phase==='parcel'),core=events.find(x=>x.phase==='core');
   assert.equal(parcel.parcel.identityEvidence.status,'matched');assert.ok(parcel.parcel.area>0);
-  assert.equal(core.planning.loading,true);assert.equal(core.planning.sourceChecks.flood.status,'loading');assert.ok(core.planning.fsr);
+  assert.equal(core.planning.loading,true);assert.equal(core.planning.sourceChecks.flood.status,'loading');assert.equal(core.planning.fsr,'0.5:1');assert.equal(core.planning.fsrEvidence.mappingUncertainty,true);assert.ok(core.planning.fsrEvidence.capacityAreaFraction<1);assert.ok(core.planning.fsrEvidence.uncoveredAreaSqm>0);
   assert.ok(!events.some(x=>x.phase==='complete'),'no final claim while supplements are pending');
   release();while(!await read()){}
   assert.ok(events.some(x=>x.phase==='frontage'));assert.equal(events.at(-1).phase,'complete');assert.deepEqual(events.at(-1).planning.failedKeys,[]);

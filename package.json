@@ -19,10 +19,11 @@
     "test:financial": "node qa/financial-voice-regression.cjs && node qa/residential-mortgage-regression.cjs && node qa/financial-replacement-regression.cjs && node qa/master-financial-ui.cjs",
     "test:premium": "node qa/premium-feasibility-regression.cjs && node qa/premium-ui.cjs",
     "test:reliability": "node qa/client-reliability.cjs && node qa/server-reliability.cjs",
-    "test:p0": "node qa/address-partial-direction.cjs && node qa/p0-address-regression.cjs && node qa/p0-completeness-regression.cjs && node qa/p0-road-regression.cjs && node qa/p0-zoning-regression.cjs && node --test qa/p0-review-regression.cjs && node --test qa/p0-trigger-regression.cjs && node qa/address-direction-regression.cjs && node qa/request-dedup-regression.cjs && node qa/progressive-planning-regression.cjs && npm run test:property-performance",
+    "test:p0": "node qa/address-partial-direction.cjs && node qa/p0-address-regression.cjs && node qa/p0-completeness-regression.cjs && node qa/p0-road-regression.cjs && node qa/p0-zoning-regression.cjs && node --test qa/p0-review-regression.cjs && node --test qa/p0-trigger-regression.cjs && node qa/address-direction-regression.cjs && node qa/request-dedup-regression.cjs && node qa/progressive-planning-regression.cjs && npm run test:property-performance && npm run test:nsw-spatial-scope",
     "test:ownership": "node qa/ownership-finance.cjs && node qa/ownership-ui.cjs && node qa/market-profile-regression.cjs && node qa/release-range-diagnostic.cjs && node qa/market-readiness.cjs && node qa/market-value-readiness.cjs && node qa/identity-review-contract.cjs && node qa/qa-outcomes-regression.cjs && node qa/live-readiness-regression.mjs && node qa/owner-financial-position.cjs && node qa/p0-owner-ui.cjs",
     "test:waratah": "node --test qa/waratah-overlay-regression.cjs && node qa/waratah-finance-regression.cjs && node qa/waratah-contributions-regression.cjs && node qa/waratah-ui-regression.cjs",
-    "test:property-performance": "node --test qa/property-performance-regression.cjs qa/property-progressive-ui.cjs qa/property-planning-stream.cjs qa/planning-refresh-safeguard.cjs"
+    "test:property-performance": "node --test qa/property-performance-regression.cjs qa/property-progressive-ui.cjs qa/property-planning-stream.cjs qa/planning-refresh-safeguard.cjs",
+    "test:nsw-spatial-scope": "node --test qa/parcel-controls-regression.cjs qa/address-identity-recovery.cjs qa/renovation-scope-calibration.cjs qa/renovation-scope-ui.cjs qa/browser-identity-recovery.cjs qa/quantitative-control-ui.cjs"
   },
   "devDependencies": {
     "jsdom": "30.1.2",

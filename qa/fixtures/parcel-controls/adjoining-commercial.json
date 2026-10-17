@@ -1,0 +1,5868 @@
+{
+  "case": "Independently captured adjoining commercial cadastral parcel; no address inferred",
+  "subject": {
+    "cadid": 102197818,
+    "cadastralIdentifier": "15/B/DP2044"
+  },
+  "neighbour": {
+    "cadid": 102197812,
+    "cadastralIdentifier": "A//DP306858",
+    "address": null
+  },
+  "discovery": {
+    "url": "https://portal.spatial.nsw.gov.au/server/rest/services/NSW_Land_Parcel_Property_Theme/FeatureServer/8/query?f=json&where=1%3D1&geometry=%7B%22rings%22%3A%5B%5B%5B338728.4535918767%2C6258576.530696198%5D%2C%5B338721.7822772441%2C6258531.280872878%5D%2C%5B338706.506919699%2C6258533.462491939%5D%2C%5B338708.58656848967%2C6258547.286146406%5D%2C%5B338710.70149806247%2C6258560.831989082%5D%2C%5B338713.4002540977%2C6258578.689290585%5D%2C%5B338728.4535918767%2C6258576.530696198%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A28356%2C%22latestWkid%22%3A28356%7D%7D&geometryType=esriGeometryPolygon&inSR=28356&spatialRel=esriSpatialRelIntersects&distance=5&units=esriSRUnit_Meter&outFields=%2A&returnGeometry=true&outSR=28356&resultRecordCount=100",
+    "checkedAt": "2026-10-17T10:51:27.716424+00:00",
+    "response": {
+      "objectIdFieldName": "objectid",
+      "globalIdFieldName": "",
+      "geometryType": "esriGeometryPolygon",
+      "spatialReference": {
+        "wkid": 28356,
+        "latestWkid": 28356
+      },
+      "fields": [
+        {
+          "name": "objectid",
+          "alias": "OBJECTID",
+          "type": "esriFieldTypeOID"
+        },
+        {
+          "name": "cadid",
+          "alias": "cadid",
+          "type": "esriFieldTypeInteger"
+        },
+        {
+          "name": "createdate",
+          "alias": "createdate",
+          "type": "esriFieldTypeDate",
+          "length": 8
+        },
+        {
+          "name": "modifieddate",
+          "alias": "modifieddate",
+          "type": "esriFieldTypeDate",
+          "length": 8
+        },
+        {
+          "name": "controllingauthorityoid",
+          "alias": "controllingauthorityoid",
+          "type": "esriFieldTypeInteger"
+        },
+        {
+          "name": "planoid",
+          "alias": "planoid",
+          "type": "esriFieldTypeInteger"
+        },
+        {
+          "name": "plannumber",
+          "alias": "plannumber",
+          "type": "esriFieldTypeInteger"
+        },
+        {
+          "name": "planlabel",
+          "alias": "planlabel",
+          "type": "esriFieldTypeString",
+          "length": 15
+        },
+        {
+          "name": "itstitlestatus",
+          "alias": "ITSTitleStatus",
+          "type": "esriFieldTypeSmallInteger"
+        },
+        {
+          "name": "itslotid",
+          "alias": "itslotid",
+          "type": "esriFieldTypeInteger"
+        },
+        {
+          "name": "stratumlevel",
+          "alias": "StratumLevel",
+          "type": "esriFieldTypeSmallInteger"
+        },
+        {
+          "name": "hasstratum",
+          "alias": "HasStratum",
+          "type": "esriFieldTypeSmallInteger"
+        },
+        {
+          "name": "classsubtype",
+          "alias": "ClassSubtype",
+          "type": "esriFieldTypeInteger"
+        },
+        {
+          "name": "lotnumber",
+          "alias": "lotnumber",
+          "type": "esriFieldTypeString",
+          "length": 6
+        },
+        {
+          "name": "sectionnumber",
+          "alias": "sectionnumber",
+          "type": "esriFieldTypeString",
+          "length": 3
+        },
+        {
+          "name": "planlotarea",
+          "alias": "planlotarea",
+          "type": "esriFieldTypeDouble"
+        },
+        {
+          "name": "planlotareaunits",
+          "alias": "planlotareaunits",
+          "type": "esriFieldTypeString",
+          "length": 6
+        },
+        {
+          "name": "startdate",
+          "alias": "startdate",
+          "type": "esriFieldTypeDate",
+          "length": 8
+        },
+        {
+          "name": "enddate",
+          "alias": "enddate",
+          "type": "esriFieldTypeDate",
+          "length": 8
+        },
+        {
+          "name": "lastupdate",
+          "alias": "lastupdate",
+          "type": "esriFieldTypeDate",
+          "length": 8
+        },
+        {
+          "name": "msoid",
+          "alias": "msoid",
+          "type": "esriFieldTypeInteger"
+        },
+        {
+          "name": "centroidid",
+          "alias": "centroidid",
+          "type": "esriFieldTypeInteger"
+        },
+        {
+          "name": "shapeuuid",
+          "alias": "shapeuuid",
+          "type": "esriFieldTypeString",
+          "length": 38
+        },
+        {
+          "name": "changetype",
+          "alias": "changetype",
+          "type": "esriFieldTypeString",
+          "length": 2
+        },
+        {
+          "name": "lotidstring",
+          "alias": "lotidstring",
+          "type": "esriFieldTypeString",
+          "length": 50
+        },
+        {
+          "name": "processstate",
+          "alias": "processstate",
+          "type": "esriFieldTypeString",
+          "length": 5
+        },
+        {
+          "name": "urbanity",
+          "alias": "urbanity",
+          "type": "esriFieldTypeString",
+          "length": 2
+        },
+        {
+          "name": "Shape__Length",
+          "alias": "shape_Length",
+          "type": "esriFieldTypeDouble"
+        },
+        {
+          "name": "Shape__Area",
+          "alias": "shape_Area",
+          "type": "esriFieldTypeDouble"
+        }
+      ],
+      "features": [
+        {
+          "attributes": {
+            "objectid": 1258257,
+            "cadid": 102197812,
+            "createdate": 749952000000,
+            "modifieddate": 749952000000,
+            "controllingauthorityoid": 2,
+            "planoid": 424473,
+            "plannumber": 306858,
+            "planlabel": "DP306858",
+            "itstitlestatus": 1,
+            "itslotid": 1784579,
+            "stratumlevel": 0,
+            "hasstratum": 1,
+            "classsubtype": 1,
+            "lotnumber": "A",
+            "sectionnumber": null,
+            "planlotarea": null,
+            "planlotareaunits": null,
+            "startdate": 1101498211000,
+            "enddate": 32503680000000,
+            "lastupdate": 1101498211177,
+            "msoid": 1842242,
+            "centroidid": null,
+            "shapeuuid": "64cd1140-405c-31c5-89ee-90b538a28eeb",
+            "changetype": "I",
+            "lotidstring": "A//DP306858",
+            "processstate": null,
+            "urbanity": "U",
+            "Shape__Length": 126.0421138927455,
+            "Shape__Area": 523.0389202316825
+          },
+          "geometry": {
+            "rings": [
+              [
+                [
+                  338706.506919699,
+                  6258533.462491939
+                ],
+                [
+                  338721.7822772441,
+                  6258531.280872878
+                ],
+                [
+                  338736.23619744636,
+                  6258529.218541621
+                ],
+                [
+                  338735.1825172299,
+                  6258521.044259746
+                ],
+                [
+                  338691.3445501996,
+                  6258527.499371372
+                ],
+                [
+                  338692.52146022767,
+                  6258535.456115307
+                ],
+                [
+                  338706.506919699,
+                  6258533.462491939
+                ]
+              ]
+            ]
+          }
+        },
+        {
+          "attributes": {
+            "objectid": 1258260,
+            "cadid": 102197815,
+            "createdate": 749952000000,
+            "modifieddate": 749952000000,
+            "controllingauthorityoid": 2,
+            "planoid": 13835,
+            "plannumber": 344240,
+            "planlabel": "DP344240",
+            "itstitlestatus": 1,
+            "itslotid": 1827295,
+            "stratumlevel": 0,
+            "hasstratum": 1,
+            "classsubtype": 1,
+            "lotnumber": "4",
+            "sectionnumber": null,
+            "planlotarea": null,
+            "planlotareaunits": null,
+            "startdate": 1101498243000,
+            "enddate": 32503680000000,
+            "lastupdate": 1101498243266,
+            "msoid": 171337,
+            "centroidid": null,
+            "shapeuuid": "7ceee4ba-2d37-3d8b-9548-f6cf12d72d63",
+            "changetype": "I",
+            "lotidstring": "4//DP344240",
+            "processstate": null,
+            "urbanity": "U",
+            "Shape__Length": 67.6932137722533,
+            "Shape__Area": 286.38209436111384
+          },
+          "geometry": {
+            "rings": [
+              [
+                [
+                  338708.58656848967,
+                  6258547.286146406
+                ],
+                [
+                  338706.506919699,
+                  6258533.462491939
+                ],
+                [
+                  338692.52146022767,
+                  6258535.456115307
+                ],
+                [
+                  338694.55808896467,
+                  6258549.215393655
+                ],
+                [
+                  338708.58656848967,
+                  6258547.286146406
+                ]
+              ]
+            ]
+          }
+        },
+        {
+          "attributes": {
+            "objectid": 1258261,
+            "cadid": 102197816,
+            "createdate": 749952000000,
+            "modifieddate": 749952000000,
+            "controllingauthorityoid": 2,
+            "planoid": 13835,
+            "plannumber": 344240,
+            "planlabel": "DP344240",
+            "itstitlestatus": 1,
+            "itslotid": 1827294,
+            "stratumlevel": 0,
+            "hasstratum": 1,
+            "classsubtype": 1,
+            "lotnumber": "3",
+            "sectionnumber": null,
+            "planlotarea": null,
+            "planlotareaunits": null,
+            "startdate": 1101498202000,
+            "enddate": 32503680000000,
+            "lastupdate": 1101498202509,
+            "msoid": 131870,
+            "centroidid": null,
+            "shapeuuid": "753bff49-0ad7-37c4-99c0-1fc5c8c242b7",
+            "changetype": "I",
+            "lotidstring": "3//DP344240",
+            "processstate": null,
+            "urbanity": "U",
+            "Shape__Length": 67.29772628720426,
+            "Shape__Area": 282.9649437068605
+          },
+          "geometry": {
+            "rings": [
+              [
+                [
+                  338710.70149806247,
+                  6258560.831989082
+                ],
+                [
+                  338708.58656848967,
+                  6258547.286146406
+                ],
+                [
+                  338694.55808896467,
+                  6258549.215393655
+                ],
+                [
+                  338696.5657249592,
+                  6258562.777334016
+                ],
+                [
+                  338710.70149806247,
+                  6258560.831989082
+                ]
+              ]
+            ]
+          }
+        },
+        {
+          "attributes": {
+            "objectid": 1258262,
+            "cadid": 102197817,
+            "createdate": 749952000000,
+            "modifieddate": 749952000000,
+            "controllingauthorityoid": 2,
+            "planoid": 164546,
+            "plannumber": 18537,
+            "planlabel": "SP18537",
+            "itstitlestatus": 1,
+            "itslotid": 237582,
+            "stratumlevel": 0,
+            "hasstratum": 1,
+            "classsubtype": 3,
+            "lotnumber": null,
+            "sectionnumber": null,
+            "planlotarea": null,
+            "planlotareaunits": null,
+            "startdate": 1101498224000,
+            "enddate": 32503680000000,
+            "lastupdate": 1101498224381,
+            "msoid": 763324,
+            "centroidid": null,
+            "shapeuuid": "48d1e5d5-7a89-3e9e-bace-16af761e7604",
+            "changetype": "I",
+            "lotidstring": "//SP18537",
+            "processstate": null,
+            "urbanity": "U",
+            "Shape__Length": 76.97867715123941,
+            "Shape__Area": 373.8464066203866
+          },
+          "geometry": {
+            "rings": [
+              [
+                [
+                  338713.4002540977,
+                  6258578.689290585
+                ],
+                [
+                  338710.70149806247,
+                  6258560.831989082
+                ],
+                [
+                  338696.5657249592,
+                  6258562.777334016
+                ],
+                [
+                  338698.9980912615,
+                  6258579.206218813
+                ],
+                [
+                  338700.8433500132,
+                  6258580.4833368305
+                ],
+                [
+                  338713.4002540977,
+                  6258578.689290585
+                ]
+              ]
+            ]
+          }
+        },
+        {
+          "attributes": {
+            "objectid": 1258263,
+            "cadid": 102197818,
+            "createdate": 749952000000,
+            "modifieddate": 749952000000,
+            "controllingauthorityoid": 2,
+            "planoid": 542026,
+            "plannumber": 2044,
+            "planlabel": "DP2044",
+            "itstitlestatus": 1,
+            "itslotid": 465997,
+            "stratumlevel": 0,
+            "hasstratum": 1,
+            "classsubtype": 1,
+            "lotnumber": "15",
+            "sectionnumber": "B",
+            "planlotarea": null,
+            "planlotareaunits": null,
+            "startdate": 1101498206000,
+            "enddate": 32503680000000,
+            "lastupdate": 1101498206804,
+            "msoid": 2260251,
+            "centroidid": null,
+            "shapeuuid": "ff69d6d3-e1af-36c5-98e3-ab327899e796",
+            "changetype": "I",
+            "lotidstring": "15/B/DP2044",
+            "processstate": null,
+            "urbanity": "U",
+            "Shape__Length": 147.3284610991581,
+            "Shape__Area": 1017.5717584713706
+          },
+          "geometry": {
+            "rings": [
+              [
+                [
+                  338728.4535918767,
+                  6258576.530696198
+                ],
+                [
+                  338721.7822772441,
+                  6258531.280872878
+                ],
+                [
+                  338706.506919699,
+                  6258533.462491939
+                ],
+                [
+                  338708.58656848967,
+                  6258547.286146406
+                ],
+                [
+                  338710.70149806247,
+                  6258560.831989082
+                ],
+                [
+                  338713.4002540977,
+                  6258578.689290585
+                ],
+                [
+                  338728.4535918767,
+                  6258576.530696198
+                ]
+              ]
+            ]
+          }
+        },
+        {
+          "attributes": {
+            "objectid": 1258265,
+            "cadid": 102197820,
+            "createdate": 749952000000,
+            "modifieddate": 749952000000,
+            "controllingauthorityoid": 2,
+            "planoid": 542026,
+            "plannumber": 2044,
+            "planlabel": "DP2044",
+            "itstitlestatus": 1,
+            "itslotid": 465994,
+            "stratumlevel": 0,
+            "hasstratum": 1,
+            "classsubtype": 1,
+            "lotnumber": "14",
+            "sectionnumber": "B",
+            "planlotarea": null,
+            "planlotareaunits": null,
+            "startdate": 1101498253000,
+            "enddate": 32503680000000,
+            "lastupdate": 1101498253003,
+            "msoid": 2404908,
+            "centroidid": null,
+            "shapeuuid": "3ce5759c-0dc1-3ea1-b1a2-298c3197587a",
+            "changetype": "I",
+            "lotidstring": "14/B/DP2044",
+            "processstate": null,
+            "urbanity": "U",
+            "Shape__Length": 145.74892403519783,
+            "Shape__Area": 974.6678217136082
+          },
+          "geometry": {
+            "rings": [
+              [
+                [
+                  338743.0586010408,
+                  6258574.42328443
+                ],
+                [
+                  338736.23619744636,
+                  6258529.218541621
+                ],
+                [
+                  338721.7822772441,
+                  6258531.280872878
+                ],
+                [
+                  338728.4535918767,
+                  6258576.530696198
+                ],
+                [
+                  338743.0586010408,
+                  6258574.42328443
+                ]
+              ]
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "fsr": {
+    "url": "https://mapprod3.environment.nsw.gov.au/arcgis/rest/services/Planning/EPI_Primary_Planning_Layers/MapServer/1/query?where=1%3D1&geometry=%7B%22rings%22%3A%5B%5B%5B338706.506919699%2C6258533.462491939%5D%2C%5B338721.7822772441%2C6258531.280872878%5D%2C%5B338736.23619744636%2C6258529.218541621%5D%2C%5B338735.1825172299%2C6258521.044259746%5D%2C%5B338691.3445501996%2C6258527.499371372%5D%2C%5B338692.52146022767%2C6258535.456115307%5D%2C%5B338706.506919699%2C6258533.462491939%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A28356%2C%22latestWkid%22%3A28356%7D%7D&geometryType=esriGeometryPolygon&inSR=28356&spatialRel=esriSpatialRelIntersects&outFields=%2A&returnGeometry=true&outSR=28356&resultRecordCount=100&f=json",
+    "checkedAt": "2026-10-17T10:52:05.761942+00:00",
+    "response": {
+      "displayFieldName": "EPI_NAME",
+      "fieldAliases": {
+        "OBJECTID": "OBJECTID",
+        "EPI_NAME": "EPI_NAME",
+        "LGA_NAME": "LGA_NAME",
+        "PUBLISHED_DATE": "PUBLISHED_DATE",
+        "COMMENCED_DATE": "COMMENCED_DATE",
+        "CURRENCY_DATE": "CURRENCY_DATE",
+        "AMENDMENT": "AMENDMENT",
+        "MAP_TYPE": "MAP_TYPE",
+        "MAP_NAME": "MAP_NAME",
+        "LAY_NAME": "LAY_NAME",
+        "LAY_CLASS": "LAY_CLASS",
+        "SYM_CODE": "SYM_CODE",
+        "FSR": "FSR",
+        "LEGIS_REF_AREA": "LEGIS_REF_AREA",
+        "LEGIS_REF_CLAUSE": "LEGIS_REF_CLAUSE",
+        "LEGIS_REF_VALUE": "LEGIS_REF_VALUE",
+        "PCO_REF_KEY": "PCO_REF_KEY",
+        "EPI_TYPE": "EPI_TYPE"
+      },
+      "geometryType": "esriGeometryPolygon",
+      "spatialReference": {
+        "wkid": 28356,
+        "latestWkid": 28356
+      },
+      "fields": [
+        {
+          "name": "OBJECTID",
+          "type": "esriFieldTypeOID",
+          "alias": "OBJECTID"
+        },
+        {
+          "name": "EPI_NAME",
+          "type": "esriFieldTypeString",
+          "alias": "EPI_NAME",
+          "length": 150
+        },
+        {
+          "name": "LGA_NAME",
+          "type": "esriFieldTypeString",
+          "alias": "LGA_NAME",
+          "length": 50
+        },
+        {
+          "name": "PUBLISHED_DATE",
+          "type": "esriFieldTypeDate",
+          "alias": "PUBLISHED_DATE",
+          "length": 8
+        },
+        {
+          "name": "COMMENCED_DATE",
+          "type": "esriFieldTypeDate",
+          "alias": "COMMENCED_DATE",
+          "length": 8
+        },
+        {
+          "name": "CURRENCY_DATE",
+          "type": "esriFieldTypeDate",
+          "alias": "CURRENCY_DATE",
+          "length": 8
+        },
+        {
+          "name": "AMENDMENT",
+          "type": "esriFieldTypeString",
+          "alias": "AMENDMENT",
+          "length": 150
+        },
+        {
+          "name": "MAP_TYPE",
+          "type": "esriFieldTypeString",
+          "alias": "MAP_TYPE",
+          "length": 4
+        },
+        {
+          "name": "MAP_NAME",
+          "type": "esriFieldTypeString",
+          "alias": "MAP_NAME",
+          "length": 100
+        },
+        {
+          "name": "LAY_NAME",
+          "type": "esriFieldTypeString",
+          "alias": "LAY_NAME",
+          "length": 100
+        },
+        {
+          "name": "LAY_CLASS",
+          "type": "esriFieldTypeString",
+          "alias": "LAY_CLASS",
+          "length": 100
+        },
+        {
+          "name": "SYM_CODE",
+          "type": "esriFieldTypeInteger",
+          "alias": "SYM_CODE"
+        },
+        {
+          "name": "FSR",
+          "type": "esriFieldTypeDouble",
+          "alias": "FSR"
+        },
+        {
+          "name": "LEGIS_REF_AREA",
+          "type": "esriFieldTypeString",
+          "alias": "LEGIS_REF_AREA",
+          "length": 50
+        },
+        {
+          "name": "LEGIS_REF_CLAUSE",
+          "type": "esriFieldTypeString",
+          "alias": "LEGIS_REF_CLAUSE",
+          "length": 50
+        },
+        {
+          "name": "LEGIS_REF_VALUE",
+          "type": "esriFieldTypeString",
+          "alias": "LEGIS_REF_VALUE",
+          "length": 50
+        },
+        {
+          "name": "PCO_REF_KEY",
+          "type": "esriFieldTypeString",
+          "alias": "PCO_REF_KEY",
+          "length": 50
+        },
+        {
+          "name": "EPI_TYPE",
+          "type": "esriFieldTypeString",
+          "alias": "EPI_TYPE",
+          "length": 5
+        }
+      ],
+      "features": [
+        {
+          "attributes": {
+            "OBJECTID": 163847,
+            "EPI_NAME": "Manly Local Environmental Plan 2013",
+            "LGA_NAME": "NORTHERN BEACHES",
+            "PUBLISHED_DATE": 1365120000000,
+            "COMMENCED_DATE": 1366329600000,
+            "CURRENCY_DATE": 1659657600000,
+            "AMENDMENT": null,
+            "MAP_TYPE": "FSR",
+            "MAP_NAME": "Floor Space Ratio Map",
+            "LAY_NAME": "Maximum Floor Space Ratio (n:1)",
+            "LAY_CLASS": "1-1.09",
+            "SYM_CODE": 14,
+            "FSR": 1,
+            "LEGIS_REF_AREA": null,
+            "LEGIS_REF_CLAUSE": "Clause 4.4",
+            "LEGIS_REF_VALUE": null,
+            "PCO_REF_KEY": "2013-140",
+            "EPI_TYPE": "LEP"
+          },
+          "geometry": {
+            "rings": [
+              [
+                [
+                  338691.3445624278,
+                  6258527.499467351
+                ],
+                [
+                  338692.5214751493,
+                  6258535.456188306
+                ],
+                [
+                  338694.5581363848,
+                  6258549.215498092
+                ],
+                [
+                  338696.5657707278,
+                  6258562.777436772
+                ],
+                [
+                  338698.998059931,
+                  6258579.20627554
+                ],
+                [
+                  338700.84338070155,
+                  6258580.483410072
+                ],
+                [
+                  338713.4002169467,
+                  6258578.689337045
+                ],
+                [
+                  338710.7015351196,
+                  6258560.832104116
+                ],
+                [
+                  338708.58652450977,
+                  6258547.286250394
+                ],
+                [
+                  338706.50693703507,
+                  6258533.462580588
+                ],
+                [
+                  338721.7822486289,
+                  6258531.280974133
+                ],
+                [
+                  338736.2362110334,
+                  6258529.218687387
+                ],
+                [
+                  338735.1824824622,
+                  6258521.044309495
+                ],
+                [
+                  338691.3445624278,
+                  6258527.499467351
+                ]
+              ]
+            ]
+          }
+        },
+        {
+          "attributes": {
+            "OBJECTID": 163928,
+            "EPI_NAME": "Manly Local Environmental Plan 2013",
+            "LGA_NAME": "NORTHERN BEACHES",
+            "PUBLISHED_DATE": 1365120000000,
+            "COMMENCED_DATE": 1366329600000,
+            "CURRENCY_DATE": 1659657600000,
+            "AMENDMENT": null,
+            "MAP_TYPE": "FSR",
+            "MAP_NAME": "Floor Space Ratio Map",
+            "LAY_NAME": "Maximum Floor Space Ratio (n:1)",
+            "LAY_CLASS": "0.45-0.49",
+            "SYM_CODE": 3,
+            "FSR": 0.45,
+            "LEGIS_REF_AREA": null,
+            "LEGIS_REF_CLAUSE": "Clause 4.4",
+            "LEGIS_REF_VALUE": null,
+            "PCO_REF_KEY": "2013-140",
+            "EPI_TYPE": "LEP"
+          },
+          "geometry": {
+            "rings": [
+              [
+                [
+                  338852.7198825859,
+                  6258559.2301948145
+                ],
+                [
+                  338846.07299137744,
+                  6258514.073365282
+                ],
+                [
+                  338842.9126369758,
+                  6258492.823652046
+                ],
+                [
+                  338840.67691926373,
+                  6258477.619229509
+                ],
+                [
+                  338838.4154658036,
+                  6258462.268203012
+                ],
+                [
+                  338836.248263594,
+                  6258447.529291825
+                ],
+                [
+                  338833.97363573045,
+                  6258432.320230179
+                ],
+                [
+                  338831.78076724417,
+                  6258417.382015116
+                ],
+                [
+                  338829.45811484475,
+                  6258401.675964626
+                ],
+                [
+                  338827.26695720654,
+                  6258386.735787321
+                ],
+                [
+                  338825.08998451586,
+                  6258371.939033212
+                ],
+                [
+                  338822.8724274491,
+                  6258356.892012926
+                ],
+                [
+                  338820.76548343315,
+                  6258342.76562956
+                ],
+                [
+                  338818.7329068623,
+                  6258329.003435876
+                ],
+                [
+                  338816.64645546,
+                  6258314.893306304
+                ],
+                [
+                  338814.5086133247,
+                  6258300.386560254
+                ],
+                [
+                  338813.78162803914,
+                  6258295.321043031
+                ],
+                [
+                  338810.72610280104,
+                  6258274.65675296
+                ],
+                [
+                  338807.9248673805,
+                  6258255.792534767
+                ],
+                [
+                  338807.4516990282,
+                  6258252.603646532
+                ],
+                [
+                  338806.96239178523,
+                  6258249.142036861
+                ],
+                [
+                  338805.1241370997,
+                  6258236.6538860295
+                ],
+                [
+                  338803.22283962654,
+                  6258223.770910389
+                ],
+                [
+                  338800.6303616507,
+                  6258206.209817004
+                ],
+                [
+                  338798.11548921454,
+                  6258189.165101474
+                ],
+                [
+                  338796.1508585763,
+                  6258175.856469002
+                ],
+                [
+                  338791.9039989999,
+                  6258172.382005297
+                ],
+                [
+                  338763.9272469074,
+                  6258176.582082956
+                ],
+                [
+                  338748.9885026611,
+                  6258178.824110137
+                ],
+                [
+                  338733.5304632782,
+                  6258181.143833919
+                ],
+                [
+                  338718.517627262,
+                  6258183.397486741
+                ],
+                [
+                  338705.55864655133,
+                  6258185.34283239
+                ],
+                [
+                  338692.99579360115,
+                  6258187.228245254
+                ],
+                [
+                  338680.33474374394,
+                  6258189.127888956
+                ],
+                [
+                  338667.7219199919,
+                  6258191.022366545
+                ],
+                [
+                  338671.6057006515,
+                  6258216.628684549
+                ],
+                [
+                  338673.22678815585,
+                  6258227.322392069
+                ],
+                [
+                  338660.49572163506,
+                  6258229.088580202
+                ],
+                [
+                  338658.975394913,
+                  6258218.523850974
+                ],
+                [
+                  338655.28555634175,
+                  6258192.88799651
+                ],
+                [
+                  338646.06227999117,
+                  6258194.27305993
+                ],
+                [
+                  338642.6717278119,
+                  6258198.7140381
+                ],
+                [
+                  338647.4561174677,
+                  6258231.035468919
+                ],
+                [
+                  338649.3700484793,
+                  6258243.944553565
+                ],
+                [
+                  338651.4030962426,
+                  6258257.663056573
+                ],
+                [
+                  338653.32399265264,
+                  6258270.651804278
+                ],
+                [
+                  338655.336651143,
+                  6258284.251633834
+                ],
+                [
+                  338657.18464668375,
+                  6258296.398929775
+                ],
+                [
+                  338657.5292127128,
+                  6258298.993025161
+                ],
+                [
+                  338657.86904817924,
+                  6258301.3762407815
+                ],
+                [
+                  338659.915072649,
+                  6258315.163568435
+                ],
+                [
+                  338662.02642976004,
+                  6258329.456130411
+                ],
+                [
+                  338662.3964058476,
+                  6258331.922385924
+                ],
+                [
+                  338662.77198294806,
+                  6258334.499107748
+                ],
+                [
+                  338664.87278751924,
+                  6258348.6801237045
+                ],
+                [
+                  338666.84086131194,
+                  6258361.973930886
+                ],
+                [
+                  338667.1667923853,
+                  6258364.149093679
+                ],
+                [
+                  338667.5432698411,
+                  6258366.721852943
+                ],
+                [
+                  338669.4935900576,
+                  6258379.888083009
+                ],
+                [
+                  338671.6515544066,
+                  6258394.4697867725
+                ],
+                [
+                  338673.8910640243,
+                  6258409.579868756
+                ],
+                [
+                  338676.15873523476,
+                  6258424.890288034
+                ],
+                [
+                  338678.3559796602,
+                  6258439.7520619435
+                ],
+                [
+                  338680.5955156196,
+                  6258454.862140559
+                ],
+                [
+                  338682.88818176964,
+                  6258470.364886235
+                ],
+                [
+                  338685.06114541925,
+                  6258485.044281643
+                ],
+                [
+                  338687.32106709963,
+                  6258500.324733216
+                ],
+                [
+                  338689.52613178676,
+                  6258515.217457725
+                ],
+                [
+                  338691.3445624278,
+                  6258527.499467351
+                ],
+                [
+                  338735.1824824622,
+                  6258521.044309495
+                ],
+                [
+                  338736.2362110334,
+                  6258529.218687387
+                ],
+                [
+                  338721.7822486289,
+                  6258531.280974133
+                ],
+                [
+                  338706.50693703507,
+                  6258533.462580588
+                ],
+                [
+                  338708.58652450977,
+                  6258547.286250394
+                ],
+                [
+                  338710.7015351196,
+                  6258560.832104116
+                ],
+                [
+                  338713.4002169467,
+                  6258578.689337045
+                ],
+                [
+                  338728.4535660121,
+                  6258576.530807154
+                ],
+                [
+                  338743.0586097271,
+                  6258574.423334792
+                ],
+                [
+                  338757.4068826393,
+                  6258572.380105695
+                ],
+                [
+                  338772.1835952554,
+                  6258570.281459721
+                ],
+                [
+                  338787.8713821387,
+                  6258568.009277731
+                ],
+                [
+                  338781.0410081005,
+                  6258522.822436406
+                ],
+                [
+                  338777.9280500368,
+                  6258502.3122883495
+                ],
+                [
+                  338775.65627141553,
+                  6258487.233516077
+                ],
+                [
+                  338773.28208289074,
+                  6258471.682688628
+                ],
+                [
+                  338771.01411266765,
+                  6258456.576136715
+                ],
+                [
+                  338768.79757676105,
+                  6258441.815488659
+                ],
+                [
+                  338766.5213985089,
+                  6258426.753540527
+                ],
+                [
+                  338764.2115688141,
+                  6258411.620423833
+                ],
+                [
+                  338761.878572307,
+                  6258396.139890167
+                ],
+                [
+                  338759.6534645948,
+                  6258381.495429503
+                ],
+                [
+                  338757.5208902457,
+                  6258367.17171547
+                ],
+                [
+                  338761.92825831263,
+                  6258366.462744726
+                ],
+                [
+                  338777.73677492957,
+                  6258364.0514435265
+                ],
+                [
+                  338779.9459736757,
+                  6258378.607133948
+                ],
+                [
+                  338782.2048120511,
+                  6258393.516652571
+                ],
+                [
+                  338784.46896964556,
+                  6258408.504812535
+                ],
+                [
+                  338786.8054886578,
+                  6258423.926731913
+                ],
+                [
+                  338789.0741497094,
+                  6258438.895078726
+                ],
+                [
+                  338791.4037563334,
+                  6258454.285059718
+                ],
+                [
+                  338793.65287624404,
+                  6258469.133752972
+                ],
+                [
+                  338795.91293963126,
+                  6258484.072120402
+                ],
+                [
+                  338798.2299452131,
+                  6258499.374382658
+                ],
+                [
+                  338801.4212612412,
+                  6258520.456596538
+                ],
+                [
+                  338803.52393767156,
+                  6258534.346255318
+                ],
+                [
+                  338808.2610925352,
+                  6258565.62965749
+                ],
+                [
+                  338822.79345891206,
+                  6258563.546688536
+                ],
+                [
+                  338833.565412838,
+                  6258562.00267845
+                ],
+                [
+                  338838.15129228716,
+                  6258561.345409213
+                ],
+                [
+                  338852.7198825859,
+                  6258559.2301948145
+                ]
+              ]
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "zone": {
+    "url": "https://mapprod3.environment.nsw.gov.au/arcgis/rest/services/Planning/EPI_Primary_Planning_Layers/MapServer/2/query?where=1%3D1&geometry=%7B%22rings%22%3A%5B%5B%5B338706.506919699%2C6258533.462491939%5D%2C%5B338721.7822772441%2C6258531.280872878%5D%2C%5B338736.23619744636%2C6258529.218541621%5D%2C%5B338735.1825172299%2C6258521.044259746%5D%2C%5B338691.3445501996%2C6258527.499371372%5D%2C%5B338692.52146022767%2C6258535.456115307%5D%2C%5B338706.506919699%2C6258533.462491939%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A28356%2C%22latestWkid%22%3A28356%7D%7D&geometryType=esriGeometryPolygon&inSR=28356&spatialRel=esriSpatialRelIntersects&outFields=%2A&returnGeometry=true&outSR=28356&resultRecordCount=100&f=json",
+    "checkedAt": "2026-10-17T10:52:06.338586+00:00",
+    "response": {
+      "displayFieldName": "EPI_NAME",
+      "fieldAliases": {
+        "OBJECTID": "OBJECTID",
+        "EPI_NAME": "EPI_NAME",
+        "LGA_NAME": "LGA_NAME",
+        "PUBLISHED_DATE": "PUBLISHED_DATE",
+        "COMMENCED_DATE": "COMMENCED_DATE",
+        "CURRENCY_DATE": "CURRENCY_DATE",
+        "AMENDMENT": "AMENDMENT",
+        "MAP_TYPE": "MAP_TYPE",
+        "MAP_NAME": "MAP_NAME",
+        "LAY_NAME": "LAY_NAME",
+        "LAY_CLASS": "LAY_CLASS",
+        "SYM_CODE": "SYM_CODE",
+        "PURPOSE": "PURPOSE",
+        "LEGIS_REF_AREA": "LEGIS_REF_AREA",
+        "LEGIS_REF_CLAUSE": "LEGIS_REF_CLAUSE",
+        "LEGIS_REF_VALUE": "LEGIS_REF_VALUE",
+        "PCO_REF_KEY": "PCO_REF_KEY",
+        "EPI_TYPE": "EPI_TYPE"
+      },
+      "geometryType": "esriGeometryPolygon",
+      "spatialReference": {
+        "wkid": 28356,
+        "latestWkid": 28356
+      },
+      "fields": [
+        {
+          "name": "OBJECTID",
+          "type": "esriFieldTypeOID",
+          "alias": "OBJECTID"
+        },
+        {
+          "name": "EPI_NAME",
+          "type": "esriFieldTypeString",
+          "alias": "EPI_NAME",
+          "length": 150
+        },
+        {
+          "name": "LGA_NAME",
+          "type": "esriFieldTypeString",
+          "alias": "LGA_NAME",
+          "length": 50
+        },
+        {
+          "name": "PUBLISHED_DATE",
+          "type": "esriFieldTypeDate",
+          "alias": "PUBLISHED_DATE",
+          "length": 8
+        },
+        {
+          "name": "COMMENCED_DATE",
+          "type": "esriFieldTypeDate",
+          "alias": "COMMENCED_DATE",
+          "length": 8
+        },
+        {
+          "name": "CURRENCY_DATE",
+          "type": "esriFieldTypeDate",
+          "alias": "CURRENCY_DATE",
+          "length": 8
+        },
+        {
+          "name": "AMENDMENT",
+          "type": "esriFieldTypeString",
+          "alias": "AMENDMENT",
+          "length": 150
+        },
+        {
+          "name": "MAP_TYPE",
+          "type": "esriFieldTypeString",
+          "alias": "MAP_TYPE",
+          "length": 4
+        },
+        {
+          "name": "MAP_NAME",
+          "type": "esriFieldTypeString",
+          "alias": "MAP_NAME",
+          "length": 100
+        },
+        {
+          "name": "LAY_NAME",
+          "type": "esriFieldTypeString",
+          "alias": "LAY_NAME",
+          "length": 100
+        },
+        {
+          "name": "LAY_CLASS",
+          "type": "esriFieldTypeString",
+          "alias": "LAY_CLASS",
+          "length": 100
+        },
+        {
+          "name": "SYM_CODE",
+          "type": "esriFieldTypeString",
+          "alias": "SYM_CODE",
+          "length": 10
+        },
+        {
+          "name": "PURPOSE",
+          "type": "esriFieldTypeString",
+          "alias": "PURPOSE",
+          "length": 400
+        },
+        {
+          "name": "LEGIS_REF_AREA",
+          "type": "esriFieldTypeString",
+          "alias": "LEGIS_REF_AREA",
+          "length": 50
+        },
+        {
+          "name": "LEGIS_REF_CLAUSE",
+          "type": "esriFieldTypeString",
+          "alias": "LEGIS_REF_CLAUSE",
+          "length": 50
+        },
+        {
+          "name": "LEGIS_REF_VALUE",
+          "type": "esriFieldTypeString",
+          "alias": "LEGIS_REF_VALUE",
+          "length": 50
+        },
+        {
+          "name": "PCO_REF_KEY",
+          "type": "esriFieldTypeString",
+          "alias": "PCO_REF_KEY",
+          "length": 50
+        },
+        {
+          "name": "EPI_TYPE",
+          "type": "esriFieldTypeString",
+          "alias": "EPI_TYPE",
+          "length": 5
+        }
+      ],
+      "features": [
+        {
+          "attributes": {
+            "OBJECTID": 751700,
+            "EPI_NAME": "Manly Local Environmental Plan 2013",
+            "LGA_NAME": "NORTHERN BEACHES",
+            "PUBLISHED_DATE": 1681430400000,
+            "COMMENCED_DATE": 1682467200000,
+            "CURRENCY_DATE": 1716508800000,
+            "AMENDMENT": "Map Amendment No 2",
+            "MAP_TYPE": "LZN",
+            "MAP_NAME": "Land Zoning Map",
+            "LAY_NAME": "Zone",
+            "LAY_CLASS": "Local Centre",
+            "SYM_CODE": "E1",
+            "PURPOSE": null,
+            "LEGIS_REF_AREA": null,
+            "LEGIS_REF_CLAUSE": null,
+            "LEGIS_REF_VALUE": null,
+            "PCO_REF_KEY": "2013-140",
+            "EPI_TYPE": "LEP"
+          },
+          "geometry": {
+            "rings": [
+              [
+                [
+                  338678.9016314992,
+                  6258582.892217223
+                ],
+                [
+                  338698.9980165502,
+                  6258579.206291899
+                ],
+                [
+                  338700.84333793516,
+                  6258580.483441228
+                ],
+                [
+                  338713.40022592107,
+                  6258578.689292673
+                ],
+                [
+                  338710.7015229347,
+                  6258560.832144801
+                ],
+                [
+                  338708.58653891506,
+                  6258547.286246419
+                ],
+                [
+                  338706.506914536,
+                  6258533.46263231
+                ],
+                [
+                  338721.78224751784,
+                  6258531.280982563
+                ],
+                [
+                  338736.2361805161,
+                  6258529.218632436
+                ],
+                [
+                  338735.1824763961,
+                  6258521.044313321
+                ],
+                [
+                  338691.3446057461,
+                  6258527.499440326
+                ],
+                [
+                  338671.99556044396,
+                  6258537.547836954
+                ],
+                [
+                  338656.9453953888,
+                  6258539.714362523
+                ],
+                [
+                  338642.1615562837,
+                  6258541.8425562335
+                ],
+                [
+                  338640.8517910462,
+                  6258542.031140998
+                ],
+                [
+                  338647.6202586505,
+                  6258587.601840192
+                ],
+                [
+                  338649.1271568799,
+                  6258587.387750715
+                ],
+                [
+                  338663.7505887806,
+                  6258585.182285087
+                ],
+                [
+                  338667.30760778266,
+                  6258584.6448272625
+                ],
+                [
+                  338678.9016314992,
+                  6258582.892217223
+                ]
+              ]
+            ]
+          }
+        },
+        {
+          "attributes": {
+            "OBJECTID": 810963,
+            "EPI_NAME": "Manly Local Environmental Plan 2013",
+            "LGA_NAME": "NORTHERN BEACHES",
+            "PUBLISHED_DATE": 1716508800000,
+            "COMMENCED_DATE": 1716508800000,
+            "CURRENCY_DATE": 1716508800000,
+            "AMENDMENT": "Warringah Local Environmental Plan 2011 (Map Amendment No 4)",
+            "MAP_TYPE": "LZN",
+            "MAP_NAME": "Land Zoning Map",
+            "LAY_NAME": "Zone",
+            "LAY_CLASS": "Low Density Residential",
+            "SYM_CODE": "R2",
+            "PURPOSE": null,
+            "LEGIS_REF_AREA": null,
+            "LEGIS_REF_CLAUSE": null,
+            "LEGIS_REF_VALUE": null,
+            "PCO_REF_KEY": "2013-140",
+            "EPI_TYPE": "LEP"
+          },
+          "geometry": {
+            "rings": [
+              [
+                [
+                  338772.1361573071,
+                  6258839.071764608
+                ],
+                [
+                  338786.7727243428,
+                  6258836.843463302
+                ],
+                [
+                  338801.56010056345,
+                  6258834.628561074
+                ],
+                [
+                  338815.95814656,
+                  6258832.462737412
+                ],
+                [
+                  338830.61949477665,
+                  6258830.284483742
+                ],
+                [
+                  338872.17180167895,
+                  6258824.066440547
+                ],
+                [
+                  338874.6051131673,
+                  6258820.520013757
+                ],
+                [
+                  338895.34910269926,
+                  6258818.029841591
+                ],
+                [
+                  338898.57261044596,
+                  6258820.434951325
+                ],
+                [
+                  338924.55925110733,
+                  6258816.008818744
+                ],
+                [
+                  338931.6999917098,
+                  6258814.786065395
+                ],
+                [
+                  338939.2279264671,
+                  6258813.497414889
+                ],
+                [
+                  338954.81614199595,
+                  6258810.846340222
+                ],
+                [
+                  338969.2890740138,
+                  6258808.370407788
+                ],
+                [
+                  338984.36201512767,
+                  6258805.806087567
+                ],
+                [
+                  338977.8937453306,
+                  6258766.044663517
+                ],
+                [
+                  338963.026819027,
+                  6258768.505074929
+                ],
+                [
+                  338948.2864641648,
+                  6258770.89505682
+                ],
+                [
+                  338932.56715444586,
+                  6258773.443403586
+                ],
+                [
+                  338917.58701742475,
+                  6258775.871882439
+                ],
+                [
+                  338912.87055208615,
+                  6258776.636429429
+                ],
+                [
+                  338912.80740583746,
+                  6258753.654216297
+                ],
+                [
+                  338912.75141647074,
+                  6258733.24060834
+                ],
+                [
+                  338915.98467346805,
+                  6258732.705570588
+                ],
+                [
+                  338960.6876274806,
+                  6258725.604755394
+                ],
+                [
+                  338972.3182463014,
+                  6258723.757892512
+                ],
+                [
+                  338969.15091168944,
+                  6258703.782793758
+                ],
+                [
+                  338966.1706603106,
+                  6258684.870970298
+                ],
+                [
+                  338965.9599728206,
+                  6258683.533972889
+                ],
+                [
+                  338963.8667299332,
+                  6258670.349474497
+                ],
+                [
+                  338963.6798239221,
+                  6258669.1780471485
+                ],
+                [
+                  338961.2768517401,
+                  6258654.029477449
+                ],
+                [
+                  338958.9787273624,
+                  6258639.258605149
+                ],
+                [
+                  338956.82708007644,
+                  6258625.799684537
+                ],
+                [
+                  338956.6693967344,
+                  6258624.811667131
+                ],
+                [
+                  338953.42272814777,
+                  6258604.675150204
+                ],
+                [
+                  338950.22148558253,
+                  6258584.405178262
+                ],
+                [
+                  338947.025930666,
+                  6258564.385992102
+                ],
+                [
+                  338912.6907125518,
+                  6258569.482582325
+                ],
+                [
+                  338907.7229287849,
+                  6258550.802026216
+                ],
+                [
+                  338913.4280853758,
+                  6258549.930293987
+                ],
+                [
+                  338925.5417088438,
+                  6258548.078683985
+                ],
+                [
+                  338956.2738330883,
+                  6258543.382732699
+                ],
+                [
+                  338956.5368475785,
+                  6258543.343472138
+                ],
+                [
+                  338987.0092546586,
+                  6258538.686739765
+                ],
+                [
+                  339033.4102543009,
+                  6258531.597349174
+                ],
+                [
+                  339036.38201729895,
+                  6258551.108672339
+                ],
+                [
+                  338998.61279280524,
+                  6258556.706192085
+                ],
+                [
+                  338949.5031844312,
+                  6258564.032069311
+                ],
+                [
+                  338959.16814609413,
+                  6258624.512790605
+                ],
+                [
+                  339000.85315162665,
+                  6258618.240796088
+                ],
+                [
+                  339003.47514613956,
+                  6258634.279904192
+                ],
+                [
+                  339005.9460036774,
+                  6258649.590671089
+                ],
+                [
+                  339008.57039199973,
+                  6258665.8346962165
+                ],
+                [
+                  339010.97098061664,
+                  6258680.684930086
+                ],
+                [
+                  339013.49822265666,
+                  6258696.343620457
+                ],
+                [
+                  339016.066337437,
+                  6258712.236720015
+                ],
+                [
+                  339018.5922518008,
+                  6258727.876527553
+                ],
+                [
+                  339021.1674189153,
+                  6258743.841290193
+                ],
+                [
+                  339023.4729499962,
+                  6258758.132066462
+                ],
+                [
+                  339008.0778433799,
+                  6258760.755561182
+                ],
+                [
+                  338992.79763378843,
+                  6258763.358232595
+                ],
+                [
+                  338999.3477602901,
+                  6258803.24426447
+                ],
+                [
+                  339014.5724825796,
+                  6258800.684457824
+                ],
+                [
+                  339029.8262043252,
+                  6258798.079415692
+                ],
+                [
+                  339069.8999555123,
+                  6258791.253751384
+                ],
+                [
+                  339071.2519653484,
+                  6258791.027106605
+                ],
+                [
+                  339094.60974467336,
+                  6258786.875267363
+                ],
+                [
+                  339108.11495622125,
+                  6258784.776466839
+                ],
+                [
+                  339121.24173741636,
+                  6258782.668376159
+                ],
+                [
+                  339131.19950148213,
+                  6258781.124195235
+                ],
+                [
+                  339150.92791856895,
+                  6258778.004802857
+                ],
+                [
+                  339182.32758728205,
+                  6258773.187132809
+                ],
+                [
+                  339205.92436297436,
+                  6258769.430847382
+                ],
+                [
+                  339220.74947738025,
+                  6258767.077729905
+                ],
+                [
+                  339236.0904054387,
+                  6258764.658747833
+                ],
+                [
+                  339275.1509066464,
+                  6258758.484471385
+                ],
+                [
+                  339293.85903924715,
+                  6258754.179205993
+                ],
+                [
+                  339377.98689191137,
+                  6258741.123833247
+                ],
+                [
+                  339388.3517155367,
+                  6258739.515477795
+                ],
+                [
+                  339388.3649817165,
+                  6258727.385008417
+                ],
+                [
+                  339386.3720689075,
+                  6258715.449239245
+                ],
+                [
+                  339384.3505999859,
+                  6258703.339944292
+                ],
+                [
+                  339385.4011646693,
+                  6258688.483435154
+                ],
+                [
+                  339382.8660567467,
+                  6258672.71736784
+                ],
+                [
+                  339380.4083499863,
+                  6258657.480497532
+                ],
+                [
+                  339377.98119867314,
+                  6258642.398327086
+                ],
+                [
+                  339375.9312680709,
+                  6258629.611458982
+                ],
+                [
+                  339374.9823825419,
+                  6258623.706990436
+                ],
+                [
+                  339413.97294964304,
+                  6258617.107378019
+                ],
+                [
+                  339455.38790827605,
+                  6258610.082116466
+                ],
+                [
+                  339475.6575714594,
+                  6258608.507399654
+                ],
+                [
+                  339474.05267107004,
+                  6258598.816438676
+                ],
+                [
+                  339454.69908361055,
+                  6258481.5510027455
+                ],
+                [
+                  339513.69569427957,
+                  6258471.674495893
+                ],
+                [
+                  339533.76261063386,
+                  6258468.323448463
+                ],
+                [
+                  339664.0603401194,
+                  6258446.516247164
+                ],
+                [
+                  339688.7140308986,
+                  6258442.391801499
+                ],
+                [
+                  339685.26895826706,
+                  6258422.266247763
+                ],
+                [
+                  339730.1533925729,
+                  6258414.998932914
+                ],
+                [
+                  339768.8458206075,
+                  6258408.727908678
+                ],
+                [
+                  339788.7488071878,
+                  6258405.483951308
+                ],
+                [
+                  339788.30725533224,
+                  6258389.432969604
+                ],
+                [
+                  339787.90021548164,
+                  6258374.584775198
+                ],
+                [
+                  339787.47719720285,
+                  6258359.111802705
+                ],
+                [
+                  339787.0556680047,
+                  6258343.743235415
+                ],
+                [
+                  339786.63055542024,
+                  6258328.246488782
+                ],
+                [
+                  339786.2236052498,
+                  6258313.399181522
+                ],
+                [
+                  339785.7898323911,
+                  6258297.6247534165
+                ],
+                [
+                  339785.6209534871,
+                  6258291.426295724
+                ],
+                [
+                  339785.42561435857,
+                  6258285.072208688
+                ],
+                [
+                  339804.05360513646,
+                  6258282.256156346
+                ],
+                [
+                  339807.0996797697,
+                  6258269.138426575
+                ],
+                [
+                  339807.157423541,
+                  6258250.9889226
+                ],
+                [
+                  339784.47260771727,
+                  6258249.524722006
+                ],
+                [
+                  339782.6931896829,
+                  6258244.52213818
+                ],
+                [
+                  339780.9217381981,
+                  6258239.541540092
+                ],
+                [
+                  339816.47702424746,
+                  6258242.132901029
+                ],
+                [
+                  339817.2190875131,
+                  6258224.451246151
+                ],
+                [
+                  339776.133075816,
+                  6258218.256002562
+                ],
+                [
+                  339777.2453145378,
+                  6258213.023611512
+                ],
+                [
+                  339803.8522721018,
+                  6258218.333211502
+                ],
+                [
+                  339808.06272221287,
+                  6258215.449827457
+                ],
+                [
+                  339810.4084315434,
+                  6258201.874847955
+                ],
+                [
+                  339781.41625812417,
+                  6258193.389083497
+                ],
+                [
+                  339782.13287344144,
+                  6258190.014361441
+                ],
+                [
+                  339783.7103433513,
+                  6258182.589367002
+                ],
+                [
+                  339793.1341504434,
+                  6258184.222439425
+                ],
+                [
+                  339800.03550386336,
+                  6258193.104437343
+                ],
+                [
+                  339800.7811653521,
+                  6258193.333720294
+                ],
+                [
+                  339815.7670966376,
+                  6258197.946766859
+                ],
+                [
+                  339835.97391338367,
+                  6258190.620136058
+                ],
+                [
+                  339786.88503557886,
+                  6258167.649194533
+                ],
+                [
+                  339787.40874518343,
+                  6258165.184143941
+                ],
+                [
+                  339788.0163308679,
+                  6258162.323723769
+                ],
+                [
+                  339828.24539477687,
+                  6258181.91017379
+                ],
+                [
+                  339835.3999538623,
+                  6258170.494198671
+                ],
+                [
+                  339847.3550608989,
+                  6258153.7755851
+                ],
+                [
+                  339844.98723607394,
+                  6258151.974853391
+                ],
+                [
+                  339848.3332400066,
+                  6258132.124555165
+                ],
+                [
+                  339816.01797178946,
+                  6258101.340748164
+                ],
+                [
+                  339818.9809127521,
+                  6258099.192125494
+                ],
+                [
+                  339846.91378004104,
+                  6258125.803585144
+                ],
+                [
+                  339859.06262362876,
+                  6258114.893154943
+                ],
+                [
+                  339834.3662817483,
+                  6258087.733472446
+                ],
+                [
+                  339841.01232284855,
+                  6258082.911330251
+                ],
+                [
+                  339843.5727776296,
+                  6258081.051218916
+                ],
+                [
+                  339845.6979470915,
+                  6258079.5089132255
+                ],
+                [
+                  339866.97275972436,
+                  6258104.593452157
+                ],
+                [
+                  339867.5695924023,
+                  6258104.790501306
+                ],
+                [
+                  339868.1877001104,
+                  6258104.906266956
+                ],
+                [
+                  339868.8146759871,
+                  6258104.9406515425
+                ],
+                [
+                  339869.44137194543,
+                  6258104.892503014
+                ],
+                [
+                  339870.0552568431,
+                  6258104.763607457
+                ],
+                [
+                  339883.27904988726,
+                  6258095.726658285
+                ],
+                [
+                  339862.7026315958,
+                  6258067.163741395
+                ],
+                [
+                  339876.97520892945,
+                  6258057.066456081
+                ],
+                [
+                  339881.1817083417,
+                  6258054.015924328
+                ],
+                [
+                  339881.71446895576,
+                  6258053.628207626
+                ],
+                [
+                  339899.31892389804,
+                  6258040.858447954
+                ],
+                [
+                  339889.05632280104,
+                  6258023.842024419
+                ],
+                [
+                  339879.3890445138,
+                  6258030.88251744
+                ],
+                [
+                  339877.0469787726,
+                  6258032.587240325
+                ],
+                [
+                  339865.51093037124,
+                  6258015.387328318
+                ],
+                [
+                  339852.0711622004,
+                  6257995.350438504
+                ],
+                [
+                  339834.36127876467,
+                  6257968.964492852
+                ],
+                [
+                  339826.62872340437,
+                  6257957.443380227
+                ],
+                [
+                  339826.61338678753,
+                  6257957.419273491
+                ],
+                [
+                  339813.97844045516,
+                  6257938.596059419
+                ],
+                [
+                  339790.39202598494,
+                  6257873.942715639
+                ],
+                [
+                  339804.29170217214,
+                  6257871.595175158
+                ],
+                [
+                  339793.9279707938,
+                  6257853.1142643215
+                ],
+                [
+                  339770.8313676561,
+                  6257857.048224933
+                ],
+                [
+                  339761.2215631434,
+                  6257811.756873052
+                ],
+                [
+                  339745.9164115763,
+                  6257814.319420372
+                ],
+                [
+                  339730.8535066367,
+                  6257816.842202674
+                ],
+                [
+                  339715.83880319574,
+                  6257819.355900064
+                ],
+                [
+                  339700.6351972021,
+                  6257821.902225223
+                ],
+                [
+                  339685.1577538195,
+                  6257824.493502982
+                ],
+                [
+                  339669.8218129588,
+                  6257827.061402356
+                ],
+                [
+                  339655.128582458,
+                  6257829.656953668
+                ],
+                [
+                  339652.216931541,
+                  6257814.607513055
+                ],
+                [
+                  339632.63532924943,
+                  6257817.910221136
+                ],
+                [
+                  339574.048671036,
+                  6257827.791043179
+                ],
+                [
+                  339557.56320669514,
+                  6257812.95150991
+                ],
+                [
+                  339546.14624316554,
+                  6257802.724388165
+                ],
+                [
+                  339534.7535439794,
+                  6257792.54247378
+                ],
+                [
+                  339523.3101689655,
+                  6257782.313989526
+                ],
+                [
+                  339512.1252569873,
+                  6257772.316464219
+                ],
+                [
+                  339500.79395108484,
+                  6257762.188228535
+                ],
+                [
+                  339489.35393113433,
+                  6257751.962750612
+                ],
+                [
+                  339478.0463740929,
+                  6257741.856737362
+                ],
+                [
+                  339473.0614123198,
+                  6257737.409609448
+                ],
+                [
+                  339434.79335705924,
+                  6257753.115571135
+                ],
+                [
+                  339422.26237038267,
+                  6257741.8772868775
+                ],
+                [
+                  339412.1017712173,
+                  6257746.167584233
+                ],
+                [
+                  339220.1382279356,
+                  6257824.769188132
+                ],
+                [
+                  339179.56150423497,
+                  6257830.655001556
+                ],
+                [
+                  339165.1954948193,
+                  6257832.741187997
+                ],
+                [
+                  339147.3563144433,
+                  6257835.380367169
+                ],
+                [
+                  339145.34108651144,
+                  6257822.63869605
+                ],
+                [
+                  339437.3608302346,
+                  6257705.522297528
+                ],
+                [
+                  339414.62921964517,
+                  6257685.638381517
+                ],
+                [
+                  339408.403225509,
+                  6257693.712766927
+                ],
+                [
+                  339398.72020719916,
+                  6257697.688969361
+                ],
+                [
+                  339381.84001235955,
+                  6257704.66306809
+                ],
+                [
+                  339365.7811609036,
+                  6257665.383578697
+                ],
+                [
+                  339374.75604224176,
+                  6257658.652171228
+                ],
+                [
+                  339322.0385006353,
+                  6257637.568285179
+                ],
+                [
+                  339321.9471901788,
+                  6257636.926482467
+                ],
+                [
+                  339320.9386040013,
+                  6257629.894424502
+                ],
+                [
+                  339318.6467725009,
+                  6257613.90455433
+                ],
+                [
+                  339316.2346351836,
+                  6257597.076607173
+                ],
+                [
+                  339313.82842163567,
+                  6257580.293350505
+                ],
+                [
+                  339311.47110865836,
+                  6257563.856006835
+                ],
+                [
+                  339309.10347469465,
+                  6257547.3449439155
+                ],
+                [
+                  339306.7180789389,
+                  6257530.707235614
+                ],
+                [
+                  339304.35047392955,
+                  6257514.190180279
+                ],
+                [
+                  339304.030460533,
+                  6257510.38047551
+                ],
+                [
+                  339301.7566673782,
+                  6257494.555069463
+                ],
+                [
+                  339299.2527687405,
+                  6257477.17160096
+                ],
+                [
+                  339296.6193726788,
+                  6257458.896987971
+                ],
+                [
+                  339295.79541256744,
+                  6257453.174631367
+                ],
+                [
+                  339294.2641506604,
+                  6257442.543196006
+                ],
+                [
+                  339291.8171553663,
+                  6257425.570442056
+                ],
+                [
+                  339289.3653558152,
+                  6257408.5428082235
+                ],
+                [
+                  339287.0321893273,
+                  6257392.354441345
+                ],
+                [
+                  339284.5252034026,
+                  6257374.861538438
+                ],
+                [
+                  339281.9249428193,
+                  6257356.893740315
+                ],
+                [
+                  339279.44022825884,
+                  6257339.651791018
+                ],
+                [
+                  339276.9266557173,
+                  6257322.205582705
+                ],
+                [
+                  339274.3514371695,
+                  6257304.330714018
+                ],
+                [
+                  339272.2435991842,
+                  6257289.6963268705
+                ],
+                [
+                  339276.9203322469,
+                  6257283.958281807
+                ],
+                [
+                  339308.5913213855,
+                  6257282.199595276
+                ],
+                [
+                  339305.67559005786,
+                  6257262.41484195
+                ],
+                [
+                  339277.5168574817,
+                  6257264.148244949
+                ],
+                [
+                  339248.4582326185,
+                  6257265.940035528
+                ],
+                [
+                  339245.85438036406,
+                  6257266.343572852
+                ],
+                [
+                  339243.2640912027,
+                  6257266.826761194
+                ],
+                [
+                  339240.68987562665,
+                  6257267.388977373
+                ],
+                [
+                  339238.13423848373,
+                  6257268.029930897
+                ],
+                [
+                  339235.5989534382,
+                  6257268.748764306
+                ],
+                [
+                  339233.0871826806,
+                  6257269.54464359
+                ],
+                [
+                  339230.600796173,
+                  6257270.416491069
+                ],
+                [
+                  339228.1428317398,
+                  6257271.36535634
+                ],
+                [
+                  339225.7136344119,
+                  6257272.387251953
+                ],
+                [
+                  339223.317982048,
+                  6257273.484366118
+                ],
+                [
+                  339220.956852645,
+                  6257274.653609481
+                ],
+                [
+                  339218.63265104935,
+                  6257275.895133572
+                ],
+                [
+                  339216.3470789755,
+                  6257277.206859535
+                ],
+                [
+                  339214.1027600928,
+                  6257278.586945955
+                ],
+                [
+                  339211.9019935193,
+                  6257280.036319076
+                ],
+                [
+                  339209.74658670154,
+                  6257281.5521253515
+                ],
+                [
+                  339207.6383339426,
+                  6257283.13228752
+                ],
+                [
+                  339205.57954751974,
+                  6257284.776955543
+                ],
+                [
+                  339203.57201986574,
+                  6257286.484163075
+                ],
+                [
+                  339201.61820825,
+                  6257288.250956608
+                ],
+                [
+                  339199.71903835307,
+                  6257290.077351793
+                ],
+                [
+                  339197.8762119068,
+                  6257291.961269813
+                ],
+                [
+                  339196.0921824734,
+                  6257293.89997896
+                ],
+                [
+                  339194.3522339875,
+                  6257295.882138301
+                ],
+                [
+                  339192.7456227855,
+                  6257297.880524658
+                ],
+                [
+                  339191.2382722533,
+                  6257299.950136723
+                ],
+                [
+                  339189.79981901625,
+                  6257302.068609646
+                ],
+                [
+                  339188.43114483746,
+                  6257304.233074266
+                ],
+                [
+                  339187.13469207834,
+                  6257306.441464234
+                ],
+                [
+                  339185.90581388376,
+                  6257308.683828757
+                ],
+                [
+                  339137.96479541156,
+                  6257299.537939126
+                ],
+                [
+                  339137.8744199425,
+                  6257297.421501318
+                ],
+                [
+                  339137.6698397564,
+                  6257280.2875494715
+                ],
+                [
+                  339089.73484240787,
+                  6257285.344677407
+                ],
+                [
+                  339090.3492963342,
+                  6257269.309408229
+                ],
+                [
+                  339090.54669094237,
+                  6257264.157130087
+                ],
+                [
+                  339090.56416710315,
+                  6257263.270462083
+                ],
+                [
+                  339090.5085746144,
+                  6257262.384556569
+                ],
+                [
+                  339090.3781124212,
+                  6257261.507369805
+                ],
+                [
+                  339090.1736237886,
+                  6257260.643796765
+                ],
+                [
+                  339089.8973975136,
+                  6257259.8008644385
+                ],
+                [
+                  339089.55008791643,
+                  6257258.983686453
+                ],
+                [
+                  339089.1359314168,
+                  6257258.19910082
+                ],
+                [
+                  339088.6563248002,
+                  6257257.452122802
+                ],
+                [
+                  339088.1162543198,
+                  6257256.749048465
+                ],
+                [
+                  339087.5180649065,
+                  6257256.09357794
+                ],
+                [
+                  339086.86676156404,
+                  6257255.490898369
+                ],
+                [
+                  339086.1671809724,
+                  6257254.9451956665
+                ],
+                [
+                  339085.42340808065,
+                  6257254.461308647
+                ],
+                [
+                  339084.641163265,
+                  6257254.040443184
+                ],
+                [
+                  339081.283402176,
+                  6257230.2816408435
+                ],
+                [
+                  339085.86234701856,
+                  6257225.278913014
+                ],
+                [
+                  339083.91922003566,
+                  6257211.0857378915
+                ],
+                [
+                  339063.44272653543,
+                  6257213.911765679
+                ],
+                [
+                  339064.5538106692,
+                  6257221.493462667
+                ],
+                [
+                  339066.5515428835,
+                  6257235.259058729
+                ],
+                [
+                  339068.0759308402,
+                  6257245.890433588
+                ],
+                [
+                  339069.5535170591,
+                  6257256.047696533
+                ],
+                [
+                  339071.0748132743,
+                  6257266.374748319
+                ],
+                [
+                  339072.60310393886,
+                  6257276.825156312
+                ],
+                [
+                  339074.0741721667,
+                  6257286.974320767
+                ],
+                [
+                  339075.60671753145,
+                  6257297.56800474
+                ],
+                [
+                  339077.0187120859,
+                  6257307.339355072
+                ],
+                [
+                  339078.5765774221,
+                  6257317.903626503
+                ],
+                [
+                  339059.4156250126,
+                  6257320.723149073
+                ],
+                [
+                  339060.9092315088,
+                  6257332.1414661035
+                ],
+                [
+                  339054.89090559643,
+                  6257333.0251506325
+                ],
+                [
+                  339055.96266823716,
+                  6257339.646673754
+                ],
+                [
+                  339081.23501288996,
+                  6257336.137043403
+                ],
+                [
+                  339081.5850202039,
+                  6257338.4666301515
+                ],
+                [
+                  339057.7559642453,
+                  6257341.875408558
+                ],
+                [
+                  339060.4225637198,
+                  6257360.0184547845
+                ],
+                [
+                  339084.1656331296,
+                  6257356.588359313
+                ],
+                [
+                  339084.51673009875,
+                  6257358.798718929
+                ],
+                [
+                  339039.97210662556,
+                  6257365.564347971
+                ],
+                [
+                  339041.5060776456,
+                  6257375.869765243
+                ],
+                [
+                  339043.0448086293,
+                  6257386.195118075
+                ],
+                [
+                  339044.46526118217,
+                  6257395.662346197
+                ],
+                [
+                  339024.32496238436,
+                  6257398.755443571
+                ],
+                [
+                  339013.85798860923,
+                  6257400.307805805
+                ],
+                [
+                  339002.7615053658,
+                  6257401.983628223
+                ],
+                [
+                  338992.78126106417,
+                  6257403.466544705
+                ],
+                [
+                  338981.9338155914,
+                  6257405.083989768
+                ],
+                [
+                  338971.4898154796,
+                  6257406.601863805
+                ],
+                [
+                  338961.12367270526,
+                  6257408.180609843
+                ],
+                [
+                  338950.2508919401,
+                  6257409.778733793
+                ],
+                [
+                  338939.88449652423,
+                  6257411.322622107
+                ],
+                [
+                  338929.5578995122,
+                  6257412.867283104
+                ],
+                [
+                  338919.1341947138,
+                  6257414.410291258
+                ],
+                [
+                  338907.24615873664,
+                  6257416.158145061
+                ],
+                [
+                  338887.2331578907,
+                  6257418.988662632
+                ],
+                [
+                  338876.69016613316,
+                  6257420.5157421455
+                ],
+                [
+                  338879.002019307,
+                  6257441.06704776
+                ],
+                [
+                  338869.05788262875,
+                  6257442.420221555
+                ],
+                [
+                  338858.1230211717,
+                  6257443.907709518
+                ],
+                [
+                  338847.2062158389,
+                  6257445.394935918
+                ],
+                [
+                  338844.7075861427,
+                  6257425.007070528
+                ],
+                [
+                  338834.2670862783,
+                  6257426.511877539
+                ],
+                [
+                  338823.6450381607,
+                  6257428.003729547
+                ],
+                [
+                  338812.9136069041,
+                  6257429.579132348
+                ],
+                [
+                  338802.4709316889,
+                  6257431.064012539
+                ],
+                [
+                  338791.96234464005,
+                  6257432.5696186125
+                ],
+                [
+                  338781.230588489,
+                  6257434.0704385415
+                ],
+                [
+                  338770.67941221443,
+                  6257435.5424667355
+                ],
+                [
+                  338755.4324888549,
+                  6257444.782363342
+                ],
+                [
+                  338752.216199429,
+                  6257445.805797128
+                ],
+                [
+                  338740.3768160436,
+                  6257449.38987446
+                ],
+                [
+                  338729.71356340905,
+                  6257452.62390776
+                ],
+                [
+                  338717.5572940607,
+                  6257454.474476509
+                ],
+                [
+                  338706.1099929375,
+                  6257456.222667819
+                ],
+                [
+                  338694.5121459111,
+                  6257457.9861558415
+                ],
+                [
+                  338683.0798247945,
+                  6257459.729470989
+                ],
+                [
+                  338671.6617344343,
+                  6257461.463252133
+                ],
+                [
+                  338665.709684376,
+                  6257462.389527857
+                ],
+                [
+                  338660.69894217467,
+                  6257464.153148163
+                ],
+                [
+                  338643.13751329936,
+                  6257470.315966943
+                ],
+                [
+                  338631.86126984097,
+                  6257474.312223486
+                ],
+                [
+                  338620.71306582686,
+                  6257478.237979375
+                ],
+                [
+                  338609.34570709034,
+                  6257482.271380145
+                ],
+                [
+                  338597.7801913015,
+                  6257486.337129166
+                ],
+                [
+                  338586.98924834025,
+                  6257490.144662089
+                ],
+                [
+                  338575.5375307703,
+                  6257494.154631488
+                ],
+                [
+                  338564.5847490523,
+                  6257498.063779458
+                ],
+                [
+                  338553.28558175935,
+                  6257502.031604728
+                ],
+                [
+                  338542.17317387986,
+                  6257505.950003024
+                ],
+                [
+                  338531.6940586517,
+                  6257509.723935941
+                ],
+                [
+                  338539.42092043604,
+                  6257511.38311432
+                ],
+                [
+                  338541.91125030245,
+                  6257514.646945718
+                ],
+                [
+                  338543.13599117217,
+                  6257517.314731801
+                ],
+                [
+                  338539.3435684558,
+                  6257520.597327676
+                ],
+                [
+                  338531.92944434274,
+                  6257527.671675636
+                ],
+                [
+                  338525.41609855555,
+                  6257534.340763763
+                ],
+                [
+                  338517.2900154335,
+                  6257543.554780986
+                ],
+                [
+                  338513.4029642455,
+                  6257548.305535516
+                ],
+                [
+                  338511.2407595244,
+                  6257551.583028937
+                ],
+                [
+                  338510.7200658065,
+                  6257552.431330026
+                ],
+                [
+                  338510.6961579534,
+                  6257552.470636374
+                ],
+                [
+                  338508.71129898285,
+                  6257556.161783947
+                ],
+                [
+                  338507.0367368688,
+                  6257560.005389726
+                ],
+                [
+                  338501.5843923265,
+                  6257553.089790944
+                ],
+                [
+                  338498.3779678168,
+                  6257559.262947014
+                ],
+                [
+                  338498.3089053216,
+                  6257560.840810625
+                ],
+                [
+                  338498.31204020476,
+                  6257562.31651482
+                ],
+                [
+                  338459.2818462201,
+                  6257530.966550484
+                ],
+                [
+                  338457.8473932516,
+                  6257532.738901084
+                ],
+                [
+                  338434.4160459698,
+                  6257513.580413153
+                ],
+                [
+                  338415.96925126394,
+                  6257526.1243743915
+                ],
+                [
+                  338432.1647402348,
+                  6257553.928369828
+                ],
+                [
+                  338433.5902158271,
+                  6257554.351322412
+                ],
+                [
+                  338437.1052312186,
+                  6257578.445091359
+                ],
+                [
+                  338430.8303560456,
+                  6257578.285995539
+                ],
+                [
+                  338412.1362110959,
+                  6257570.12060185
+                ],
+                [
+                  338411.17227660504,
+                  6257569.700593097
+                ],
+                [
+                  338408.6182302935,
+                  6257594.65994004
+                ],
+                [
+                  338404.76648834476,
+                  6257600.993171969
+                ],
+                [
+                  338403.65936310036,
+                  6257614.8355156155
+                ],
+                [
+                  338398.63616309955,
+                  6257618.985260738
+                ],
+                [
+                  338394.30831382866,
+                  6257622.559110318
+                ],
+                [
+                  338382.89819012326,
+                  6257631.984763873
+                ],
+                [
+                  338370.7984662816,
+                  6257641.978518251
+                ],
+                [
+                  338359.13397276704,
+                  6257651.614583837
+                ],
+                [
+                  338347.3120946655,
+                  6257661.378415408
+                ],
+                [
+                  338335.2679675147,
+                  6257671.327259053
+                ],
+                [
+                  338326.43113895226,
+                  6257678.627903363
+                ],
+                [
+                  338316.9158074535,
+                  6257686.486743954
+                ],
+                [
+                  338312.9616039286,
+                  6257690.781819908
+                ],
+                [
+                  338303.4075918684,
+                  6257698.719636832
+                ],
+                [
+                  338293.96110586653,
+                  6257710.294546252
+                ],
+                [
+                  338284.2485346591,
+                  6257722.193051269
+                ],
+                [
+                  338274.9724287696,
+                  6257733.557968177
+                ],
+                [
+                  338265.05725396983,
+                  6257745.704597851
+                ],
+                [
+                  338255.3487361835,
+                  6257757.600150536
+                ],
+                [
+                  338246.0065036327,
+                  6257769.04356501
+                ],
+                [
+                  338235.8945220957,
+                  6257781.433415958
+                ],
+                [
+                  338230.53830176056,
+                  6257787.9319486255
+                ],
+                [
+                  338222.14604598784,
+                  6257806.974283015
+                ],
+                [
+                  338222.1534129435,
+                  6257817.780961028
+                ],
+                [
+                  338222.16261769703,
+                  6257839.878305078
+                ],
+                [
+                  338229.4237315126,
+                  6257845.853278242
+                ],
+                [
+                  338241.994009818,
+                  6257857.349548679
+                ],
+                [
+                  338251.4526709763,
+                  6257860.665079599
+                ],
+                [
+                  338266.0801238929,
+                  6257865.792683263
+                ],
+                [
+                  338280.70750083076,
+                  6257870.920151368
+                ],
+                [
+                  338295.28215124866,
+                  6257876.028842241
+                ],
+                [
+                  338316.37960084865,
+                  6257883.424786098
+                ],
+                [
+                  338353.34235929186,
+                  6257896.381681683
+                ],
+                [
+                  338360.92552320345,
+                  6257899.0399923455
+                ],
+                [
+                  338393.1205478415,
+                  6257910.3249463085
+                ],
+                [
+                  338386.38958341745,
+                  6257919.332803786
+                ],
+                [
+                  338385.2412110878,
+                  6257920.869510397
+                ],
+                [
+                  338346.09210142243,
+                  6257973.033716222
+                ],
+                [
+                  338352.29225063813,
+                  6257974.6274147425
+                ],
+                [
+                  338364.93502624123,
+                  6257977.364558626
+                ],
+                [
+                  338375.7434932394,
+                  6257979.555432137
+                ],
+                [
+                  338358.7081609308,
+                  6258025.887094146
+                ],
+                [
+                  338349.98138679843,
+                  6258023.112993081
+                ],
+                [
+                  338341.1034263186,
+                  6258040.697489515
+                ],
+                [
+                  338339.42600746837,
+                  6258044.018893216
+                ],
+                [
+                  338317.6325304215,
+                  6258051.791798858
+                ],
+                [
+                  338314.2597105724,
+                  6258058.60356704
+                ],
+                [
+                  338315.2825643361,
+                  6258064.024138005
+                ],
+                [
+                  338315.55977415934,
+                  6258065.494509531
+                ],
+                [
+                  338318.21904429514,
+                  6258079.600524973
+                ],
+                [
+                  338321.2918718058,
+                  6258095.901242141
+                ],
+                [
+                  338319.5406019971,
+                  6258121.913231056
+                ],
+                [
+                  338317.8967417111,
+                  6258146.348117946
+                ],
+                [
+                  338317.6779515486,
+                  6258149.604859665
+                ],
+                [
+                  338317.4671516053,
+                  6258152.734504595
+                ],
+                [
+                  338314.31378430664,
+                  6258169.898967689
+                ],
+                [
+                  338311.5179422114,
+                  6258185.120633595
+                ],
+                [
+                  338302.12294712744,
+                  6258200.97608556
+                ],
+                [
+                  338291.8879036167,
+                  6258218.24611556
+                ],
+                [
+                  338284.92415896617,
+                  6258229.996386273
+                ],
+                [
+                  338274.2241585136,
+                  6258248.0539618535
+                ],
+                [
+                  338274.89727915707,
+                  6258259.797606345
+                ],
+                [
+                  338287.58990248485,
+                  6258265.736453397
+                ],
+                [
+                  338294.37019999116,
+                  6258268.908076035
+                ],
+                [
+                  338300.60116819444,
+                  6258275.496882891
+                ],
+                [
+                  338303.59326302673,
+                  6258278.652030806
+                ],
+                [
+                  338306.3961250464,
+                  6258281.607960416
+                ],
+                [
+                  338313.1470798674,
+                  6258295.516059339
+                ],
+                [
+                  338316.11989966466,
+                  6258301.663774763
+                ],
+                [
+                  338316.04410506453,
+                  6258310.634419653
+                ],
+                [
+                  338315.9616471572,
+                  6258320.341722997
+                ],
+                [
+                  338315.87019198865,
+                  6258331.065179136
+                ],
+                [
+                  338306.90846438485,
+                  6258342.952618036
+                ],
+                [
+                  338295.8580331688,
+                  6258351.2269077245
+                ],
+                [
+                  338284.06603287236,
+                  6258360.056433288
+                ],
+                [
+                  338277.8593845538,
+                  6258364.703079727
+                ],
+                [
+                  338272.86098859285,
+                  6258373.188416675
+                ],
+                [
+                  338269.7189921418,
+                  6258378.521451218
+                ],
+                [
+                  338271.29915039096,
+                  6258387.571557315
+                ],
+                [
+                  338279.8464789849,
+                  6258436.527113866
+                ],
+                [
+                  338269.9535520989,
+                  6258438.368777653
+                ],
+                [
+                  338273.591643814,
+                  6258460.644146571
+                ],
+                [
+                  338274.88576765114,
+                  6258468.570040198
+                ],
+                [
+                  338280.89244298765,
+                  6258505.406939903
+                ],
+                [
+                  338285.3459335634,
+                  6258532.61404594
+                ],
+                [
+                  338274.4916372645,
+                  6258531.275460562
+                ],
+                [
+                  338270.6310922102,
+                  6258506.504586678
+                ],
+                [
+                  338265.88722752867,
+                  6258476.062815545
+                ],
+                [
+                  338263.0805073798,
+                  6258458.068327831
+                ],
+                [
+                  338260.20693296706,
+                  6258439.855953872
+                ],
+                [
+                  338258.70593496144,
+                  6258430.042797631
+                ],
+                [
+                  338261.5891812605,
+                  6258429.6228435505
+                ],
+                [
+                  338271.5508986698,
+                  6258428.180026517
+                ],
+                [
+                  338264.7732850899,
+                  6258385.614667546
+                ],
+                [
+                  338255.75420141564,
+                  6258390.845962217
+                ],
+                [
+                  338246.4792341065,
+                  6258396.192262502
+                ],
+                [
+                  338236.9971118911,
+                  6258401.706973804
+                ],
+                [
+                  338229.61138094217,
+                  6258405.976617716
+                ],
+                [
+                  338227.5935266946,
+                  6258406.363996752
+                ],
+                [
+                  338217.76072336524,
+                  6258408.085272634
+                ],
+                [
+                  338207.43604333926,
+                  6258409.885820012
+                ],
+                [
+                  338206.02287168155,
+                  6258410.149128241
+                ],
+                [
+                  338196.8256680204,
+                  6258408.413952009
+                ],
+                [
+                  338200.375385612,
+                  6258429.823744198
+                ],
+                [
+                  338160.97739338333,
+                  6258473.195183989
+                ],
+                [
+                  338160.14507869753,
+                  6258471.9559810385
+                ],
+                [
+                  338159.24577717506,
+                  6258470.7514696615
+                ],
+                [
+                  338158.28003580205,
+                  6258469.598519932
+                ],
+                [
+                  338157.2510590438,
+                  6258468.499293835
+                ],
+                [
+                  338156.1646570453,
+                  6258467.4606565125
+                ],
+                [
+                  338155.0216630278,
+                  6258466.482622106
+                ],
+                [
+                  338153.82596935646,
+                  6258465.570470205
+                ],
+                [
+                  338152.59777098434,
+                  6258464.718331892
+                ],
+                [
+                  338139.66959174094,
+                  6258457.533386141
+                ],
+                [
+                  338150.1741136881,
+                  6258417.630907798
+                ],
+                [
+                  338132.2839355444,
+                  6258414.727848902
+                ],
+                [
+                  338130.17783830536,
+                  6258423.974277722
+                ],
+                [
+                  338129.6448402127,
+                  6258444.309435811
+                ],
+                [
+                  338129.2380411844,
+                  6258451.740132869
+                ],
+                [
+                  338126.45107876917,
+                  6258450.192408933
+                ],
+                [
+                  338126.40504653094,
+                  6258444.887798404
+                ],
+                [
+                  338119.6441533935,
+                  6258440.906961646
+                ],
+                [
+                  338114.15058879944,
+                  6258436.259571042
+                ],
+                [
+                  338104.5652730823,
+                  6258428.150988774
+                ],
+                [
+                  338083.5140791832,
+                  6258410.396351127
+                ],
+                [
+                  338083.26848652837,
+                  6258415.471272239
+                ],
+                [
+                  338114.0464754817,
+                  6258442.388919881
+                ],
+                [
+                  338116.95430548966,
+                  6258444.933043875
+                ],
+                [
+                  338114.65945147595,
+                  6258449.11514154
+                ],
+                [
+                  338113.94307245064,
+                  6258448.4764615325
+                ],
+                [
+                  338092.96563325345,
+                  6258429.794426585
+                ],
+                [
+                  338082.153644669,
+                  6258432.764821557
+                ],
+                [
+                  338077.3463043578,
+                  6258440.4956859555
+                ],
+                [
+                  338078.95796929917,
+                  6258446.139044588
+                ],
+                [
+                  338075.4600956066,
+                  6258462.544961756
+                ],
+                [
+                  338107.3003135239,
+                  6258462.367957393
+                ],
+                [
+                  338113.64643149497,
+                  6258465.891285274
+                ],
+                [
+                  338122.1833041337,
+                  6258470.631186987
+                ],
+                [
+                  338113.219970545,
+                  6258490.99808247
+                ],
+                [
+                  338105.80568406853,
+                  6258507.8446382675
+                ],
+                [
+                  338098.1704018575,
+                  6258511.499410242
+                ],
+                [
+                  338104.40329284966,
+                  6258524.181665117
+                ],
+                [
+                  338108.5275801126,
+                  6258525.245066412
+                ],
+                [
+                  338112.6721091714,
+                  6258523.252236435
+                ],
+                [
+                  338138.40499248006,
+                  6258510.882191479
+                ],
+                [
+                  338137.2263016333,
+                  6258514.78674441
+                ],
+                [
+                  338144.7422086089,
+                  6258533.947110523
+                ],
+                [
+                  338145.646031165,
+                  6258536.254417473
+                ],
+                [
+                  338146.55163923244,
+                  6258538.554766261
+                ],
+                [
+                  338116.72172366024,
+                  6258552.9523094045
+                ],
+                [
+                  338112.9239144973,
+                  6258561.306883739
+                ],
+                [
+                  338116.7589260995,
+                  6258569.67574004
+                ],
+                [
+                  338152.0266194714,
+                  6258552.513853494
+                ],
+                [
+                  338155.88804211735,
+                  6258562.35579764
+                ],
+                [
+                  338168.41962493263,
+                  6258566.848232059
+                ],
+                [
+                  338143.4416104285,
+                  6258579.05214739
+                ],
+                [
+                  338148.8336100897,
+                  6258583.431345273
+                ],
+                [
+                  338152.08498195204,
+                  6258611.698980231
+                ],
+                [
+                  338166.83054575033,
+                  6258611.3010002915
+                ],
+                [
+                  338166.79065705906,
+                  6258609.352458644
+                ],
+                [
+                  338166.8130420034,
+                  6258607.395989337
+                ],
+                [
+                  338166.91512130445,
+                  6258605.441871535
+                ],
+                [
+                  338167.09767914953,
+                  6258603.493002644
+                ],
+                [
+                  338167.3588849148,
+                  6258601.553566755
+                ],
+                [
+                  338167.69867453934,
+                  6258599.627334291
+                ],
+                [
+                  338168.11721619766,
+                  6258597.715306409
+                ],
+                [
+                  338168.6133122542,
+                  6258595.822565405
+                ],
+                [
+                  338169.18552504777,
+                  6258593.951970905
+                ],
+                [
+                  338169.84797803743,
+                  6258592.046192031
+                ],
+                [
+                  338170.58541255427,
+                  6258590.169417788
+                ],
+                [
+                  338171.3962339386,
+                  6258588.3228413
+                ],
+                [
+                  338172.2787286771,
+                  6258586.509206598
+                ],
+                [
+                  338173.23282708117,
+                  6258584.732616753
+                ],
+                [
+                  338174.2568475893,
+                  6258582.993930608
+                ],
+                [
+                  338175.34820206097,
+                  6258581.298317731
+                ],
+                [
+                  338176.5052127209,
+                  6258579.646415155
+                ],
+                [
+                  338177.72697480477,
+                  6258578.042422714
+                ],
+                [
+                  338179.01189934113,
+                  6258576.487200805
+                ],
+                [
+                  338180.35641749506,
+                  6258574.983683823
+                ],
+                [
+                  338181.75897830527,
+                  6258573.535949677
+                ],
+                [
+                  338183.21791912115,
+                  6258572.143748272
+                ],
+                [
+                  338195.23134943604,
+                  6258576.4533055825
+                ],
+                [
+                  338197.40374758607,
+                  6258578.801998544
+                ],
+                [
+                  338195.9401033344,
+                  6258579.789463413
+                ],
+                [
+                  338194.57320280035,
+                  6258580.844127862
+                ],
+                [
+                  338193.2592140791,
+                  6258581.962252783
+                ],
+                [
+                  338191.99900049577,
+                  6258583.142078048
+                ],
+                [
+                  338190.797506416,
+                  6258584.381469091
+                ],
+                [
+                  338189.6565718147,
+                  6258585.675687335
+                ],
+                [
+                  338188.57862450543,
+                  6258587.02355383
+                ],
+                [
+                  338187.56622813764,
+                  6258588.421340657
+                ],
+                [
+                  338186.6226757326,
+                  6258589.86599778
+                ],
+                [
+                  338185.74903465307,
+                  6258591.354659256
+                ],
+                [
+                  338184.94613216165,
+                  6258592.88223657
+                ],
+                [
+                  338184.2197402296,
+                  6258594.446941961
+                ],
+                [
+                  338183.56668825576,
+                  6258596.044617366
+                ],
+                [
+                  338182.9912063775,
+                  6258597.671563104
+                ],
+                [
+                  338182.4950137967,
+                  6258599.324702462
+                ],
+                [
+                  338182.0779931641,
+                  6258601.0000401065
+                ],
+                [
+                  338181.740523926,
+                  6258602.691592471
+                ],
+                [
+                  338181.59619889234,
+                  6258603.659635516
+                ],
+                [
+                  338181.48641573614,
+                  6258604.409518523
+                ],
+                [
+                  338181.31410571723,
+                  6258606.147690804
+                ],
+                [
+                  338181.22547880036,
+                  6258607.893273863
+                ],
+                [
+                  338181.2207311392,
+                  6258609.64017009
+                ],
+                [
+                  338181.29905969603,
+                  6258611.386591048
+                ],
+                [
+                  338181.46022013866,
+                  6258613.185111585
+                ],
+                [
+                  338181.6962632835,
+                  6258614.931215175
+                ],
+                [
+                  338182.0135172986,
+                  6258616.6339942925
+                ],
+                [
+                  338182.4115114931,
+                  6258618.321172461
+                ],
+                [
+                  338182.8887718562,
+                  6258619.98684557
+                ],
+                [
+                  338183.44616741,
+                  6258621.628920756
+                ],
+                [
+                  338184.0787041822,
+                  6258623.241545055
+                ],
+                [
+                  338184.7890252892,
+                  6258624.82176832
+                ],
+                [
+                  338185.5730023153,
+                  6258626.3673019195
+                ],
+                [
+                  338186.4298830156,
+                  6258627.873363234
+                ],
+                [
+                  338187.187177148,
+                  6258629.081449866
+                ],
+                [
+                  338201.2705765639,
+                  6258644.468284836
+                ],
+                [
+                  338212.3383297521,
+                  6258656.611119478
+                ],
+                [
+                  338213.1347309516,
+                  6258658.063461391
+                ],
+                [
+                  338213.90547876456,
+                  6258659.554081024
+                ],
+                [
+                  338214.6042980462,
+                  6258661.081305463
+                ],
+                [
+                  338215.22869819053,
+                  6258662.6391024515
+                ],
+                [
+                  338215.77871305065,
+                  6258664.225475905
+                ],
+                [
+                  338216.2502272631,
+                  6258665.837360971
+                ],
+                [
+                  338216.6442682797,
+                  6258667.468785102
+                ],
+                [
+                  338216.9599422432,
+                  6258669.1178473905
+                ],
+                [
+                  338217.19565232616,
+                  6258670.780416457
+                ],
+                [
+                  338217.3507425166,
+                  6258672.451489517
+                ],
+                [
+                  338217.42607614776,
+                  6258674.1293064
+                ],
+                [
+                  338217.42083278927,
+                  6258675.80764132
+                ],
+                [
+                  338217.33421113004,
+                  6258677.484594936
+                ],
+                [
+                  338217.16888810985,
+                  6258679.155221007
+                ],
+                [
+                  338216.9215966732,
+                  6258680.815581655
+                ],
+                [
+                  338216.5956298018,
+                  6258682.46262685
+                ],
+                [
+                  338216.18940381636,
+                  6258684.091448942
+                ],
+                [
+                  338215.70804636856,
+                  6258685.700027365
+                ],
+                [
+                  338215.14822985174,
+                  6258687.282537479
+                ],
+                [
+                  338214.51332473854,
+                  6258688.836817944
+                ],
+                [
+                  338213.80515594094,
+                  6258690.359017308
+                ],
+                [
+                  338213.0253462144,
+                  6258691.846279023
+                ],
+                [
+                  338212.17316586507,
+                  6258693.292489754
+                ],
+                [
+                  338211.2525359368,
+                  6258694.706701053
+                ],
+                [
+                  338210.4563463249,
+                  6258695.985919831
+                ],
+                [
+                  338209.5871561499,
+                  6258697.212096884
+                ],
+                [
+                  338208.64829830395,
+                  6258698.3852887545
+                ],
+                [
+                  338207.64316966536,
+                  6258699.501781605
+                ],
+                [
+                  338206.57341191446,
+                  6258700.557609934
+                ],
+                [
+                  338205.44502169394,
+                  6258701.548660329
+                ],
+                [
+                  338204.2605288286,
+                  6258702.473200878
+                ],
+                [
+                  338203.0232602582,
+                  6258703.32618545
+                ],
+                [
+                  338201.7390805675,
+                  6258704.105827812
+                ],
+                [
+                  338186.35976005334,
+                  6258710.433207499
+                ],
+                [
+                  338188.53823731333,
+                  6258711.645564876
+                ],
+                [
+                  338190.32516988966,
+                  6258725.944668468
+                ],
+                [
+                  338189.19547441916,
+                  6258746.279667839
+                ],
+                [
+                  338199.7134419442,
+                  6258783.190088678
+                ],
+                [
+                  338202.42218371306,
+                  6258792.724027783
+                ],
+                [
+                  338209.57897665806,
+                  6258817.901953362
+                ],
+                [
+                  338212.86939625815,
+                  6258829.854078765
+                ],
+                [
+                  338222.31519674783,
+                  6258845.285381675
+                ],
+                [
+                  338238.1555313488,
+                  6258864.632622713
+                ],
+                [
+                  338240.0479024118,
+                  6258868.469059521
+                ],
+                [
+                  338248.60458769876,
+                  6258867.127744673
+                ],
+                [
+                  338253.2250235891,
+                  6258866.40271198
+                ],
+                [
+                  338253.4788682356,
+                  6258866.364312904
+                ],
+                [
+                  338266.30553789204,
+                  6258864.402372276
+                ],
+                [
+                  338269.38917853415,
+                  6258863.930678872
+                ],
+                [
+                  338283.7437032686,
+                  6258861.701239102
+                ],
+                [
+                  338299.0883895332,
+                  6258859.335608379
+                ],
+                [
+                  338299.58202426805,
+                  6258859.257460141
+                ],
+                [
+                  338307.82648419566,
+                  6258857.966481332
+                ],
+                [
+                  338334.2894089194,
+                  6258853.929825732
+                ],
+                [
+                  338349.11276993214,
+                  6258851.607852898
+                ],
+                [
+                  338361.2228976041,
+                  6258849.699303176
+                ],
+                [
+                  338373.346351229,
+                  6258847.834669182
+                ],
+                [
+                  338385.1805051499,
+                  6258845.947255805
+                ],
+                [
+                  338397.25271691615,
+                  6258844.0727381315
+                ],
+                [
+                  338409.46010993916,
+                  6258842.15579393
+                ],
+                [
+                  338421.28607517586,
+                  6258840.307909243
+                ],
+                [
+                  338433.4919934203,
+                  6258838.378929833
+                ],
+                [
+                  338448.35189978406,
+                  6258836.05553917
+                ],
+                [
+                  338468.4342723582,
+                  6258833.464335963
+                ],
+                [
+                  338469.5787618557,
+                  6258840.501019781
+                ],
+                [
+                  338476.850757788,
+                  6258885.577224664
+                ],
+                [
+                  338489.72330445016,
+                  6258883.501397697
+                ],
+                [
+                  338503.7311006415,
+                  6258881.198199451
+                ],
+                [
+                  338517.11337609944,
+                  6258879.022597661
+                ],
+                [
+                  338530.59723200114,
+                  6258876.830839111
+                ],
+                [
+                  338544.31076128216,
+                  6258874.556429926
+                ],
+                [
+                  338557.48660683417,
+                  6258872.407115
+                ],
+                [
+                  338577.4041872769,
+                  6258869.273234448
+                ],
+                [
+                  338590.5920190809,
+                  6258867.158797406
+                ],
+                [
+                  338603.79317391786,
+                  6258864.989992505
+                ],
+                [
+                  338617.67393464467,
+                  6258862.736170427
+                ],
+                [
+                  338657.7383795219,
+                  6258856.205447711
+                ],
+                [
+                  338678.7580500558,
+                  6258852.500332028
+                ],
+                [
+                  338706.9325427701,
+                  6258848.412196944
+                ],
+                [
+                  338732.6695328768,
+                  6258844.675418006
+                ],
+                [
+                  338759.61097241077,
+                  6258840.938091264
+                ],
+                [
+                  338772.1361573071,
+                  6258839.071764608
+                ]
+              ],
+              [
+                [
+                  338647.6202586504,
+                  6258587.601840198
+                ],
+                [
+                  338640.8517910462,
+                  6258542.031140998
+                ],
+                [
+                  338642.1615562836,
+                  6258541.84255624
+                ],
+                [
+                  338656.94539540046,
+                  6258539.71436253
+                ],
+                [
+                  338671.99556044396,
+                  6258537.547836954
+                ],
+                [
+                  338691.3446057554,
+                  6258527.499440333
+                ],
+                [
+                  338735.1824763961,
+                  6258521.044313321
+                ],
+                [
+                  338736.23618052783,
+                  6258529.218632436
+                ],
+                [
+                  338721.7822475177,
+                  6258531.280982569
+                ],
+                [
+                  338706.5069145453,
+                  6258533.462632315
+                ],
+                [
+                  338708.5865389269,
+                  6258547.286246419
+                ],
+                [
+                  338710.70152294415,
+                  6258560.832144801
+                ],
+                [
+                  338713.40022592107,
+                  6258578.689292673
+                ],
+                [
+                  338700.843337947,
+                  6258580.483441228
+                ],
+                [
+                  338698.9980165502,
+                  6258579.206291899
+                ],
+                [
+                  338678.90163149906,
+                  6258582.892217228
+                ],
+                [
+                  338667.3076077825,
+                  6258584.644827269
+                ],
+                [
+                  338663.7505887806,
+                  6258585.182285087
+                ],
+                [
+                  338649.1271568798,
+                  6258587.387750722
+                ],
+                [
+                  338647.6202586504,
+                  6258587.601840198
+                ]
+              ],
+              [
+                [
+                  339053.5607742816,
+                  6258528.477436438
+                ],
+                [
+                  339078.977097433,
+                  6258524.347563438
+                ],
+                [
+                  339106.3637033204,
+                  6258519.896921726
+                ],
+                [
+                  339148.7407303109,
+                  6258513.01447662
+                ],
+                [
+                  339144.313350226,
+                  6258524.401475795
+                ],
+                [
+                  339146.0084626718,
+                  6258533.840458849
+                ],
+                [
+                  339124.78165462345,
+                  6258537.337182901
+                ],
+                [
+                  339056.7517035791,
+                  6258548.530330723
+                ],
+                [
+                  339053.5607742816,
+                  6258528.477436438
+                ]
+              ],
+              [
+                [
+                  339301.1377585899,
+                  6258275.928888049
+                ],
+                [
+                  339331.3041072739,
+                  6258270.949700454
+                ],
+                [
+                  339334.2320737659,
+                  6258288.808601439
+                ],
+                [
+                  339336.8011641042,
+                  6258304.468008941
+                ],
+                [
+                  339339.32118864206,
+                  6258319.836073822
+                ],
+                [
+                  339341.8201707171,
+                  6258335.079656831
+                ],
+                [
+                  339344.304941404,
+                  6258350.227491959
+                ],
+                [
+                  339346.8212565201,
+                  6258365.575634239
+                ],
+                [
+                  339349.351118944,
+                  6258380.9996546125
+                ],
+                [
+                  339351.85322225664,
+                  6258396.258148439
+                ],
+                [
+                  339354.3468831826,
+                  6258411.468689611
+                ],
+                [
+                  339356.89792711166,
+                  6258427.022290779
+                ],
+                [
+                  339359.3481484592,
+                  6258441.959774761
+                ],
+                [
+                  339362.92823880515,
+                  6258470.089145997
+                ],
+                [
+                  339363.70229704573,
+                  6258476.17258952
+                ],
+                [
+                  339362.62003145803,
+                  6258476.359227483
+                ],
+                [
+                  339351.6898066137,
+                  6258478.245196018
+                ],
+                [
+                  339350.79317626555,
+                  6258478.401018551
+                ],
+                [
+                  339333.97117918497,
+                  6258481.247657012
+                ],
+                [
+                  339325.99502194184,
+                  6258431.401483294
+                ],
+                [
+                  339319.53739473113,
+                  6258391.045949946
+                ],
+                [
+                  339315.48996167554,
+                  6258364.501561379
+                ],
+                [
+                  339309.0052250017,
+                  6258324.480660783
+                ],
+                [
+                  339301.1377585899,
+                  6258275.928888049
+                ]
+              ],
+              [
+                [
+                  338655.28555355535,
+                  6258192.888046697
+                ],
+                [
+                  338667.7219440574,
+                  6258191.022393871
+                ],
+                [
+                  338671.6056633352,
+                  6258216.628734707
+                ],
+                [
+                  338673.22677048994,
+                  6258227.32237475
+                ],
+                [
+                  338660.4956909163,
+                  6258229.088539189
+                ],
+                [
+                  338658.97538847825,
+                  6258218.523834962
+                ],
+                [
+                  338655.28555355535,
+                  6258192.888046697
+                ]
+              ],
+              [
+                [
+                  339630.9797839866,
+                  6258220.654776161
+                ],
+                [
+                  339564.3204222728,
+                  6258232.174732017
+                ],
+                [
+                  339537.31046022405,
+                  6258236.508738816
+                ],
+                [
+                  339497.0802384673,
+                  6258243.030210291
+                ],
+                [
+                  339496.6232388895,
+                  6258240.298073817
+                ],
+                [
+                  339537.5710504886,
+                  6258233.109491285
+                ],
+                [
+                  339538.10432128806,
+                  6258222.832135139
+                ],
+                [
+                  339538.95042538206,
+                  6258207.785150907
+                ],
+                [
+                  339539.76308884076,
+                  6258192.551803257
+                ],
+                [
+                  339540.1671145903,
+                  6258185.363539919
+                ],
+                [
+                  339583.6600701289,
+                  6258178.202764288
+                ],
+                [
+                  339607.8474390664,
+                  6258174.127505585
+                ],
+                [
+                  339626.4568768366,
+                  6258171.7619640175
+                ],
+                [
+                  339638.16131505184,
+                  6258169.126007428
+                ],
+                [
+                  339642.9397028076,
+                  6258193.319036301
+                ],
+                [
+                  339648.8257497011,
+                  6258203.235083686
+                ],
+                [
+                  339656.4746873834,
+                  6258203.497047773
+                ],
+                [
+                  339650.94882054464,
+                  6258217.460940447
+                ],
+                [
+                  339630.9797839866,
+                  6258220.654776161
+                ]
+              ],
+              [
+                [
+                  339694.14117106644,
+                  6258115.169802722
+                ],
+                [
+                  339703.47297251667,
+                  6258105.048327472
+                ],
+                [
+                  339717.1902077801,
+                  6258106.654310714
+                ],
+                [
+                  339698.8463777185,
+                  6258131.927907588
+                ],
+                [
+                  339698.4123593178,
+                  6258132.263587814
+                ],
+                [
+                  339697.9363625055,
+                  6258132.535001659
+                ],
+                [
+                  339697.42661785847,
+                  6258132.737295945
+                ],
+                [
+                  339696.89400882396,
+                  6258132.867547819
+                ],
+                [
+                  339696.3485080779,
+                  6258132.92193172
+                ],
+                [
+                  339695.8010525021,
+                  6258132.8998551555
+                ],
+                [
+                  339695.2615513382,
+                  6258132.80126297
+                ],
+                [
+                  339694.74143161136,
+                  6258132.62945329
+                ],
+                [
+                  339694.25002847216,
+                  6258132.385470567
+                ],
+                [
+                  339693.79703544907,
+                  6258132.0765770795
+                ],
+                [
+                  339693.39153539337,
+                  6258131.707806358
+                ],
+                [
+                  339693.0416648062,
+                  6258131.285396157
+                ],
+                [
+                  339692.75401936914,
+                  6258130.819107948
+                ],
+                [
+                  339692.5342006509,
+                  6258130.317244438
+                ],
+                [
+                  339692.38539210113,
+                  6258129.788733229
+                ],
+                [
+                  339694.14117106644,
+                  6258115.169802722
+                ]
+              ],
+              [
+                [
+                  338696.3786196873,
+                  6258035.244197972
+                ],
+                [
+                  338692.39261288743,
+                  6258009.353821436
+                ],
+                [
+                  338688.60260547255,
+                  6257984.096153051
+                ],
+                [
+                  338685.3707614365,
+                  6257964.749193281
+                ],
+                [
+                  338691.707248618,
+                  6257963.733889537
+                ],
+                [
+                  338688.08961489797,
+                  6257943.004362247
+                ],
+                [
+                  338693.33323615405,
+                  6257935.69225681
+                ],
+                [
+                  338758.62843321345,
+                  6257926.168880289
+                ],
+                [
+                  338778.88028010074,
+                  6257922.882162036
+                ],
+                [
+                  338811.8969982716,
+                  6257917.960983173
+                ],
+                [
+                  338811.56598067307,
+                  6257914.762602796
+                ],
+                [
+                  338843.61572058266,
+                  6257910.372711317
+                ],
+                [
+                  338850.86969093734,
+                  6257939.966628515
+                ],
+                [
+                  338858.0505153922,
+                  6257988.755911367
+                ],
+                [
+                  338861.72036437166,
+                  6258013.687330365
+                ],
+                [
+                  338865.3901445833,
+                  6258038.618744766
+                ],
+                [
+                  338869.0718504648,
+                  6258063.634882912
+                ],
+                [
+                  338835.164199032,
+                  6258068.4975117
+                ],
+                [
+                  338802.0571906925,
+                  6258073.28005502
+                ],
+                [
+                  338781.52733515995,
+                  6258074.33873622
+                ],
+                [
+                  338730.3420828959,
+                  6258082.358141255
+                ],
+                [
+                  338704.1184883871,
+                  6258086.471260958
+                ],
+                [
+                  338700.2850455423,
+                  6258061.225846761
+                ],
+                [
+                  338698.89844250644,
+                  6258051.931072221
+                ],
+                [
+                  338696.3786196873,
+                  6258035.244197972
+                ]
+              ],
+              [
+                [
+                  339411.50954227534,
+                  6258041.461050505
+                ],
+                [
+                  339421.0180165893,
+                  6258020.1725043915
+                ],
+                [
+                  339421.47517445975,
+                  6258010.237842593
+                ],
+                [
+                  339426.624419314,
+                  6258013.070907056
+                ],
+                [
+                  339442.04067516635,
+                  6257992.366193038
+                ],
+                [
+                  339446.1524914546,
+                  6257995.239448494
+                ],
+                [
+                  339424.26937063166,
+                  6258022.146305073
+                ],
+                [
+                  339431.17528024013,
+                  6258026.592984365
+                ],
+                [
+                  339434.95127463795,
+                  6258039.5491494555
+                ],
+                [
+                  339437.9002118887,
+                  6258049.711250901
+                ],
+                [
+                  339422.5782782272,
+                  6258061.521325182
+                ],
+                [
+                  339418.2572524414,
+                  6258064.852149306
+                ],
+                [
+                  339405.3479251203,
+                  6258074.802588481
+                ],
+                [
+                  339402.97689801326,
+                  6258072.560203712
+                ],
+                [
+                  339411.50954227534,
+                  6258041.461050505
+                ]
+              ],
+              [
+                [
+                  339152.0391279998,
+                  6257999.39552578
+                ],
+                [
+                  339071.8836470021,
+                  6258015.191530453
+                ],
+                [
+                  339064.1015617722,
+                  6258016.72465511
+                ],
+                [
+                  339052.61587536114,
+                  6258019.039365366
+                ],
+                [
+                  339016.4209526194,
+                  6258025.862542322
+                ],
+                [
+                  339016.2318254204,
+                  6258024.823300491
+                ],
+                [
+                  339014.69823581446,
+                  6258014.6302680485
+                ],
+                [
+                  339013.270639459,
+                  6258005.579564599
+                ],
+                [
+                  339011.1809956812,
+                  6257992.141653462
+                ],
+                [
+                  339010.254423552,
+                  6257986.206666637
+                ],
+                [
+                  339007.79257509444,
+                  6257970.1851048125
+                ],
+                [
+                  339007.2826599382,
+                  6257967.102957912
+                ],
+                [
+                  339004.2683336936,
+                  6257947.521325143
+                ],
+                [
+                  339001.45632561645,
+                  6257929.481316617
+                ],
+                [
+                  338998.5111697857,
+                  6257910.471450642
+                ],
+                [
+                  338995.71339013637,
+                  6257892.325300748
+                ],
+                [
+                  338992.78178946034,
+                  6257873.451987532
+                ],
+                [
+                  338988.9654017505,
+                  6257848.831407592
+                ],
+                [
+                  339008.54663105274,
+                  6257845.962387616
+                ],
+                [
+                  339028.4013519994,
+                  6257843.073211892
+                ],
+                [
+                  339047.04347501067,
+                  6257840.420084161
+                ],
+                [
+                  339067.18840631086,
+                  6257837.495908726
+                ],
+                [
+                  339086.991959102,
+                  6257834.57990305
+                ],
+                [
+                  339089.35797337757,
+                  6257850.583961737
+                ],
+                [
+                  339091.8695562214,
+                  6257867.696074213
+                ],
+                [
+                  339094.2398890748,
+                  6257883.840413053
+                ],
+                [
+                  339096.68302715675,
+                  6257900.48303812
+                ],
+                [
+                  339099.1330926715,
+                  6257917.165711909
+                ],
+                [
+                  339101.5608461624,
+                  6257933.689716399
+                ],
+                [
+                  339141.41024758515,
+                  6257927.847615784
+                ],
+                [
+                  339143.11845825345,
+                  6257939.354157671
+                ],
+                [
+                  339144.7029051173,
+                  6257950.030216419
+                ],
+                [
+                  339146.7745257362,
+                  6257963.959075145
+                ],
+                [
+                  339147.970232046,
+                  6257971.997523644
+                ],
+                [
+                  339151.3322895033,
+                  6257994.651615241
+                ],
+                [
+                  339152.0391279998,
+                  6257999.39552578
+                ]
+              ],
+              [
+                [
+                  339181.1583229534,
+                  6257904.6873642
+                ],
+                [
+                  339177.38438587927,
+                  6257880.468268104
+                ],
+                [
+                  339175.59799968905,
+                  6257880.768232696
+                ],
+                [
+                  339174.1088323856,
+                  6257871.1338267345
+                ],
+                [
+                  339180.118827131,
+                  6257870.373147681
+                ],
+                [
+                  339184.39243115636,
+                  6257873.243375152
+                ],
+                [
+                  339204.3187933443,
+                  6257870.189984958
+                ],
+                [
+                  339230.6530654052,
+                  6257866.153828537
+                ],
+                [
+                  339235.4564434141,
+                  6257898.880848275
+                ],
+                [
+                  339229.0050857704,
+                  6257897.11843298
+                ],
+                [
+                  339222.0786002566,
+                  6257898.374714209
+                ],
+                [
+                  339209.68099621165,
+                  6257900.289416194
+                ],
+                [
+                  339209.6175117459,
+                  6257900.215799549
+                ],
+                [
+                  339209.54811100697,
+                  6257900.147074729
+                ],
+                [
+                  339209.47359532095,
+                  6257900.085140994
+                ],
+                [
+                  339209.3940890782,
+                  6257900.028114692
+                ],
+                [
+                  339209.3101897693,
+                  6257899.9790009195
+                ],
+                [
+                  339209.22295123676,
+                  6257899.935709842
+                ],
+                [
+                  339209.1322453727,
+                  6257899.90034692
+                ],
+                [
+                  339209.03892215376,
+                  6257899.871928142
+                ],
+                [
+                  339208.94381473365,
+                  6257899.850467572
+                ],
+                [
+                  339208.846983877,
+                  6257899.837851986
+                ],
+                [
+                  339208.74994255695,
+                  6257899.832221149
+                ],
+                [
+                  339208.65191653173,
+                  6257899.83555869
+                ],
+                [
+                  339208.5554388963,
+                  6257899.8459106665
+                ],
+                [
+                  339191.0662486808,
+                  6257902.546657072
+                ],
+                [
+                  339191.0004377507,
+                  6257902.561519736
+                ],
+                [
+                  339190.9370102541,
+                  6257902.583300019
+                ],
+                [
+                  339190.87587173836,
+                  6257902.612107238
+                ],
+                [
+                  339190.8188905148,
+                  6257902.646974622
+                ],
+                [
+                  339190.7658664541,
+                  6257902.688786164
+                ],
+                [
+                  339190.71859024663,
+                  6257902.735686362
+                ],
+                [
+                  339190.6762287426,
+                  6257902.787661167
+                ],
+                [
+                  339190.6396150943,
+                  6257902.84472462
+                ],
+                [
+                  339190.6095235962,
+                  6257902.904893143
+                ],
+                [
+                  339190.58687992964,
+                  6257902.968182357
+                ],
+                [
+                  339190.5707771192,
+                  6257903.033467678
+                ],
+                [
+                  339190.56224656745,
+                  6257903.099990061
+                ],
+                [
+                  339190.56193811435,
+                  6257903.1676495215
+                ],
+                [
+                  339190.5682210496,
+                  6257903.23431097
+                ],
+                [
+                  339181.1583229534,
+                  6257904.6873642
+                ]
+              ],
+              [
+                [
+                  338930.41466634755,
+                  6257866.3912120685
+                ],
+                [
+                  338917.35626047815,
+                  6257868.304237622
+                ],
+                [
+                  338911.1914026268,
+                  6257827.163767373
+                ],
+                [
+                  338919.9217316315,
+                  6257825.895389101
+                ],
+                [
+                  338924.987419192,
+                  6257830.12443742
+                ],
+                [
+                  338930.41466634755,
+                  6257866.3912120685
+                ]
+              ],
+              [
+                [
+                  338478.88295965,
+                  6257962.742867153
+                ],
+                [
+                  338470.5452676184,
+                  6257974.967136992
+                ],
+                [
+                  338444.61041118356,
+                  6257960.342235393
+                ],
+                [
+                  338411.35722090723,
+                  6257941.591941228
+                ],
+                [
+                  338424.5176185411,
+                  6257918.649946768
+                ],
+                [
+                  338478.88295965,
+                  6257962.742867153
+                ]
+              ],
+              [
+                [
+                  338438.5151403937,
+                  6257595.889851235
+                ],
+                [
+                  338497.965078237,
+                  6257595.813890723
+                ],
+                [
+                  338497.8289656029,
+                  6257602.030216137
+                ],
+                [
+                  338458.72823599284,
+                  6257602.000743259
+                ],
+                [
+                  338453.3563206479,
+                  6257601.996184904
+                ],
+                [
+                  338438.5238229438,
+                  6257601.985283235
+                ],
+                [
+                  338425.33592292893,
+                  6257602.002248069
+                ],
+                [
+                  338425.32808192633,
+                  6257595.906829868
+                ],
+                [
+                  338438.5151403937,
+                  6257595.889851235
+                ]
+              ],
+              [
+                [
+                  338890.44163175987,
+                  6257598.365805434
+                ],
+                [
+                  338889.762201251,
+                  6257593.730701918
+                ],
+                [
+                  338870.24976908264,
+                  6257596.922634423
+                ],
+                [
+                  338867.45448694745,
+                  6257592.935826419
+                ],
+                [
+                  338883.82675490354,
+                  6257558.824547826
+                ],
+                [
+                  338891.20185910375,
+                  6257555.32386823
+                ],
+                [
+                  338896.66575856804,
+                  6257556.167005804
+                ],
+                [
+                  338903.5020422811,
+                  6257599.598950694
+                ],
+                [
+                  338890.44163175987,
+                  6257598.365805434
+                ]
+              ],
+              [
+                [
+                  338839.98567273817,
+                  6257550.080656901
+                ],
+                [
+                  338834.51611971343,
+                  6257581.463826126
+                ],
+                [
+                  338818.3800309176,
+                  6257579.47173313
+                ],
+                [
+                  338791.25075328676,
+                  6257576.122124918
+                ],
+                [
+                  338789.59842949884,
+                  6257563.745552389
+                ],
+                [
+                  338778.2537907715,
+                  6257556.766251201
+                ],
+                [
+                  338793.28200570634,
+                  6257534.5593542475
+                ],
+                [
+                  338795.2152794971,
+                  6257535.973204715
+                ],
+                [
+                  338797.19361623575,
+                  6257537.323258259
+                ],
+                [
+                  338799.2129634965,
+                  6257538.608226109
+                ],
+                [
+                  338801.27564862627,
+                  6257539.827371145
+                ],
+                [
+                  338803.37520862534,
+                  6257540.979585662
+                ],
+                [
+                  338805.5108290983,
+                  6257542.063746579
+                ],
+                [
+                  338807.6799499694,
+                  6257543.077924843
+                ],
+                [
+                  338809.88183250336,
+                  6257544.021996988
+                ],
+                [
+                  338812.1122672455,
+                  6257544.893007724
+                ],
+                [
+                  338814.36975806777,
+                  6257545.6918191165
+                ],
+                [
+                  338816.6524685201,
+                  6257546.417512673
+                ],
+                [
+                  338818.95728496683,
+                  6257547.068039045
+                ],
+                [
+                  338821.2815666266,
+                  6257547.646237608
+                ],
+                [
+                  338823.6236522098,
+                  6257548.146312106
+                ],
+                [
+                  338839.98567273817,
+                  6257550.080656901
+                ]
+              ],
+              [
+                [
+                  339229.18258322333,
+                  6257549.13576494
+                ],
+                [
+                  339210.4575030297,
+                  6257523.887774168
+                ],
+                [
+                  339191.518430167,
+                  6257492.145196724
+                ],
+                [
+                  339193.22988820926,
+                  6257490.525393823
+                ],
+                [
+                  339194.87183030247,
+                  6257488.843851868
+                ],
+                [
+                  339196.45253897493,
+                  6257487.103594777
+                ],
+                [
+                  339197.9685386787,
+                  6257485.3075589
+                ],
+                [
+                  339199.4191308877,
+                  6257483.458727488
+                ],
+                [
+                  339200.80161430687,
+                  6257481.558053297
+                ],
+                [
+                  339202.11445919995,
+                  6257479.608394606
+                ],
+                [
+                  339203.35576181184,
+                  6257477.612825246
+                ],
+                [
+                  339204.52400740085,
+                  6257475.573316336
+                ],
+                [
+                  339228.5410037101,
+                  6257505.011218333
+                ],
+                [
+                  339259.0411079501,
+                  6257533.731146121
+                ],
+                [
+                  339257.2264409459,
+                  6257536.205343893
+                ],
+                [
+                  339255.34457480384,
+                  6257538.628601963
+                ],
+                [
+                  339253.39804066444,
+                  6257540.999077271
+                ],
+                [
+                  339251.38605588925,
+                  6257543.313761572
+                ],
+                [
+                  339249.310995491,
+                  6257545.57458064
+                ],
+                [
+                  339247.17469867447,
+                  6257547.776795661
+                ],
+                [
+                  339244.9780172938,
+                  6257549.91931169
+                ],
+                [
+                  339242.7242399264,
+                  6257551.999300143
+                ],
+                [
+                  339240.41426231,
+                  6257554.018550864
+                ],
+                [
+                  339238.06907729903,
+                  6257555.956674956
+                ],
+                [
+                  339235.64895397826,
+                  6257557.814111226
+                ],
+                [
+                  339229.18258322333,
+                  6257549.13576494
+                ]
+              ],
+              [
+                [
+                  338923.3287158782,
+                  6257523.859392293
+                ],
+                [
+                  338902.04770817235,
+                  6257526.808725409
+                ],
+                [
+                  338895.8726538073,
+                  6257483.1512364475
+                ],
+                [
+                  338890.71008729126,
+                  6257446.328146518
+                ],
+                [
+                  338889.76807309914,
+                  6257439.601418098
+                ],
+                [
+                  338911.1813318543,
+                  6257442.466323438
+                ],
+                [
+                  338911.8097419373,
+                  6257446.684924368
+                ],
+                [
+                  338916.77488081594,
+                  6257480.019589422
+                ],
+                [
+                  338923.3287158782,
+                  6257523.859392293
+                ]
+              ],
+              [
+                [
+                  339322.0742595071,
+                  6258738.2792939795
+                ],
+                [
+                  339312.1421627033,
+                  6258739.954218318
+                ],
+                [
+                  339310.97243759857,
+                  6258732.05546228
+                ],
+                [
+                  339320.8065311555,
+                  6258730.474948912
+                ],
+                [
+                  339322.0742595071,
+                  6258738.2792939795
+                ]
+              ]
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "parcel": {
+    "url": "https://portal.spatial.nsw.gov.au/server/rest/services/NSW_Land_Parcel_Property_Theme/FeatureServer/8/query?where=cadid%3D102197812&outFields=%2A&returnGeometry=true&outSR=28356&f=json&resultRecordCount=10",
+    "checkedAt": "2026-10-17T10:52:06.083721+00:00",
+    "response": {
+      "objectIdFieldName": "objectid",
+      "globalIdFieldName": "",
+      "geometryType": "esriGeometryPolygon",
+      "spatialReference": {
+        "wkid": 28356,
+        "latestWkid": 28356
+      },
+      "fields": [
+        {
+          "name": "objectid",
+          "alias": "OBJECTID",
+          "type": "esriFieldTypeOID"
+        },
+        {
+          "name": "cadid",
+          "alias": "cadid",
+          "type": "esriFieldTypeInteger"
+        },
+        {
+          "name": "createdate",
+          "alias": "createdate",
+          "type": "esriFieldTypeDate",
+          "length": 8
+        },
+        {
+          "name": "modifieddate",
+          "alias": "modifieddate",
+          "type": "esriFieldTypeDate",
+          "length": 8
+        },
+        {
+          "name": "controllingauthorityoid",
+          "alias": "controllingauthorityoid",
+          "type": "esriFieldTypeInteger"
+        },
+        {
+          "name": "planoid",
+          "alias": "planoid",
+          "type": "esriFieldTypeInteger"
+        },
+        {
+          "name": "plannumber",
+          "alias": "plannumber",
+          "type": "esriFieldTypeInteger"
+        },
+        {
+          "name": "planlabel",
+          "alias": "planlabel",
+          "type": "esriFieldTypeString",
+          "length": 15
+        },
+        {
+          "name": "itstitlestatus",
+          "alias": "ITSTitleStatus",
+          "type": "esriFieldTypeSmallInteger"
+        },
+        {
+          "name": "itslotid",
+          "alias": "itslotid",
+          "type": "esriFieldTypeInteger"
+        },
+        {
+          "name": "stratumlevel",
+          "alias": "StratumLevel",
+          "type": "esriFieldTypeSmallInteger"
+        },
+        {
+          "name": "hasstratum",
+          "alias": "HasStratum",
+          "type": "esriFieldTypeSmallInteger"
+        },
+        {
+          "name": "classsubtype",
+          "alias": "ClassSubtype",
+          "type": "esriFieldTypeInteger"
+        },
+        {
+          "name": "lotnumber",
+          "alias": "lotnumber",
+          "type": "esriFieldTypeString",
+          "length": 6
+        },
+        {
+          "name": "sectionnumber",
+          "alias": "sectionnumber",
+          "type": "esriFieldTypeString",
+          "length": 3
+        },
+        {
+          "name": "planlotarea",
+          "alias": "planlotarea",
+          "type": "esriFieldTypeDouble"
+        },
+        {
+          "name": "planlotareaunits",
+          "alias": "planlotareaunits",
+          "type": "esriFieldTypeString",
+          "length": 6
+        },
+        {
+          "name": "startdate",
+          "alias": "startdate",
+          "type": "esriFieldTypeDate",
+          "length": 8
+        },
+        {
+          "name": "enddate",
+          "alias": "enddate",
+          "type": "esriFieldTypeDate",
+          "length": 8
+        },
+        {
+          "name": "lastupdate",
+          "alias": "lastupdate",
+          "type": "esriFieldTypeDate",
+          "length": 8
+        },
+        {
+          "name": "msoid",
+          "alias": "msoid",
+          "type": "esriFieldTypeInteger"
+        },
+        {
+          "name": "centroidid",
+          "alias": "centroidid",
+          "type": "esriFieldTypeInteger"
+        },
+        {
+          "name": "shapeuuid",
+          "alias": "shapeuuid",
+          "type": "esriFieldTypeString",
+          "length": 38
+        },
+        {
+          "name": "changetype",
+          "alias": "changetype",
+          "type": "esriFieldTypeString",
+          "length": 2
+        },
+        {
+          "name": "lotidstring",
+          "alias": "lotidstring",
+          "type": "esriFieldTypeString",
+          "length": 50
+        },
+        {
+          "name": "processstate",
+          "alias": "processstate",
+          "type": "esriFieldTypeString",
+          "length": 5
+        },
+        {
+          "name": "urbanity",
+          "alias": "urbanity",
+          "type": "esriFieldTypeString",
+          "length": 2
+        },
+        {
+          "name": "Shape__Length",
+          "alias": "shape_Length",
+          "type": "esriFieldTypeDouble"
+        },
+        {
+          "name": "Shape__Area",
+          "alias": "shape_Area",
+          "type": "esriFieldTypeDouble"
+        }
+      ],
+      "features": [
+        {
+          "attributes": {
+            "objectid": 1258257,
+            "cadid": 102197812,
+            "createdate": 749952000000,
+            "modifieddate": 749952000000,
+            "controllingauthorityoid": 2,
+            "planoid": 424473,
+            "plannumber": 306858,
+            "planlabel": "DP306858",
+            "itstitlestatus": 1,
+            "itslotid": 1784579,
+            "stratumlevel": 0,
+            "hasstratum": 1,
+            "classsubtype": 1,
+            "lotnumber": "A",
+            "sectionnumber": null,
+            "planlotarea": null,
+            "planlotareaunits": null,
+            "startdate": 1101498211000,
+            "enddate": 32503680000000,
+            "lastupdate": 1101498211177,
+            "msoid": 1842242,
+            "centroidid": null,
+            "shapeuuid": "64cd1140-405c-31c5-89ee-90b538a28eeb",
+            "changetype": "I",
+            "lotidstring": "A//DP306858",
+            "processstate": null,
+            "urbanity": "U",
+            "Shape__Length": 126.0421138927455,
+            "Shape__Area": 523.0389202316825
+          },
+          "geometry": {
+            "rings": [
+              [
+                [
+                  338706.506919699,
+                  6258533.462491939
+                ],
+                [
+                  338721.7822772441,
+                  6258531.280872878
+                ],
+                [
+                  338736.23619744636,
+                  6258529.218541621
+                ],
+                [
+                  338735.1825172299,
+                  6258521.044259746
+                ],
+                [
+                  338691.3445501996,
+                  6258527.499371372
+                ],
+                [
+                  338692.52146022767,
+                  6258535.456115307
+                ],
+                [
+                  338706.506919699,
+                  6258533.462491939
+                ]
+              ]
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "analysis": {
+    "method": "Independent current cadastral parcel and official control polygons, measured with production polygon-union-slab-v2; exact shared segment endpoints in EPSG28356",
+    "sharedCadastralBoundaryMetres": 15.430360004144422,
+    "parcelAreaSqm": 360.18403392801946,
+    "fsr": {
+      "value": "1:1",
+      "state": "mapped",
+      "sourceCheckedAt": "2026-10-17T10:52:05.761942+00:00",
+      "controlAreas": [
+        {
+          "objectid": 163847,
+          "value": 1,
+          "areaSqm": 360.18071179071023,
+          "fraction": 0.9999907765558818,
+          "classification": "significant"
+        },
+        {
+          "objectid": 163928,
+          "value": 0.45,
+          "areaSqm": 0.0033110311004479146,
+          "fraction": 0.000009192609301248493,
+          "classification": "negligible-contact"
+        }
+      ]
+    },
+    "zoning": {
+      "primaryZone": {
+        "code": "E1",
+        "label": "Local Centre",
+        "instrument": "Manly Local Environmental Plan 2013",
+        "areaSqm": 360.1809885599036,
+        "fraction": 0.9999915449690112
+      },
+      "state": "boundary-review",
+      "requiresReview": true,
+      "sourceCheckedAt": "2026-10-17T10:52:06.338586+00:00",
+      "zoneAreas": [
+        {
+          "objectid": 751700,
+          "code": "E1",
+          "areaSqm": 360.1809885599036,
+          "fraction": 0.9999915449690112,
+          "classification": "significant"
+        },
+        {
+          "objectid": 810963,
+          "code": "R2",
+          "areaSqm": 0.003045492067605264,
+          "fraction": 0.000008455377753423398,
+          "classification": "boundary-overlap"
+        }
+      ]
+    },
+    "limitation": "No street address or common ownership inferred. Negligible map boundary contacts remain retained; neighbouring commercial controls do not transfer to subject parcel."
+  }
+}

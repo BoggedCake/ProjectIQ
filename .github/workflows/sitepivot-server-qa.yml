@@ -37,3 +37,11 @@ jobs:
           node-version: '24'
       - name: Test NSW address, identity and planning providers server-side
         run: node qa/serverless-smoke.cjs
+      - name: Verify live New Street and West Street authoritative parcel controls
+        if: ${{ !cancelled() }}
+        run: node qa/live-parcel-controls.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: nsw-spatial-live-evidence
+          path: qa-artifacts/nsw-spatial/

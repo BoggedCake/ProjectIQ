@@ -41,6 +41,7 @@ const sameLga=(row,lga)=>{const x=normaliseLga(row?.LGA_NAME??row?.lga_name??row
 
 const CACHE_TTL=120000,CACHE_MAX_ENTRIES=256,CACHE_MAX_BYTES=8*1024*1024;
 const sourceChecks=new WeakMap();
+const resolvedIdentities=new Map();
 const retryStatuses=new Set([408,429,500,502,503,504]);
 const networkCodes=new Set(['ECONNRESET','ECONNREFUSED','ETIMEDOUT','EAI_AGAIN','ENETUNREACH','UND_ERR_CONNECT_TIMEOUT','UND_ERR_HEADERS_TIMEOUT','UND_ERR_SOCKET']);
 function upstreamError(message,kind,status){const e=new Error(message);e.kind=kind;if(status!==undefined)e.status=status;return e}
@@ -57,6 +58,9 @@ function cachePut(key,value,fetchedAt,url,params={}){
   if(field&&!Array.isArray(value[field]))return;
   if(field==='results'&&!R.validate(value,{field:'results',completeCollection:true}).complete)return;
   if(field==='features'&&!R.validate(value,R.queryOptions(url,params.resultRecordCount)).complete)return;
+  // A geometry-requested control response without polygons is unresolved and
+  // must be retried, not held in the positive cache for two minutes.
+  if(String(params.returnGeometry)==='true'&&/EPI_Primary_Planning_Layers\/MapServer\/(?:1|2|4|5)\/query$/.test(url)&&value.features?.some(f=>!Array.isArray(f.geometry?.rings)||!f.geometry.rings.length))return;
   // Empty address matches are not authoritative negative spatial evidence.
   if((field==='suggestions'||field==='candidates')&&!value[field].length)return;
   const bytes=Buffer.byteLength(key)+Buffer.byteLength(JSON.stringify(value));
@@ -146,7 +150,7 @@ async function authoritativeAddress(candidate,input){
   },candidate?6000:1200);
   const rows=R.requireComplete(j,{arcgisQuery:true,limit:100,requiredFields:['formattedaddress'],geometry:g=>Number.isFinite(g?.x)&&Number.isFinite(g?.y)});
   const identity=A.select(input,rows);if(identity.status!=='confirmed-address'){const error=new Error(identity.reason);error.code='identity-unresolved';error.identityReview={...identity.review,complete:true,checkedAt:new Date().toISOString()};throw error;}
-  return {...identity.feature,identityEvidence:{status:identity.status,complete:true,sourceIds:identity.sourceIds}};
+  return {...identity.feature,identityEvidence:{status:identity.status,complete:true,sourceIds:identity.sourceIds,checkedAt:sourceChecks.get(j)?.checkedAt||null}};
 }
 function titleFromIdentifier(a){
   const cid=String(a.cadastralidentifier||a.pl_ptlotsecpn||'').trim();
@@ -157,13 +161,19 @@ function titleFromIdentifier(a){
 async function resolveProperty(item){
   const t=now();
   const identityQuery=item.requestedText?A.selectionQuery(item.requestedText,item.text):item.text||'';
-  let official,candidate;
+  const memoKey=JSON.stringify([item.text||'',item.requestedText||'',item.magicKey||'']),memo=resolvedIdentities.get(memoKey);
+  if(memo&&memo.exp>t)return{...JSON.parse(JSON.stringify(memo.value)),timingMs:now()-t,cached:true};
+  if(memo)resolvedIdentities.delete(memoKey);
+  let official,candidate,fallbackWork,hedgeTimer;
+  const fallback=()=>fallbackWork||(fallbackWork=(async()=>{const candidate=await geocode(item),official=await authoritativeAddress(candidate,identityQuery);return{official,candidate};})().then(value=>({value}),error=>({error})));
   if(A.lookupWhere(identityQuery)){
-    try{official=await authoritativeAddress(null,identityQuery)}catch(e){if(e.code==='incomplete'||e.identityReview?.category==='ambiguous')throw e;/* Bounded misses retain the original authoritative fallback. */}
+    hedgeTimer=setTimeout(fallback,350);
+    try{official=await authoritativeAddress(null,identityQuery)}catch(e){if(e.code==='incomplete'||e.identityReview?.category==='ambiguous')throw e;/* Direct uncertainty must settle before fallback can be accepted. */}
+    finally{clearTimeout(hedgeTimer);}
   }
-  if(!official){candidate=await geocode(item);official=await authoritativeAddress(candidate,identityQuery);}
+  if(!official){const result=await fallback();if(result.error)throw result.error;({official,candidate}=result.value);}
   const a=attrs(official),title=titleFromIdentifier(a);
-  return {
+  const result={
     property:{
       address:a.formattedaddress||candidate?.address||item.text,
       suburb:a.localityname||candidate?.attributes?.City||null,
@@ -182,6 +192,15 @@ async function resolveProperty(item){
     timingMs:now()-t,
     providers:[...(candidate?['ArcGIS World Geocoder']:[]),'NSW Address Point Formatted']
   };
+  // Cache only this exact selection's complete positive proof, with original
+  // timestamps. Returned objects cannot mutate cached identity or parcel keys.
+  if(result.property.identityEvidence?.complete===true){
+    const checked=Date.parse(result.property.identityEvidence.checkedAt),expires=(Number.isFinite(checked)?checked:t)+CACHE_TTL;
+    for(const[k,v]of resolvedIdentities)if(v.exp<=now())resolvedIdentities.delete(k);
+    while(resolvedIdentities.size>=CACHE_MAX_ENTRIES)resolvedIdentities.delete(resolvedIdentities.keys().next().value);
+    resolvedIdentities.set(memoKey,{value:JSON.parse(JSON.stringify(result)),exp:expires});
+  }
+  return result;
 }
 async function parcelFor(property){
   const fields='cadid,lotnumber,planlabel,planlotarea,planlotareaunits,lotidstring,classsubtype';
@@ -208,8 +227,9 @@ async function parcelFor(property){
   }
   return parcelEvidence(fs,property,{spatialReference:{wkid:4283},supplementaryAreas:property.supplementaryAreas||[]});
 }
+function quantitative(kind,rows,parcel,failed,checkedAt,instrument){return FSR.resolveControl(kind,{records:rows,instrument,parcelGeometry:parcel.geometry||null,parcelResolved:!!parcel.geometry,queryComplete:!failed,error:failed?'Official control retrieval failed':null,source:UPSTREAM.primary+'/'+LAYER[kind],checkedAt});}
 async function spatial(base,id,geom,type,lga,fields='*',timeout=6000){
-  const j=await arcQuery(base,id,{where:'1=1',geometry:JSON.stringify(geom),geometryType:type,inSR:4283,spatialRel:'esriSpatialRelIntersects',outFields:fields,returnGeometry:base===UPSTREAM.primary&&id===LAYER.zone?'true':'false',outSR:4283,resultRecordCount:50},timeout);
+  const j=await arcQuery(base,id,{where:'1=1',geometry:JSON.stringify(geom),geometryType:type,inSR:4283,spatialRel:'esriSpatialRelIntersects',outFields:fields,returnGeometry:base===UPSTREAM.primary&&[LAYER.zone,LAYER.fsr,LAYER.height,LAYER.lot].includes(id)?'true':'false',outSR:4283,resultRecordCount:50},timeout);
   R.requireComplete(j,R.queryOptions(base+'/'+id+'/query',50));
   // Intersecting official polygons establish spatial applicability. Legacy LGA
   // labels (for example MANLY) must not erase a valid flood/heritage/acid
@@ -270,9 +290,10 @@ async function planningFor(property,{onProgress}={}){
     const checks=Object.fromEntries(Object.keys(jobs).map(k=>[k,coreKeys.includes(k)?failed.includes(k)?{status:'failed',checkedAt:null,cached:false}:{status:'complete',...sourceChecks.get(data[k])}:{status:'loading',checkedAt:null,cached:false}]));
     const zoningEvidence=Z.resolve({records:data.zone,parcelGeometry:parcel.geometry,queryComplete:!failed.includes('zone'),error:failed.includes('zone')?'Official zoning retrieval failed':null,source:UPSTREAM.primary+'/2',checkedAt:checks.zone.checkedAt||null});
     const instrument=['single-zone','boundary-review'].includes(zoningEvidence.state)?zoningEvidence.primaryZone?.instrument||null:null;
-    const fsrEvidence=FSR.resolve({records:data.fsr,error:failed.includes('fsr')?'Official FSR retrieval failed':null,parcelResolved:!!parcel.geometry,queryComplete:!failed.includes('fsr'),instrument,source:UPSTREAM.primary+'/1',checkedAt:checks.fsr.checkedAt||null});
-    coreEvidence={zoningEvidence};
-    publish('core',{parcel:parcelSummary(),planning:{loading:true,coreReady:true,spatialScope:parcel.geometry?'parcel':'address-point',zone:!failed.includes('zone')&&zoningEvidence.primaryZone?[zoningEvidence.primaryZone.code,zoningEvidence.primaryZone.label].filter(Boolean).join(' · '):null,zoningEvidence,instrument,fsr:fsrEvidence.value,fsrEvidence,height:failed.includes('height')?null:formatHeight(data.height),minLot:failed.includes('lot')?null:formatLot(data.lot),controls:Object.fromEntries(coreKeys.map(k=>[k,data[k].map(attrs)])),sourceChecks:checks,failedKeys:[...(parcelError?['parcel']:[]),...failed],liveErrors:parcelError?['parcel: '+parcelError]:[]}});
+    const fsrEvidence=FSR.resolve({records:data.fsr,error:failed.includes('fsr')?'Official FSR retrieval failed':null,parcelGeometry:parcel.geometry||null,parcelResolved:!!parcel.geometry,queryComplete:!failed.includes('fsr'),instrument,source:UPSTREAM.primary+'/1',checkedAt:checks.fsr.checkedAt||null});
+    const heightEvidence=quantitative('height',data.height,parcel,failed.includes('height'),checks.height.checkedAt,instrument),lotEvidence=quantitative('lot',data.lot,parcel,failed.includes('lot'),checks.lot.checkedAt,instrument);
+    coreEvidence={zoningEvidence,heightEvidence,lotEvidence};
+    publish('core',{parcel:parcelSummary(),planning:{loading:true,coreReady:true,spatialScope:parcel.geometry?'parcel':'address-point',zone:!failed.includes('zone')&&zoningEvidence.primaryZone?[zoningEvidence.primaryZone.code,zoningEvidence.primaryZone.label].filter(Boolean).join(' · '):null,zoningEvidence,instrument,fsr:fsrEvidence.value,fsrEvidence,height:heightEvidence.value,heightEvidence,minLot:lotEvidence.value,lotEvidence,controls:Object.fromEntries(coreKeys.map(k=>[k,data[k].map(attrs)])),sourceChecks:checks,failedKeys:[...(parcelError?['parcel']:[]),...failed],liveErrors:parcelError?['parcel: '+parcelError]:[]}});
   }):Promise.resolve();
   const keys=Object.keys(jobs),settled=await Promise.allSettled(Object.values(jobs)),data={},errors=parcelError?['parcel: '+parcelError]:[],failed=parcelError?['parcel']:[];
   await coreWork;
@@ -286,7 +307,8 @@ async function planningFor(property,{onProgress}={}){
     ...(data.sepp||[]).map(r=>r.attributes?.EPI_NAME||r.attributes?.['EPI Name']||r.layerName).filter(Boolean)
   ]);
   const [council,frontageEvidence]=await Promise.all([councilPromise,frontageWork]);
-  const fsrEvidence=FSR.resolve({records:data.fsr,error:failed.includes('fsr')?'Official FSR retrieval failed':null,parcelResolved:!!parcel.geometry,queryComplete:!failed.includes('fsr'),instrument:localInstrument,source:UPSTREAM.primary+'/1',checkedAt:sourceChecks.get(data.fsr)?.checkedAt||null});
+  const fsrEvidence=FSR.resolve({records:data.fsr,error:failed.includes('fsr')?'Official FSR retrieval failed':null,parcelGeometry:parcel.geometry||null,parcelResolved:!!parcel.geometry,queryComplete:!failed.includes('fsr'),instrument:localInstrument,source:UPSTREAM.primary+'/1',checkedAt:sourceChecks.get(data.fsr)?.checkedAt||null});
+  const heightEvidence=coreEvidence?.heightEvidence||quantitative('height',data.height,parcel,failed.includes('height'),sourceChecks.get(data.height)?.checkedAt,localInstrument),lotEvidence=coreEvidence?.lotEvidence||quantitative('lot',data.lot,parcel,failed.includes('lot'),sourceChecks.get(data.lot)?.checkedAt,localInstrument);
   const result={
     parcel:parcelSummary(frontageEvidence),
     planning:{
@@ -296,8 +318,8 @@ async function planningFor(property,{onProgress}={}){
       instrument:localInstrument,allEpiNames:epis,epiNames:epis,statePolicies,sepp:statePolicies,
       zone:failed.includes('zone')?null:['single-zone','boundary-review'].includes(zoningEvidence.state)&&zoningEvidence.primaryZone?[zoningEvidence.primaryZone.code,zoningEvidence.primaryZone.label].filter(Boolean).join(' · '):formatZone(data.zone),zoningEvidence,
       fsr:fsrEvidence.value,fsrEvidence,
-      height:failed.includes('height')?null:formatHeight(data.height),
-      minLot:failed.includes('lot')?null:formatLot(data.lot),
+      height:heightEvidence.value,heightEvidence,
+      minLot:lotEvidence.value,lotEvidence,
       heritage:data.heritage.length?trigger(data.heritage):missing('heritage','No mapped EPI heritage overlap returned'),
       flood:data.flood.length?trigger(data.flood):missing('flood','No mapped EPI flood overlap returned — council flood mapping still requires checking'),
       bushfire:data.bushfire.length?unique(data.bushfire.map(f=>attrs(f).d_category).filter(Boolean)).join(' / '):missing('bushfire','No NSW bush fire prone land overlap returned'),

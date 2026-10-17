@@ -47,7 +47,7 @@ console.log('PASS residential FSR evidence states, official regional attribute f
     if(u.includes('/FeatureServer/8/query'))body=scenario==='parcel-unresolved'?{features:[]}:{features:[{attributes:{cadid,lotnumber:'1',planlabel:'DP1'},geometry:{rings:[[[151+cadid/1e6,-33],[151.001+cadid/1e6,-33],[151.001+cadid/1e6,-33.001],[151+cadid/1e6,-33.001],[151+cadid/1e6,-33]]]}}]};
     if(u.includes('/EPI_Primary_Planning_Layers/MapServer/1/query')){
      assert.equal(new URLSearchParams(options.body).get('where'),'1=1');
-     body=scenario==='arcgis-error'?{error:{code:400,message:'Invalid query'}}:scenario==='malformed'?{}:scenario==='empty'?{features:[]}:{features:[{attributes:{FSR:.5,EPI_NAME:'Manly Local Environmental Plan 2013',LGA_NAME:'MANLY',LEGIS_REF_CLAUSE:'Clause 4.4'}}],exceededTransferLimit:scenario==='truncated'};
+     body=scenario==='arcgis-error'?{error:{code:400,message:'Invalid query'}}:scenario==='malformed'?{}:scenario==='empty'?{features:[]}:{features:[{attributes:{FSR:.5,EPI_NAME:'Manly Local Environmental Plan 2013',LGA_NAME:'MANLY',LEGIS_REF_CLAUSE:'Clause 4.4'},geometry:{rings:[[[151+cadid/1e6,-33],[151.001+cadid/1e6,-33],[151.001+cadid/1e6,-33.001],[151+cadid/1e6,-33.001],[151+cadid/1e6,-33]]]}}],exceededTransferLimit:scenario==='truncated'};
     }
     return {ok:true,json:async()=>body};
    };

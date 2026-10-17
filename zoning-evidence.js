@@ -10,7 +10,8 @@ function validatedArea(g){try{return G.geometryArea(g).areaSqm;}catch{return nul
 // No source rings are repaired. A bounded overlay fails closed on excessive work.
 function overlay(parcel,zones,groupKeys=[]){
  const pr=rings(parcel),sr=wkid(parcel);if(!Array.isArray(pr)||!pr.length)return null;
- const geometries=[parcel,...zones],raw=geometries.map(rings);
+ const normalized=zones.map(g=>wkid(g)===sr?g:G.transformGeometry?.(g,sr));
+ const geometries=[parcel,...normalized],raw=geometries.map(rings);
  if(raw.some(rs=>!Array.isArray(rs)||!rs.length||rs.some(r=>!Array.isArray(r)))||raw.reduce((n,rs)=>n+rs.reduce((m,r)=>m+r.length,0),0)>5000)return null;
  if(geometries.some(g=>wkid(g)!==sr||g?.curveRings||validatedArea(g)===null))return null;
  const origin=pr[0][0];let lon=origin[0],lat=origin[1];const merc=[3857,102100,102113].includes(sr),geo=[4283,4326,7844].includes(sr);
@@ -87,5 +88,5 @@ function resolve({records=[],parcelGeometry=null,queryComplete=true,error=null,s
  if(small)return{...base,state:'boundary-review',reason:'Minor mapped zone intersection retained as boundary uncertainty; confirm the boundary and proposed footprint.'};
  return{...base,state:'single-zone',requiresReview:false,reason:'One measured zone covers the parcel; boundary-only adjacent features retained.'};
 }
-return{resolve,intersectionArea};
+return{resolve,intersectionArea,measureOverlay:overlay};
 });
