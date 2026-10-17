@@ -1,5 +1,6 @@
 'use strict';
 const chooseOwner=require('./choose-owner.cjs');
+const {withBrowserCase}=require('./browser-case.cjs');
 
 // Synthetic completed planner evidence is only a downstream UI/arithmetic test fixture.
 async function supportDevelopment(page){await page.evaluate(()=>{const a=SitePivot,p=a.app.property,proposal=a.app.project||{};p.planning={...p.planning,zone:'R2',instrument:'Synthetic LEP fixture',zoningEvidence:{state:'single-zone',primaryZone:{code:'R2',instrument:'Synthetic LEP fixture',fraction:1},provenance:{source:'Synthetic zoning fixture'}},loading:false,splitZone:false};p.planning.pathwayEvidence={status:'supported',pathway:'ordinary',source:'Synthetic completed planner assessment',instrument:p.planning.instrument,assessedAt:'2026-10-10',address:p.address,area:p.area,zone:'R2',lot:p.lot||null,dp:p.dp||null,proposalType:'duplex',attached:proposal.attached,titleType:proposal.titleType,permissionConfirmed:true,mandatoryRequirementsSatisfied:true,exclusionsCleared:true,designEnvelopeConfirmed:true,remainingChecks:[]};a.app.assessment=null;});}
@@ -16,9 +17,10 @@ async function main(){
  await new Promise(r=>server.listen(0,'127.0.0.1',r));
  const browser=await chromium.launch({headless:true});
  const base=process.env.SITEPIVOT_URL||`http://127.0.0.1:${server.address().port}`;
- async function test(name,fn){try{await fn();results.push({name,pass:true});console.log('PASS '+name)}catch(e){results.push({name,pass:false,error:e.stack});console.error('FAIL '+name+': '+e.message)}}
+ let activeCase;
+ async function test(name,fn){try{await withBrowserCase(browser,name,async session=>{activeCase=session;await fn();},{outputDir:process.env.QA_ARTIFACTS||'qa-artifacts/journey'});results.push({name,pass:true});console.log('PASS '+name)}catch(e){results.push({name,pass:false,error:e.stack});console.error('FAIL '+name+': '+e.message)}finally{activeCase=null}}
  async function open(options={}){
-  const page=await browser.newPage(options);page.setDefaultTimeout(3000);page.errors=[];page.failures=[];
+  const page=await activeCase.newPage(options);page.setDefaultTimeout(3000);page.errors=[];page.failures=[];
   page.on('pageerror',e=>page.errors.push(e.message));page.on('requestfailed',r=>page.failures.push(r.url()));
   await page.goto(base+'/?fixtures=1');await chooseOwner(page);return page;
  }
@@ -58,7 +60,7 @@ async function main(){
   const p=await open();const r=await p.evaluate(()=>SitePivot.runSelfTests());assert.equal(r.failed,0,JSON.stringify(r.results.filter(x=>!x.pass)));await p.close();
  });
  await test('address search, exact selection, dwelling confirmation and disclosure',async()=>{
-  const p=await browser.newPage();const errors=[];p.on('pageerror',e=>errors.push(e.message));
+  const p=await activeCase.newPage();const errors=[];p.on('pageerror',e=>errors.push(e.message));
   await p.route('**/api/address/suggest?*',r=>r.fulfill({json:{suggestions:[{text:'57 Griffiths Street, Fairlight NSW 2094',magicKey:'test-only'}]}}));
   await p.route('**/api/property/resolve?*',r=>r.fulfill({json:{property:{addressId:'qa-57',identityEvidence:{status:'confirmed-address',complete:true,sourceIds:{objectid:'qa-57'}},suburb:'FAIRLIGHT',postcode:'2094',addressComponents:{streetnumber1:'57',streetname:'GRIFFITHS',streettype:'ST'},address:'57 GRIFFITHS ST, FAIRLIGHT NSW 2094',lga:'NORTHERN BEACHES',lot:'32',dp:'DP1729',point:{x:151.27,y:-33.79}}}}));
   await p.route('**/api/planning/property',r=>r.fulfill({json:{parcel:{lot:'32',dp:'DP1729',area:416.3,parcels:1},planning:{zone:'R1 General Residential',height:'8.5 m',fsr:'0.6:1',minLot:'250 m²',instrument:'Manly Local Environmental Plan 2013',dcpPlans:['Manly Development Control Plan 2013'],flood:'Needs Review',failedKeys:['flood'],liveErrors:['flood unavailable']}}}));
@@ -79,7 +81,7 @@ async function main(){
   assert.deepEqual(errors,[]);await p.close();
  });
  await test('voice transcript, female voice preference and clean spoken response',async()=>{
-  const p=await browser.newPage();await p.addInitScript(()=>{
+  const p=await activeCase.newPage();await p.addInitScript(()=>{
    window.__spoken=[];
    const voices=[{name:'Australian Male',lang:'en-AU'},{name:'Microsoft Sonia Natural',lang:'en-GB'},{name:'Microsoft Natasha Natural',lang:'en-AU'}];
    Object.defineProperty(window,'speechSynthesis',{value:{getVoices:()=>voices,addEventListener(){},cancel(){},speak(u){window.__spoken.push({text:u.text,voice:u.voice?.name,lang:u.lang})}},configurable:true});
@@ -98,7 +100,7 @@ async function main(){
  });
 
  await test('structured early voice intake confirms rooms then completes the entire journey',async()=>{
-  const p=await browser.newPage();p.errors=[];p.on('pageerror',e=>p.errors.push(e.message));
+  const p=await activeCase.newPage();p.errors=[];p.on('pageerror',e=>p.errors.push(e.message));
   await p.addInitScript(()=>{window.SpeechRecognition=class{start(){this.onstart?.();const r=[{transcript:'An extra bedroom and bathroom, budget eight hundred thousand'}];r.isFinal=true;this.onresult?.({resultIndex:0,results:[r]});this.onend?.()}stop(){}abort(){}}});
   await p.route('**/api/conversation/respond',r=>r.fulfill({json:{status:'confirmation',profile:{goal:'extend',rooms:{bedroom:1,bathroom:1},budget:800000,quality:'premium',basementPreference:'none',compareMove:false,uncertainties:['planning']}}}));
   await p.goto(base+'/?fixtures=1');await chooseOwner(p);await fixture(p);await p.locator('#assistantMic').click();await p.locator('#confirmIntent').waitFor();await p.locator('#confirmIntent').waitFor();assert.match(await p.locator('#assistantMessages').innerText(),/I’ll explore|Got it|additional space/);await p.locator('#confirmIntent').click();assert.equal(await p.evaluate(()=>SitePivot.app.scope.area),24);assert.equal(await p.locator('#scopeBudget').inputValue(),'$800,000');await report(p);await p.close();
@@ -117,7 +119,7 @@ async function main(){
  });
  const renoSentence='I’m thinking about renovating my current property. I want to open up the kitchen, make the living area bigger and renovate my bathroom.';
  for(const mode of ['text','voice'])await test('founder renovation '+mode+' intake to report and reset',async()=>{
-  const p=await browser.newPage();p.errors=[];p.on('pageerror',e=>p.errors.push(e.message));
+  const p=await activeCase.newPage();p.errors=[];p.on('pageerror',e=>p.errors.push(e.message));
   if(mode==='voice')await p.addInitScript(text=>{window.SpeechRecognition=class{start(){const r=[{transcript:text}];r.isFinal=true;this.onstart?.();this.onresult?.({resultIndex:0,results:[r]});this.onend?.()}stop(){}abort(){}}},renoSentence);
   await p.goto(base+'/?fixtures=1');await chooseOwner(p);await fixture(p);
   if(mode==='voice')await p.locator('#assistantMic').click();else await p.locator('#assistantInput').fill(renoSentence);

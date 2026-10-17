@@ -34,6 +34,14 @@ function parse(input,hint){
  }
  return{raw,number,unit,street:at>=0?words.slice(0,at).join(' '):'',type:at>=0?types[words[at]]:'',suffix,locality,postcode};
 }
+// A selective official-register lookup is only a candidate retrieval strategy.
+// The complete collection must still pass select(), including unit, direction,
+// locality, postcode, stable identifiers and contradictory source-label vetoes.
+function lookupWhere(input){
+ const q=parse(input),escape=s=>String(s).replace(/'/g,"''");
+ if(!q.number||!q.street||!q.type||!q.postcode)return null;
+ return "streetnumber1 = '"+escape(q.number.split('-')[0])+"' AND streetname = '"+escape(q.street)+"' AND postcode = "+Number(q.postcode)+(q.unit?" AND complexunitidentifier = '"+escape(q.unit)+"'":'');
+}
 function sourceLabel(a){
  const text=norm(a.formattedaddress),p=parse(a.formattedaddress,a);
  if(p.number||!hasId(a))return p;
@@ -100,5 +108,5 @@ function selectionQuery(input,selected){
  }
  return String(selected||input||'');
 }
-return{parse,components,match,select,selectionQuery};
+return{parse,components,match,select,selectionQuery,lookupWhere};
 });
