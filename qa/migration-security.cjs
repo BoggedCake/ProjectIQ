@@ -1,0 +1,35 @@
+'use strict';
+const assert=require('node:assert/strict');
+const {createRequestGuard}=require('../api/_lib/request-security');
+const {build}=require('../scripts/build-founder-assets.cjs');
+const fs=require('node:fs'),os=require('node:os'),path=require('node:path');
+(async()=>{
+ const {gateway}=require('../api/_lib/provider');
+ await assert.rejects(gateway('https://user:password@provider.test','fixture',{}));
+ let options;await gateway('https://provider.test','fixture',{},async(url,opts)=>{options=opts;return {ok:true,json:async()=>({})}});assert.equal(options.redirect,'error');
+ const origin='https://founder.example.test';
+ const req={method:'POST',headers:{origin,authorization:'Bearer fixture'},body:{question:'hello'}};
+ let status,headers,body,calls=0;
+ const res={setHeader(k,v){headers[k]=v},status(v){status=v;return this},json(v){body=v;return this},end(){}};
+ const run=async(options={},r=req)=>{status=200;headers={};body=null;return createRequestGuard({allowedOrigins:[origin],authenticate:async()=>({id:'tester'}),consumeRateLimit:async()=>{calls++;return true},...options})(r,res)};
+ assert.equal((await run()).id,'tester');assert.equal(headers['Cache-Control'],'private, no-store');
+ assert.equal(await run({authenticate:null}),null);assert.equal(status,503);
+ assert.equal(await run({consumeRateLimit:null}),null);assert.equal(status,503);
+ assert.equal(await run({authenticate:async()=>null}),null);assert.equal(status,401);
+ const before=calls;assert.equal(await run({}, {...req,headers:{...req.headers,origin:'https://evil.test'}}),null);assert.equal(status,403);assert.equal(calls,before);
+ assert.equal((await run({}, {...req,headers:{authorization:'Bearer fixture'}})).id,'tester');
+ assert.equal(await run({consumeRateLimit:async()=>false}),null);assert.equal(status,429);
+ assert.equal(await run({consumeRateLimit:async()=>{throw Error('sensitive')}}),null);assert.equal(status,503);assert.ok(!JSON.stringify(body).includes('sensitive'));
+ assert.equal(await run({maxBodyBytes:5}),null);assert.equal(status,413);
+ assert.equal(await run({}, {...req,method:'GET'}),null);assert.equal(status,405);
+ assert.equal(await run({}, {...req,method:'OPTIONS'}),null);assert.equal(status,204);
+ const root=fs.mkdtempSync(path.join(os.tmpdir(),'sitepivot-package-'));
+ try{fs.writeFileSync(path.join(root,'index.html'),'UI');fs.mkdirSync(path.join(root,'api'));fs.writeFileSync(path.join(root,'api','secret.js'),'server');fs.writeFileSync(path.join(root,'.env'),'fixture');
+ const result=build({root,files:['index.html'],revision:'fixture-version'});
+ assert.deepEqual(fs.readdirSync(result.directory).sort(),['build-info.json','index.html']);
+ assert.equal(JSON.parse(fs.readFileSync(path.join(result.directory,'build-info.json'))).revision,'fixture-version');
+ assert.throws(()=>build({root,files:['../escape'],revision:'fixture'}));
+ fs.symlinkSync(path.join(root,'.env'),path.join(root,'linked.js'));assert.throws(()=>build({root,files:['linked.js'],revision:'fixture'}));
+ }finally{fs.rmSync(root,{recursive:true,force:true})}
+ console.log('Migration guard and packaging regressions passed');
+})().catch(e=>{console.error(e);process.exit(1)});

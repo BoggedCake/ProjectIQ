@@ -1,0 +1,74 @@
+{
+  "applicationCommit": "f3b3c570b13d5519f99ea88ebc823ccd23d9160e",
+  "source": "NSW Spatial Services NSW_Address_Point_Formatted",
+  "sourceUrl": "https://portal.spatial.nsw.gov.au/server/rest/services/Hosted/NSW_Address_Point_Formatted/FeatureServer/0",
+  "interpretation": "Captured authoritative range records do not establish bare-number aliases or permission to select a parcel. No property is selected for these requests.",
+  "reviews": [
+    {
+      "requested": "49 Mann Street Gosford NSW 2250",
+      "status": "needs-review",
+      "source": "NSW Address Point",
+      "category": "unproven-range",
+      "candidates": [
+        {
+          "address": "COUNCIL ADMINISTRATION BLDG 49-51 MANN ST, GOSFORD NSW 2250",
+          "number": "49-51",
+          "objectid": 1826965,
+          "addressId": 11656409,
+          "cadastralIdentifier": "1//DP251476"
+        },
+        {
+          "address": "COUNCIL ADMINISTRATION BLDG 49-51 MANN ST, GOSFORD NSW 2250",
+          "number": "49-51",
+          "objectid": 1826966,
+          "addressId": 11656409,
+          "cadastralIdentifier": "1//DP564021"
+        },
+        {
+          "address": "VODAFONE TOWER SITE 49-51 MANN ST, GOSFORD NSW 2250",
+          "number": "49-51",
+          "objectid": 2330449,
+          "addressId": 71021826,
+          "cadastralIdentifier": "1//DP564021"
+        }
+      ],
+      "reason": "The official address is a range. Its relationship to the entered address and parcel needs confirmation; no property was selected.",
+      "complete": true,
+      "checkedAt": "2026-10-15T12:09:49.536Z"
+    },
+    {
+      "requested": "2 Civic Place Katoomba NSW 2780",
+      "status": "needs-review",
+      "source": "NSW Address Point",
+      "category": "unproven-range",
+      "candidates": [
+        {
+          "address": "COUNCIL CHAMBERS 2-6 CIVIC PL, KATOOMBA NSW 2780",
+          "number": "2-6",
+          "objectid": 1075773,
+          "addressId": 10745076,
+          "cadastralIdentifier": "1//DP705910"
+        }
+      ],
+      "reason": "The official address is a range. Its relationship to the entered address and parcel needs confirmation; no property was selected.",
+      "complete": true,
+      "checkedAt": "2026-10-15T12:09:52.213Z"
+    }
+  ],
+  "partialParcel": [
+    {
+      "requested": "84/2-8 Dixon Street Sydney NSW 2000",
+      "errors": [
+        "parcel: Missing required authoritative attributes."
+      ],
+      "spatialScope": "address-point"
+    }
+  ],
+  "qaCounts": {
+    "confirmedIdentity": 10,
+    "needsReviewIdentity": 2,
+    "failedIdentity": 0,
+    "confirmedPlanning": 6,
+    "withheldPlanning": 2
+  }
+}

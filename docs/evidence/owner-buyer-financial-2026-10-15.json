@@ -1,0 +1,51 @@
+{
+  "codeCommit": "6b68f938c12c78634a769fd48bbbeb3364b36c40",
+  "scope": "Deterministic hypothetical accounting test, not live property values or achievable feasibility",
+  "assumptions": "Same $3.5m site, $2m delivery, $8m GRV. Owner confirmed debt $1.5m. 10% illustrative development rate, 8% buyer acquisition rate, 50% construction borrowing, cash-paid interest, 12 construction months; buyer 2-month contract lead-in. Explicit zero ancillary project allowances test arithmetic only, not verified exemptions. Buyer legal4000,due diligence3000,other2000. No lender approval.",
+  "duty": {
+    "status": "indicative",
+    "duty": 173787,
+    "dutiableValue": 3500000,
+    "version": "NSW-2026-27",
+    "contractDate": "2026-10-15",
+    "source": "https://www.revenue.nsw.gov.au/taxes-duties-levies-royalties/transfer-duty/understanding-transfer-duty/calculate-transfer-duty",
+    "sourceDate": "2026-10-06",
+    "premium": false,
+    "assumptions": "Ordinary transfer; no concessions, exemptions or foreign surcharge assumed."
+  },
+  "owner": {
+    "land": 3500000,
+    "construction": 2000000,
+    "acquisitionCosts": 0,
+    "finance": 200000,
+    "total": 5700000,
+    "profit": 2300000,
+    "profitOnRevenue": 0.2875,
+    "returnOnCost": 0.40350877192982454,
+    "purchaseCash": 0,
+    "existingOrAcquisitionDebt": 1500000,
+    "constructionBorrowing": 1000000,
+    "peakNewCash": 1200000,
+    "returnOnTotalEquity": 0.71875,
+    "returnOnCashEquity": 3.5833333333333335,
+    "landEquity": 2000000
+  },
+  "buyer": {
+    "land": 3500000,
+    "construction": 2000000,
+    "acquisitionCosts": 182787,
+    "finance": 246000.00000000003,
+    "total": 5928787,
+    "profit": 2071213,
+    "profitOnRevenue": 0.258901625,
+    "returnOnCost": 0.3493485260981715,
+    "purchaseCash": 1050000,
+    "existingOrAcquisitionDebt": 2450000,
+    "constructionBorrowing": 1000000,
+    "peakNewCash": 2478787,
+    "returnOnTotalEquity": 0.8355752228811915,
+    "returnOnCashEquity": 0.8355752228811907,
+    "landEquity": 1050000
+  },
+  "pass": true
+}

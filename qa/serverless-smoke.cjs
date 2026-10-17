@@ -1,0 +1,99 @@
+'use strict';
+const P=require('../planning-intelligence');
+const A=require('../address-evidence');
+const {identityOutcome}=require('./qa-outcomes.cjs');
+const {suggestAddress,resolveProperty,planningFor}=require('../api/_lib/sitepivot');
+const addressHandler=require('../api/address/suggest');
+const propertyHandler=require('../api/property/resolve');
+const planningHandler=require('../api/planning/property');
+// Capture only the public address fields needed to diagnose exact-unit failures.
+const originalFetch=global.fetch;
+let addressProbe=null;
+global.fetch=async(...args)=>{
+ const response=await originalFetch(...args);
+ if(String(args[0]).includes('NSW_Address_Point_Formatted')){
+  try{const j=await response.clone().json();addressProbe={exceededTransferLimit:j.exceededTransferLimit,rows:(j.features||[]).map(f=>({address:f.attributes.formattedaddress,number:f.attributes.streetnumber1,endNumber:f.attributes.streetnumber2,unit:f.attributes.complexunitidentifier,objectid:f.attributes.objectid,cadastralIdentifier:f.attributes.cadastralidentifier}))}}catch(e){}
+ }
+ return response;
+};
+
+function fakeRes(){
+  return{
+    statusCode:200,body:null,ended:false,headers:{},
+    setHeader(k,v){this.headers[k]=v;return this},
+    status(n){this.statusCode=n;return this},
+    json(v){this.body=v;this.ended=true;return this},
+    end(){this.ended=true;return this}
+  };
+}
+async function routeCase(handler,req){const res=fakeRes();await handler(req,res);return{status:res.statusCode,body:res.body,ended:res.ended}}
+
+
+const cases=[
+ '12 Fishbourne Road Allambie Heights NSW 2100',
+ '57 Griffiths Street Fairlight NSW 2094',
+ '61 New Street West Balgowlah Heights NSW 2093',
+ '1 Waratah Street Balgowlah NSW 2093',
+ '9 Waratah Street Balgowlah NSW 2093',
+ '84/2-8 Dixon Street Sydney NSW 2000',
+ '290 King Street Newcastle NSW 2300',
+ '41 Burelli Street Wollongong NSW 2500',
+ '49 Mann Street Gosford NSW 2250',
+ '135 Byng Street Orange NSW 2800',
+ '243 Baylis Street Wagga Wagga NSW 2650',
+ '3 Armstrong Crescent Dubbo NSW 2830',
+ '2 Civic Place Katoomba NSW 2780'
+];
+
+(async()=>{
+const out={started:new Date().toISOString(),identity:[],planning:[],apiContract:{}};
+out.apiContract.addressOptions=await routeCase(addressHandler,{method:'OPTIONS',query:{}});
+out.apiContract.addressShort=await routeCase(addressHandler,{method:'GET',query:{q:'ab'}});
+out.apiContract.propertyLong=await routeCase(propertyHandler,{method:'GET',query:{text:'x'.repeat(301)}});
+out.apiContract.planningInvalid=await routeCase(planningHandler,{method:'POST',body:{point:{x:0,y:0},lga:'TEST'}});
+out.apiContractPass=out.apiContract.addressOptions.status===204&&out.apiContract.addressShort.status===400&&out.apiContract.propertyLong.status===400&&out.apiContract.planningInvalid.status===400;
+
+for(const q of cases){
+ const t0=Date.now();addressProbe=null;
+ try{
+   const s=await suggestAddress(q);
+   const suggestionMs=Date.now()-t0;
+   if(!s.suggestions.length)throw new Error('no suggestions');
+   const t1=Date.now();
+   const selected=s.suggestions[0],request={...selected,requestedText:A.selectionQuery(q,selected.text)};
+   const r=await resolveProperty(request);
+   if(q.startsWith('61 New Street West')&&(!(r.property.addressId===72720191)||r.property.cadid!==102197818))throw new Error('New Street West authoritative identity differs from recorded NSW regression evidence; review source, do not accept another address');
+   out.identity.push({q,pass:suggestionMs<3000&&!!r.property.lga&&!!r.property.lot&&!!r.property.dp,suggestionMs,resolveMs:Date.now()-t1,address:r.property.address,lga:r.property.lga,lot:r.property.lot,dp:r.property.dp,property:r.property});
+ }catch(e){out.identity.push({q,pass:false,error:e.message,code:e.code||null,identityReview:e.identityReview||null,addressProbe})}
+}
+for(const x of out.identity)Object.assign(x,identityOutcome(x.q,x));
+const one=out.identity.find(x=>x.q.startsWith('1 Waratah')),nine=out.identity.find(x=>x.q.startsWith('9 Waratah'));
+out.exactNumberRegression=!!one&&!!nine&&one.pass&&nine.pass&&/^1\s/i.test(one.address)&&/^9\s/i.test(nine.address)&&one.address!==nine.address;
+
+for(const q of ['12 Fishbourne Road Allambie Heights NSW 2100','49 Mann Street Gosford NSW 2250','84/2-8 Dixon Street Sydney NSW 2000','2 Civic Place Katoomba NSW 2780','135 Byng Street Orange NSW 2800','57 Griffiths Street Fairlight NSW 2094','290 King Street Newcastle NSW 2300','41 Burelli Street Wollongong NSW 2500']){
+ const id=out.identity.find(x=>x.q===q);
+ if(!id?.pass){out.planning.push({q,pass:false,status:'not-assessed',expectedReview:id?.status==='needs-review',error:'identity prerequisite not confirmed; planning was not requested'});continue}
+ const t=Date.now();
+ try{
+   const p=await planningFor(id.property);
+   const assessment=P.assess({...id.property,...p.parcel,planning:p.planning},{type:'duplex'});
+   const semanticPass=!assessment.readyForFeasibility&&(assessment.permissibility.status!=='permitted'||(assessment.readyForPreliminaryCosting&&p.planning.instrument==='Manly Local Environmental Plan 2013'&&/^R1\b/.test(p.planning.zone)))&&(!p.planning.splitZone||(!assessment.readyForPreliminaryCosting&&p.planning.zoningEvidence?.state==='split-zone'&&assessment.eligibility.category==='unresolved'))&&(!q.startsWith('12 Fishbourne')||(id.lot==='119'&&id.dp==='DP12764'&&Math.abs(p.parcel.area-608.921)<2&&p.parcel.areaEvidence?.state==='conflict'&&assessment.standard.minimumArea===800));
+   const contractPass=Array.isArray(p.planning.failedKeys)&&Array.isArray(p.planning.failedSources)&&p.planning.failedKeys.every(k=>p.planning.failedSources.includes(k))&&Array.isArray(p.planning.sepp);
+   out.planning.push({q,pass:!!p.planning.zone&&!!p.planning.instrument&&contractPass&&semanticPass,contractPass,semanticPass,frontage:p.parcel.frontage,council:p.planning.councilEvidence,planningMs:Date.now()-t,lga:id.lga,zone:p.planning.zone,instrument:p.planning.instrument,dcp:p.planning.dcpPlans,sepp:p.planning.sepp,area:p.parcel.area,areaEvidence:p.parcel.areaEvidence,identityEvidence:p.parcel.identityEvidence,spatialScope:p.planning.spatialScope,assessment,failedKeys:p.planning.failedKeys,errors:p.planning.liveErrors});
+ }catch(e){out.planning.push({q,pass:false,error:e.message})}
+}
+const suggestions=out.identity.map(x=>x.suggestionMs).filter(Number.isFinite).sort((a,b)=>a-b);
+const pct=(arr,p)=>arr.length?arr[Math.min(arr.length-1,Math.max(0,Math.ceil(arr.length*p)-1))]:null;
+const identities=out.identity.map(x=>x.resolveMs).filter(Number.isFinite).sort((a,b)=>a-b);
+out.performance={maxSuggestionMs:suggestions.at(-1)||null,medianSuggestionMs:pct(suggestions,.5),p95SuggestionMs:pct(suggestions,.95),p95IdentityMs:pct(identities,.95),targets:{suggestionMs:500,identityMs:1500,initialSummaryMs:3000},targetNote:'Engineering targets, not passed merely by this legacy three-second availability gate. Failures have no fabricated latency.'};
+// Contract regression: failed planning sources must remain visible to the UI as Needs Review.
+out.failureContractPass=out.planning.length>0&&out.planning.filter(x=>!x.expectedReview).every(x=>x.contractPass===true);
+
+out.pass=out.identity.every(x=>x.accepted)&&out.exactNumberRegression&&out.planning.every(x=>x.pass||x.expectedReview)&&out.performance.p95SuggestionMs<3000&&out.failureContractPass&&out.apiContractPass;
+out.counts={confirmedIdentity:out.identity.filter(x=>x.pass).length,needsReviewIdentity:out.identity.filter(x=>x.status==='needs-review').length,failedIdentity:out.identity.filter(x=>!x.accepted).length,confirmedPlanning:out.planning.filter(x=>x.pass).length,withheldPlanning:out.planning.filter(x=>x.expectedReview).length};
+out.releaseStatus=out.pass?(out.counts.needsReviewIdentity?'pass-with-needs-review':'pass'):'fail';
+console.log('SITEPIVOT_SERVER_QA_START');
+console.log(JSON.stringify(out,null,2));
+console.log('SITEPIVOT_SERVER_QA_END');
+if(!out.pass)process.exitCode=1;
+})().catch(e=>{console.error(e);process.exitCode=1});

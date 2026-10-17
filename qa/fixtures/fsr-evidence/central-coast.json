@@ -1,0 +1,353 @@
+{
+  "source": "https://mapprod3.environment.nsw.gov.au/arcgis/rest/services/Planning/EPI_Primary_Planning_Layers/MapServer/1/query?where=OBJECTID+%3D+268767&outFields=%2A&returnGeometry=true&outSR=4283&f=json",
+  "retrievedAt": "2026-10-10T01:07:34.207218+00:00",
+  "response": {
+    "displayFieldName": "EPI_NAME",
+    "fieldAliases": {
+      "OBJECTID": "OBJECTID",
+      "EPI_NAME": "EPI_NAME",
+      "LGA_NAME": "LGA_NAME",
+      "PUBLISHED_DATE": "PUBLISHED_DATE",
+      "COMMENCED_DATE": "COMMENCED_DATE",
+      "CURRENCY_DATE": "CURRENCY_DATE",
+      "AMENDMENT": "AMENDMENT",
+      "MAP_TYPE": "MAP_TYPE",
+      "MAP_NAME": "MAP_NAME",
+      "LAY_NAME": "LAY_NAME",
+      "LAY_CLASS": "LAY_CLASS",
+      "SYM_CODE": "SYM_CODE",
+      "FSR": "FSR",
+      "LEGIS_REF_AREA": "LEGIS_REF_AREA",
+      "LEGIS_REF_CLAUSE": "LEGIS_REF_CLAUSE",
+      "LEGIS_REF_VALUE": "LEGIS_REF_VALUE",
+      "PCO_REF_KEY": "PCO_REF_KEY",
+      "EPI_TYPE": "EPI_TYPE"
+    },
+    "geometryType": "esriGeometryPolygon",
+    "spatialReference": {
+      "wkid": 4283,
+      "latestWkid": 4283
+    },
+    "fields": [
+      {
+        "name": "OBJECTID",
+        "type": "esriFieldTypeOID",
+        "alias": "OBJECTID"
+      },
+      {
+        "name": "EPI_NAME",
+        "type": "esriFieldTypeString",
+        "alias": "EPI_NAME",
+        "length": 150
+      },
+      {
+        "name": "LGA_NAME",
+        "type": "esriFieldTypeString",
+        "alias": "LGA_NAME",
+        "length": 50
+      },
+      {
+        "name": "PUBLISHED_DATE",
+        "type": "esriFieldTypeDate",
+        "alias": "PUBLISHED_DATE",
+        "length": 8
+      },
+      {
+        "name": "COMMENCED_DATE",
+        "type": "esriFieldTypeDate",
+        "alias": "COMMENCED_DATE",
+        "length": 8
+      },
+      {
+        "name": "CURRENCY_DATE",
+        "type": "esriFieldTypeDate",
+        "alias": "CURRENCY_DATE",
+        "length": 8
+      },
+      {
+        "name": "AMENDMENT",
+        "type": "esriFieldTypeString",
+        "alias": "AMENDMENT",
+        "length": 150
+      },
+      {
+        "name": "MAP_TYPE",
+        "type": "esriFieldTypeString",
+        "alias": "MAP_TYPE",
+        "length": 4
+      },
+      {
+        "name": "MAP_NAME",
+        "type": "esriFieldTypeString",
+        "alias": "MAP_NAME",
+        "length": 100
+      },
+      {
+        "name": "LAY_NAME",
+        "type": "esriFieldTypeString",
+        "alias": "LAY_NAME",
+        "length": 100
+      },
+      {
+        "name": "LAY_CLASS",
+        "type": "esriFieldTypeString",
+        "alias": "LAY_CLASS",
+        "length": 100
+      },
+      {
+        "name": "SYM_CODE",
+        "type": "esriFieldTypeInteger",
+        "alias": "SYM_CODE"
+      },
+      {
+        "name": "FSR",
+        "type": "esriFieldTypeDouble",
+        "alias": "FSR"
+      },
+      {
+        "name": "LEGIS_REF_AREA",
+        "type": "esriFieldTypeString",
+        "alias": "LEGIS_REF_AREA",
+        "length": 50
+      },
+      {
+        "name": "LEGIS_REF_CLAUSE",
+        "type": "esriFieldTypeString",
+        "alias": "LEGIS_REF_CLAUSE",
+        "length": 50
+      },
+      {
+        "name": "LEGIS_REF_VALUE",
+        "type": "esriFieldTypeString",
+        "alias": "LEGIS_REF_VALUE",
+        "length": 50
+      },
+      {
+        "name": "PCO_REF_KEY",
+        "type": "esriFieldTypeString",
+        "alias": "PCO_REF_KEY",
+        "length": 50
+      },
+      {
+        "name": "EPI_TYPE",
+        "type": "esriFieldTypeString",
+        "alias": "EPI_TYPE",
+        "length": 5
+      }
+    ],
+    "features": [
+      {
+        "attributes": {
+          "OBJECTID": 268767,
+          "EPI_NAME": "Central Coast Local Environmental Plan 2022",
+          "LGA_NAME": "CENTRAL COAST",
+          "PUBLISHED_DATE": 1754006400000,
+          "COMMENCED_DATE": 1754006400000,
+          "CURRENCY_DATE": 1781827200000,
+          "AMENDMENT": "Map Amendment No 13",
+          "MAP_TYPE": "FSR",
+          "MAP_NAME": "Floor Space Ratio Map",
+          "LAY_NAME": "Maximum Floor Space Ratio (n:1)",
+          "LAY_CLASS": "2-2.49",
+          "SYM_CODE": 74,
+          "FSR": 2.0,
+          "LEGIS_REF_AREA": null,
+          "LEGIS_REF_CLAUSE": "Clause 4.4",
+          "LEGIS_REF_VALUE": null,
+          "PCO_REF_KEY": "2022-308",
+          "EPI_TYPE": "LEP"
+        },
+        "geometry": {
+          "rings": [
+            [
+              [
+                151.32156283900008,
+                -33.49470627699998
+              ],
+              [
+                151.321776504,
+                -33.49473684399993
+              ],
+              [
+                151.32224820700003,
+                -33.49480432499996
+              ],
+              [
+                151.3222288280001,
+                -33.494900048999966
+              ],
+              [
+                151.32243908600003,
+                -33.49493198999994
+              ],
+              [
+                151.3229504630001,
+                -33.49500712599996
+              ],
+              [
+                151.32286887300006,
+                -33.49540719699996
+              ],
+              [
+                151.3227059940001,
+                -33.495383570999934
+              ],
+              [
+                151.32266613500008,
+                -33.49555964799998
+              ],
+              [
+                151.3225843020001,
+                -33.495962703999965
+              ],
+              [
+                151.3227504140001,
+                -33.495986915999936
+              ],
+              [
+                151.32290803700005,
+                -33.496009872999934
+              ],
+              [
+                151.3230690030001,
+                -33.49603333999994
+              ],
+              [
+                151.32323072200006,
+                -33.49605690699997
+              ],
+              [
+                151.3233948520001,
+                -33.49608082299994
+              ],
+              [
+                151.3235511480001,
+                -33.49610359099995
+              ],
+              [
+                151.32371600500005,
+                -33.49612760599996
+              ],
+              [
+                151.32379740700003,
+                -33.49613947399996
+              ],
+              [
+                151.32375642300008,
+                -33.496329626999966
+              ],
+              [
+                151.32372146400007,
+                -33.49649181199993
+              ],
+              [
+                151.32400889400003,
+                -33.49653435499994
+              ],
+              [
+                151.32412514800012,
+                -33.49655012299996
+              ],
+              [
+                151.32408944400004,
+                -33.496726981999984
+              ],
+              [
+                151.3240095660001,
+                -33.49671429799997
+              ],
+              [
+                151.32303771800002,
+                -33.49657384099993
+              ],
+              [
+                151.32292490700002,
+                -33.49711493399997
+              ],
+              [
+                151.32277597900008,
+                -33.49782929199995
+              ],
+              [
+                151.32246473200007,
+                -33.49778694599996
+              ],
+              [
+                151.32249709200005,
+                -33.497630165999965
+              ],
+              [
+                151.3222543380001,
+                -33.49759546599995
+              ],
+              [
+                151.32142871100007,
+                -33.49747744599995
+              ],
+              [
+                151.32115729100008,
+                -33.497438640999974
+              ],
+              [
+                151.32092658500005,
+                -33.49740566299994
+              ],
+              [
+                151.320492961,
+                -33.49734367699995
+              ],
+              [
+                151.32040709500006,
+                -33.497331404999954
+              ],
+              [
+                151.31993993700007,
+                -33.49726461499995
+              ],
+              [
+                151.32017011400012,
+                -33.496150660999945
+              ],
+              [
+                151.3202783900001,
+                -33.49562665399998
+              ],
+              [
+                151.32112649900012,
+                -33.49575025799993
+              ],
+              [
+                151.32116373600002,
+                -33.49557137299996
+              ],
+              [
+                151.32120090000012,
+                -33.49539280999994
+              ],
+              [
+                151.32123743800003,
+                -33.495217321999974
+              ],
+              [
+                151.32127476400012,
+                -33.49503798899997
+              ],
+              [
+                151.32131293200007,
+                -33.49485463099995
+              ],
+              [
+                151.32135015100005,
+                -33.49467585299993
+              ],
+              [
+                151.32156283900008,
+                -33.49470627699998
+              ]
+            ]
+          ]
+        }
+      }
+    ]
+  }
+}

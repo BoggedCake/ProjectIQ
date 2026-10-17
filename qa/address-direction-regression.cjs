@@ -1,0 +1,31 @@
+'use strict';
+const assert=require('node:assert/strict');
+const A=require('../address-evidence');
+// Captured from NSW Address Point on 16 October 2026. ArcGIS World's
+// suffix-free suggestion is NOT an authoritative alias of this record.
+const official={objectid:2509688,ap_gurasid:72720191,ss_propid:745475,lot_cadid:102197818,formattedaddress:'61 NEW ST WEST, BALGOWLAH HEIGHTS NSW 2093',streetnumber1:'61',streetname:'NEW',streettype:'ST',streetsuffix:'WEST',localityname:'BALGOWLAH HEIGHTS',postcode:2093};
+const selected='61 New Street, Balgowlah Heights, Sydney, New South Wales, 2093, AUS';
+assert.equal(A.selectionQuery('61 New Street West Balgowlah Heights NSW 2093','61 New Street East, Balgowlah Heights, Sydney, NSW, 2093, AUS'),'61 New Street West Balgowlah Heights NSW 2093','a contradictory selected direction cannot discard the explicit requested direction');
+assert.equal(A.selectionQuery('61 New Street West Balgowlah Heights NSW 2093',selected),'61 New Street West Balgowlah Heights NSW 2093','preserve complete distinguishing direction');
+assert.equal(A.selectionQuery('61 New St W Balgowlah Heights NSW 2093',selected),'61 New St W Balgowlah Heights NSW 2093');
+for(const typed of ['61 New','61 New St West Balg','61 New Street West Fairlight NSW 2093','61 New Street Balgowlah Heights NSW 2093'])assert.equal(A.selectionQuery(typed,selected),selected,'partial or unrelated input uses deliberate selected suggestion: '+typed);
+assert.equal(A.selectionQuery('Unit 2/61 New Street West Balgowlah Heights NSW 2093',selected),'Unit 2/61 New Street West Balgowlah Heights NSW 2093','selection cannot discard requested unit');
+assert.equal(A.selectionQuery('12 Example St West Pennant Hills NSW 2125','12 Example Street, West Pennant Hills, Sydney, NSW, 2125, AUS'),'12 Example Street, West Pennant Hills, Sydney, NSW, 2125, AUS','direction-like locality is unchanged');
+assert.equal(A.match('61 New Street West Balgowlah Heights NSW 2093',official).matched,true,'official direction is distinct from locality');
+assert.equal(A.parse('61 New Street West Balgowlah Heights NSW 2093',official).suffix,'WEST');
+assert.equal(A.match('61 New St W, Balgowlah Heights NSW 2093',official).matched,true,'direction abbreviation expands');
+for(const text of ['61 New Street Balgowlah Heights NSW 2093','61 New Street East Balgowlah Heights NSW 2093','61 New Street West Balgowlah NSW 2093','61 New Street West Balgowlah Heights NSW 2094','62 New Street West Balgowlah Heights NSW 2093'])assert.equal(A.match(text,official).matched,false,'distinguishing components cannot disappear: '+text);
+assert.equal(A.match('61 New Street, Balgowlah Heights, Sydney, New South Wales, 2093, AUS',official).matched,false,'geocoder suggestion cannot establish a missing direction alias');
+const westLocality={objectid:1,formattedaddress:'12 EXAMPLE STREET WEST PENNANT HILLS NSW 2125',streetnumber1:'12',streetname:'EXAMPLE',streettype:'ST',localityname:'WEST PENNANT HILLS',postcode:2125};
+assert.equal(A.match('12 Example St West Pennant Hills NSW 2125',westLocality).matched,true,'West in locality is not a street direction');
+assert.equal(A.parse('12 Example St West Pennant Hills NSW 2125',westLocality).suffix,'');
+assert.equal(A.match('61 New Street West Balgowlah Heights NSW 2093',{...official,formattedaddress:'61 NEW ST EAST, BALGOWLAH HEIGHTS NSW 2093'}).matched,false,'contradictory source label direction veto remains');
+const aliased={...official,authoritativeAliases:[{source:'NSW Address Point',addressId:72720191,formattedaddress:'61 OLD ST WEST BALGOWLAH HEIGHTS NSW 2093'}]};
+assert.equal(A.match('61 Old Street West Balgowlah Heights NSW 2093',aliased).matched,true,'explicit same-ID official alias retains its direction');
+assert.equal(A.match('61 Old Street East Balgowlah Heights NSW 2093',aliased).matched,false,'official alias cannot erase a contradictory direction');
+console.log('PASS authoritative direction, locality and missing-direction veto');
+const fs=require('node:fs'),vm=require('node:vm'),path=require('node:path'),{createRequire}=require('node:module');
+const filename=path.resolve(__dirname,'../api/_lib/sitepivot.js');let requestedFields='';
+const box={module:{exports:{}},require:createRequire(filename),fetch:async(url,options)=>{if(String(url).includes('findAddressCandidates'))return{ok:true,json:async()=>({candidates:[{address:'61 New Street NSW',location:{x:151.25769,y:-33.8009}}]})};requestedFields=new URLSearchParams(options.body).get('outFields');return{ok:true,json:async()=>({features:[{attributes:official,geometry:{x:151.25768994729742,y:-33.800900284016116}}],exceededTransferLimit:false})}},AbortController,URLSearchParams,Buffer,setTimeout,clearTimeout,Date,Math};
+vm.runInNewContext(fs.readFileSync(filename,'utf8'),box);
+(async()=>{const result=await box.module.exports.resolveProperty({text:'61 New Street, Balgowlah Heights, Sydney, New South Wales, 2093, AUS',requestedText:'61 New Street West Balgowlah Heights NSW 2093'});assert.equal(result.property.addressId,72720191);assert.equal(result.property.addressComponents.streetsuffix,'WEST');assert.ok(requestedFields.split(',').includes('streetsuffix'),'adapter requests official direction field');await assert.rejects(box.module.exports.resolveProperty({text:'61 New Street Balgowlah Heights NSW 2093'}),/identity/);console.log('PASS selected geocoder text cannot overwrite original requested direction');})().catch(e=>{console.error(e);process.exitCode=1});

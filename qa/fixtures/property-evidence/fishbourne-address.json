@@ -1,0 +1,596 @@
+{
+  "source": "https://portal.spatial.nsw.gov.au/server/rest/services/Hosted/NSW_Address_Point_Formatted/FeatureServer/0/query?where=streetnumber1+%3D+%2712%27+AND+UPPER%28streetname%29+%3D+%27FISHBOURNE%27&outFields=*&returnGeometry=true&outSR=4283&f=json",
+  "retrievedAt": "2026-10-09T10:05:24.328Z",
+  "response": {
+    "hasZ": false,
+    "features": [
+      {
+        "attributes": {
+          "ss_unittype": null,
+          "mb_category_2026": "Residential",
+          "streetname": "FISHBOURNE",
+          "pl_ptlotsecpn": "DP/119//12764",
+          "cadastralidentifier": "119//DP12764",
+          "federalelectoraldivision": "WARRINGAH",
+          "mb_category_2021": "Residential",
+          "ap_gurasid": 11145514,
+          "prop_gurasid": 51302920,
+          "sa4_name_2026": "Sydney - Northern Beaches",
+          "ss_propid": 913020,
+          "sa1_code_2021": "12203143004",
+          "sa4_name_2021": "Sydney - Northern Beaches",
+          "ss_addressstringtype": "Assigned",
+          "sitename": null,
+          "complexlevelnumber": null,
+          "sa1_code_2026": "12203143004",
+          "portal_last_update": 1788837161000,
+          "as_createdate": 1463665638000,
+          "ss_principaladdresstype": "Primary",
+          "sa4_code_2021": "122",
+          "postcode": 2100,
+          "formattedaddress": "12 FISHBOURNE RD, ALLAMBIE HEIGHTS NSW 2100",
+          "lot_modifieddate": 749952000000,
+          "complexunitidentifier": null,
+          "sa4_code_2026": "122",
+          "ss_addresstype": "Property Address",
+          "ss_principaladdresssiteoid": 1777309,
+          "streettype": "RD",
+          "guid": "{6725d4c7-9798-4773-9749-177baea38497}",
+          "streetsuffix": null,
+          "ss_addressstringoid": 3387684,
+          "ss_leveltype": null,
+          "lganame": "NORTHERN BEACHES",
+          "mb_code_2021": "10813410000",
+          "localityname": "ALLAMBIE HEIGHTS",
+          "ss_sppropid": null,
+          "sa3_code_2021": "12203",
+          "sa3_code_2026": "12203",
+          "mb_code_2026": "10813410000",
+          "streetnumber2": null,
+          "sa2_name_2021": "Manly Vale - Allambie Heights",
+          "streetnumber1": "12",
+          "as_gurasid": 60210826,
+          "sa2_name_2026": "Manly Vale - Allambie Heights",
+          "lot_cadid": 102189568,
+          "ap_createdate": 1146225600000,
+          "ss_addresspointtype": "Property",
+          "geodatumcode": "GDA94",
+          "ss_classsubtype": "Standard Lot",
+          "streettypedescription": "ROAD",
+          "sa2_code_2026": "122031430",
+          "sa3_name_2026": "Warringah",
+          "stateterritory": "NSW",
+          "stateelectoraldistrict": "WAKEHURST",
+          "objectid": 1400073,
+          "sa2_code_2021": "122031430",
+          "sa3_name_2021": "Warringah"
+        },
+        "geometry": {
+          "x": 151.26331412771307,
+          "y": -33.77261394383981
+        }
+      }
+    ],
+    "exceededTransferLimit": false,
+    "hasM": false,
+    "objectIdFieldName": "objectid",
+    "fields": [
+      {
+        "visible": true,
+        "defaultValue": null,
+        "length": 29,
+        "type": "esriFieldTypeDate",
+        "modelName": "ap_createdate",
+        "name": "ap_createdate",
+        "alias": "Created date (Address Point)"
+      },
+      {
+        "visible": true,
+        "defaultValue": null,
+        "length": 29,
+        "type": "esriFieldTypeDate",
+        "modelName": "as_createdate",
+        "name": "as_createdate",
+        "alias": "Created date (Address String)"
+      },
+      {
+        "visible": true,
+        "defaultValue": null,
+        "length": 29,
+        "type": "esriFieldTypeDate",
+        "modelName": "portal_last_update",
+        "name": "portal_last_update",
+        "alias": "Last Update Dataset"
+      },
+      {
+        "visible": true,
+        "defaultValue": null,
+        "length": 29,
+        "type": "esriFieldTypeDate",
+        "modelName": "lot_modifieddate",
+        "name": "lot_modifieddate",
+        "alias": "Modified Date (Lot)"
+      },
+      {
+        "visible": true,
+        "defaultValue": null,
+        "type": "esriFieldTypeInteger",
+        "modelName": "ap_gurasid",
+        "name": "ap_gurasid",
+        "alias": "GURAS ID (Address Point)"
+      },
+      {
+        "visible": true,
+        "defaultValue": null,
+        "type": "esriFieldTypeInteger",
+        "modelName": "as_gurasid",
+        "name": "as_gurasid",
+        "alias": "GURAS ID (Address String)"
+      },
+      {
+        "visible": true,
+        "defaultValue": null,
+        "type": "esriFieldTypeInteger",
+        "modelName": "lot_cadid",
+        "name": "lot_cadid",
+        "alias": "Cadastre ID (Lot)"
+      },
+      {
+        "visible": true,
+        "defaultValue": null,
+        "type": "esriFieldTypeInteger",
+        "modelName": "postcode",
+        "name": "postcode",
+        "alias": "Postcode"
+      },
+      {
+        "visible": true,
+        "defaultValue": null,
+        "type": "esriFieldTypeInteger",
+        "modelName": "prop_gurasid",
+        "name": "prop_gurasid",
+        "alias": "GURAS ID (Property)"
+      },
+      {
+        "visible": true,
+        "defaultValue": null,
+        "type": "esriFieldTypeInteger",
+        "modelName": "ss_addressstringoid",
+        "name": "ss_addressstringoid",
+        "alias": "Object ID (Address String)"
+      },
+      {
+        "visible": true,
+        "defaultValue": null,
+        "type": "esriFieldTypeInteger",
+        "modelName": "ss_principaladdresssiteoid",
+        "name": "ss_principaladdresssiteoid",
+        "alias": "Object ID (Principal Address Site)"
+      },
+      {
+        "visible": true,
+        "defaultValue": null,
+        "type": "esriFieldTypeInteger",
+        "modelName": "ss_propid",
+        "name": "ss_propid",
+        "alias": "Property ID"
+      },
+      {
+        "visible": true,
+        "defaultValue": null,
+        "type": "esriFieldTypeInteger",
+        "modelName": "ss_sppropid",
+        "name": "ss_sppropid",
+        "alias": "Property ID in Strata Scheme"
+      },
+      {
+        "visible": true,
+        "defaultValue": null,
+        "length": 100,
+        "type": "esriFieldTypeString",
+        "modelName": "guid",
+        "name": "guid",
+        "alias": "Globally Unique Identifier"
+      },
+      {
+        "visible": true,
+        "defaultValue": null,
+        "length": 200,
+        "type": "esriFieldTypeString",
+        "modelName": "cadastralidentifier",
+        "name": "cadastralidentifier",
+        "alias": "Lot / Section / Plan"
+      },
+      {
+        "visible": true,
+        "defaultValue": null,
+        "length": 200,
+        "type": "esriFieldTypeString",
+        "modelName": "complexlevelnumber",
+        "name": "complexlevelnumber",
+        "alias": "Level"
+      },
+      {
+        "visible": true,
+        "defaultValue": null,
+        "length": 200,
+        "type": "esriFieldTypeString",
+        "modelName": "complexunitidentifier",
+        "name": "complexunitidentifier",
+        "alias": "Unit"
+      },
+      {
+        "visible": true,
+        "defaultValue": null,
+        "length": 200,
+        "type": "esriFieldTypeString",
+        "modelName": "formattedaddress",
+        "name": "formattedaddress",
+        "alias": "Formatted Address"
+      },
+      {
+        "visible": true,
+        "defaultValue": null,
+        "length": 200,
+        "type": "esriFieldTypeString",
+        "modelName": "geodatumcode",
+        "name": "geodatumcode",
+        "alias": "Datum"
+      },
+      {
+        "visible": true,
+        "defaultValue": null,
+        "length": 200,
+        "type": "esriFieldTypeString",
+        "modelName": "localityname",
+        "name": "localityname",
+        "alias": "Locality"
+      },
+      {
+        "visible": true,
+        "defaultValue": null,
+        "length": 200,
+        "type": "esriFieldTypeString",
+        "modelName": "pl_ptlotsecpn",
+        "name": "pl_ptlotsecpn",
+        "alias": "Plan type / Lot / Section number / Plan number"
+      },
+      {
+        "visible": true,
+        "defaultValue": null,
+        "length": 200,
+        "type": "esriFieldTypeString",
+        "modelName": "sitename",
+        "name": "sitename",
+        "alias": "Site Name"
+      },
+      {
+        "visible": true,
+        "defaultValue": null,
+        "length": 200,
+        "type": "esriFieldTypeString",
+        "modelName": "ss_addresspointtype",
+        "name": "ss_addresspointtype",
+        "alias": "Address Point Type"
+      },
+      {
+        "visible": true,
+        "defaultValue": null,
+        "length": 200,
+        "type": "esriFieldTypeString",
+        "modelName": "ss_addressstringtype",
+        "name": "ss_addressstringtype",
+        "alias": "Address String Type"
+      },
+      {
+        "visible": true,
+        "defaultValue": null,
+        "length": 200,
+        "type": "esriFieldTypeString",
+        "modelName": "ss_addresstype",
+        "name": "ss_addresstype",
+        "alias": "Address Type"
+      },
+      {
+        "visible": true,
+        "defaultValue": null,
+        "length": 200,
+        "type": "esriFieldTypeString",
+        "modelName": "ss_classsubtype",
+        "name": "ss_classsubtype",
+        "alias": "Class Subtype"
+      },
+      {
+        "visible": true,
+        "defaultValue": null,
+        "length": 200,
+        "type": "esriFieldTypeString",
+        "modelName": "ss_leveltype",
+        "name": "ss_leveltype",
+        "alias": "Level Type"
+      },
+      {
+        "visible": true,
+        "defaultValue": null,
+        "length": 200,
+        "type": "esriFieldTypeString",
+        "modelName": "ss_principaladdresstype",
+        "name": "ss_principaladdresstype",
+        "alias": "Principal Address Type"
+      },
+      {
+        "visible": true,
+        "defaultValue": null,
+        "length": 200,
+        "type": "esriFieldTypeString",
+        "modelName": "ss_unittype",
+        "name": "ss_unittype",
+        "alias": "Unit Type"
+      },
+      {
+        "visible": true,
+        "defaultValue": null,
+        "length": 5,
+        "type": "esriFieldTypeString",
+        "modelName": "stateterritory",
+        "name": "stateterritory",
+        "alias": "State"
+      },
+      {
+        "visible": true,
+        "defaultValue": null,
+        "length": 200,
+        "type": "esriFieldTypeString",
+        "modelName": "streetname",
+        "name": "streetname",
+        "alias": "Street Name"
+      },
+      {
+        "visible": true,
+        "defaultValue": null,
+        "length": 200,
+        "type": "esriFieldTypeString",
+        "modelName": "streetnumber1",
+        "name": "streetnumber1",
+        "alias": "Street Number 1"
+      },
+      {
+        "visible": true,
+        "defaultValue": null,
+        "length": 200,
+        "type": "esriFieldTypeString",
+        "modelName": "streetnumber2",
+        "name": "streetnumber2",
+        "alias": "Street Number 2"
+      },
+      {
+        "visible": true,
+        "defaultValue": null,
+        "length": 200,
+        "type": "esriFieldTypeString",
+        "modelName": "streetsuffix",
+        "name": "streetsuffix",
+        "alias": "Street Suffix"
+      },
+      {
+        "visible": true,
+        "defaultValue": null,
+        "length": 200,
+        "type": "esriFieldTypeString",
+        "modelName": "streettype",
+        "name": "streettype",
+        "alias": "Street Type abbreviation"
+      },
+      {
+        "visible": true,
+        "defaultValue": null,
+        "length": 200,
+        "type": "esriFieldTypeString",
+        "modelName": "streettypedescription",
+        "name": "streettypedescription",
+        "alias": "Street Type"
+      },
+      {
+        "visible": true,
+        "defaultValue": null,
+        "length": 60,
+        "type": "esriFieldTypeString",
+        "modelName": "stateelectoraldistrict",
+        "name": "stateelectoraldistrict",
+        "alias": "State Electoral District"
+      },
+      {
+        "visible": true,
+        "defaultValue": null,
+        "length": 20,
+        "type": "esriFieldTypeString",
+        "modelName": "federalelectoraldivision",
+        "name": "federalelectoraldivision",
+        "alias": "Federal Electoral Division"
+      },
+      {
+        "visible": true,
+        "defaultValue": null,
+        "length": 60,
+        "type": "esriFieldTypeString",
+        "modelName": "lganame",
+        "name": "lganame",
+        "alias": "Local Government Area"
+      },
+      {
+        "visible": true,
+        "defaultValue": null,
+        "length": 11,
+        "type": "esriFieldTypeString",
+        "modelName": "mb_code_2021",
+        "name": "mb_code_2021",
+        "alias": "Mesh Block (2021)"
+      },
+      {
+        "visible": true,
+        "defaultValue": null,
+        "length": 30,
+        "type": "esriFieldTypeString",
+        "modelName": "mb_category_2021",
+        "name": "mb_category_2021",
+        "alias": "Mesh Block Category (2021)"
+      },
+      {
+        "visible": true,
+        "defaultValue": null,
+        "length": 11,
+        "type": "esriFieldTypeString",
+        "modelName": "sa1_code_2021",
+        "name": "sa1_code_2021",
+        "alias": "SA1 (2021)"
+      },
+      {
+        "visible": true,
+        "defaultValue": null,
+        "length": 9,
+        "type": "esriFieldTypeString",
+        "modelName": "sa2_code_2021",
+        "name": "sa2_code_2021",
+        "alias": "SA2 (2021)"
+      },
+      {
+        "visible": true,
+        "defaultValue": null,
+        "length": 50,
+        "type": "esriFieldTypeString",
+        "modelName": "sa2_name_2021",
+        "name": "sa2_name_2021",
+        "alias": "SA2 name (2021)"
+      },
+      {
+        "visible": true,
+        "defaultValue": null,
+        "length": 5,
+        "type": "esriFieldTypeString",
+        "modelName": "sa3_code_2021",
+        "name": "sa3_code_2021",
+        "alias": "SA3 (2021)"
+      },
+      {
+        "visible": true,
+        "defaultValue": null,
+        "length": 50,
+        "type": "esriFieldTypeString",
+        "modelName": "sa3_name_2021",
+        "name": "sa3_name_2021",
+        "alias": "SA3 name (2021)"
+      },
+      {
+        "visible": true,
+        "defaultValue": null,
+        "length": 3,
+        "type": "esriFieldTypeString",
+        "modelName": "sa4_code_2021",
+        "name": "sa4_code_2021",
+        "alias": "SA4 (2021)"
+      },
+      {
+        "visible": true,
+        "defaultValue": null,
+        "length": 50,
+        "type": "esriFieldTypeString",
+        "modelName": "sa4_name_2021",
+        "name": "sa4_name_2021",
+        "alias": "SA4 name (2021)"
+      },
+      {
+        "visible": true,
+        "defaultValue": null,
+        "length": 11,
+        "type": "esriFieldTypeString",
+        "modelName": "mb_code_2026",
+        "name": "mb_code_2026",
+        "alias": "Mesh Block (2026)"
+      },
+      {
+        "visible": true,
+        "defaultValue": null,
+        "length": 30,
+        "type": "esriFieldTypeString",
+        "modelName": "mb_category_2026",
+        "name": "mb_category_2026",
+        "alias": "Mesh Block Category (2026)"
+      },
+      {
+        "visible": true,
+        "defaultValue": null,
+        "length": 11,
+        "type": "esriFieldTypeString",
+        "modelName": "sa1_code_2026",
+        "name": "sa1_code_2026",
+        "alias": "SA1 (2026)"
+      },
+      {
+        "visible": true,
+        "defaultValue": null,
+        "length": 9,
+        "type": "esriFieldTypeString",
+        "modelName": "sa2_code_2026",
+        "name": "sa2_code_2026",
+        "alias": "SA2 (2026)"
+      },
+      {
+        "visible": true,
+        "defaultValue": null,
+        "length": 50,
+        "type": "esriFieldTypeString",
+        "modelName": "sa2_name_2026",
+        "name": "sa2_name_2026",
+        "alias": "SA2 name (2026)"
+      },
+      {
+        "visible": true,
+        "defaultValue": null,
+        "length": 5,
+        "type": "esriFieldTypeString",
+        "modelName": "sa3_code_2026",
+        "name": "sa3_code_2026",
+        "alias": "SA3 (2026)"
+      },
+      {
+        "visible": true,
+        "defaultValue": null,
+        "length": 50,
+        "type": "esriFieldTypeString",
+        "modelName": "sa3_name_2026",
+        "name": "sa3_name_2026",
+        "alias": "SA3 name (2026)"
+      },
+      {
+        "visible": true,
+        "defaultValue": null,
+        "length": 3,
+        "type": "esriFieldTypeString",
+        "modelName": "sa4_code_2026",
+        "name": "sa4_code_2026",
+        "alias": "SA4 (2026)"
+      },
+      {
+        "visible": true,
+        "defaultValue": null,
+        "length": 50,
+        "type": "esriFieldTypeString",
+        "modelName": "sa4_name_2026",
+        "name": "sa4_name_2026",
+        "alias": "SA4 name (2026)"
+      },
+      {
+        "defaultValue": null,
+        "type": "esriFieldTypeOID",
+        "modelName": "objectid",
+        "name": "objectid",
+        "alias": "OBJECTID"
+      }
+    ],
+    "spatialReference": {
+      "latestWkid": 4283,
+      "wkid": 4283
+    },
+    "geometryType": "esriGeometryPoint"
+  }
+}

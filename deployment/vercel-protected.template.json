@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "buildCommand": "npm run build:founder",
+  "outputDirectory": "qa-artifacts/migration-public",
+  "functions": { "api/**/*.js": { "maxDuration": 30 } },
+  "headers": [
+    { "source": "/api/(.*)", "headers": [{ "key": "Cache-Control", "value": "private, no-store" }, { "key": "X-Content-Type-Options", "value": "nosniff" }] },
+    { "source": "/(.*)", "headers": [{ "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }] }
+  ]
+}
